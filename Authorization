@@ -1,0 +1,40 @@
+# Authorization Explained: RBAC, ABAC, ACL & More
+
+While authentication verifies *who* a user is, **authorization** determines *what* they are allowed to do once inside the system. Managing permissions effectively is critical for system security and scalable architecture.
+
+## 1. Role-Based Access Control (RBAC) [00:02:54]
+RBAC is the most common authorization model, where permissions are assigned to specific roles, and users are granted those roles.
+
+* **How it works:** Users are assigned roles (e.g., `Admin`, `Editor`, `Viewer`). Each role has a predefined set of permissions (Create, Read, Update, Delete). [00:03:02]
+* **Example:** On GitHub, an `Admin` has full control (can delete repositories), an `Editor` can push code but not manage users, and a `Viewer` only has read access. [00:03:08]
+* **Best for:** Standard web applications, CMS platforms, and team management tools where permissions naturally group into clear organizational functions. [00:03:45]
+
+## 2. Attribute-Based Access Control (ABAC) [00:03:59]
+ABAC provides highly granular control by evaluating policies against various attributes rather than static roles.
+
+* **How it works:** Access is granted or denied based on a combination of:
+    * **User Attributes:** Department, age, job title (e.g., `department === 'HR'`). [00:04:51]
+    * **Resource Attributes:** Classification, ownership, confidentiality level. [00:05:05]
+    * **Environment Conditions:** Time of day, user location, device type. [00:05:05]
+* **Trade-offs:** It is highly flexible and secure but significantly more complex to implement and manage. Poor policy management can lead to evaluation conflicts. [00:05:21]
+
+## 3. Access Control Lists (ACL) [00:05:29]
+Instead of grouping permissions by user roles, ACL attaches a specific permission list directly to the resource itself.
+
+* **How it works:** A resource (like a document or database record) holds a list of who can access it and what their specific rights are. [00:05:44]
+* **Example:** Google Drive uses ACLs extensively. A single document can have an attached list stating that User A has `Read` access, while User B has `Read/Write` access. [00:06:29]
+* **Trade-offs:** Offers ultimate resource-level control but is notoriously difficult to scale in systems with millions of users and objects unless architected very carefully. [00:06:12]
+
+## Implementing Authorization [00:07:30]
+Authorization models define the *rules*, but protocols and tokens are the *mechanisms* used to enforce them across the stack.
+
+### OAuth 2.0 (Delegated Authorization) [00:07:37]
+OAuth 2.0 is used when one service needs to access resources on another service *on behalf of a user*.
+* Instead of sharing raw credentials (like a password), the user authorizes a third-party app to receive an **Access Token** from the resource server (e.g., granting Vercel access to read your GitHub repositories). [00:07:53]
+* The token securely represents the specific, limited permissions approved by the user. [00:08:50]
+
+### JWT & Bearer Tokens [00:09:13]
+In modern APIs, authorization state is often carried in a token (typically a JSON Web Token) sent with every request.
+* **Payload:** The token payload usually contains the user's ID, their assigned roles (for RBAC), granted scopes, and the token expiration time. [00:09:22]
+* **Enforcement:** When the token hits the backend, the server validates its signature and expiration, extracts the claims, and applies the appropriate permission logic (RBAC, ABAC, or ACL) before serving the data. [00:09:45]
+* **Important Distinction:** The token itself is just the transport mechanism for identity and claims; the underlying logic (RBAC/ABAC/ACL) dictates the actual access rules. [00:09:59]

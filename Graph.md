@@ -65,12 +65,13 @@ adj[2] = {}        // Can't go anywhere from 2
 adj[3] = {1}
 ```
 
-How to identify a Graph Problem?
+#### How to identify a Graph Problem?
 The video shares some "pro-tips" on how to recognize if a question requires graph concepts:
 Nodes labeled 0 to n-1: If a question states that there are N entities (like courses, cities, computers) labeled from 0 to N-1, it is a massive hint that it's a graph problem.
 Relationships / Pairs: If the input is given as an array of pairs indicating a relationship (e.g., [u, v] meaning "to take course v, you must first take course u" or "city u is connected to city v"), these pairs represent edges.
 Direct Terminology: Some questions explicitly use graph terms like "find if the graph is bipartite", "detect a cycle", or "find the shortest path."
-Coding the Adjacency List (Snippet)
+
+#### Coding the Adjacency List (Snippet)
 
 ```java
         List<List<Integer>> adj = new ArrayList<>();
@@ -176,10 +177,10 @@ class GraphBFS {
 }
 ```
 
-Summary
-DFS goes deep first -> Uses Recursion (Stack).
-BFS goes wide first (level-by-level) -> Uses a Queue.
-Never forget the visited array when dealing with Graphs to prevent cycles!
+#### Summary
+* DFS goes deep first -> Uses Recursion (Stack).
+* BFS goes wide first (level-by-level) -> Uses a Queue.
+* Never forget the visited array when dealing with Graphs to prevent cycles!
 
 # Graph Concepts & Qns - 4: Detect Cycle in Undirected Graph using DFS
 
@@ -529,6 +530,248 @@ Time Complexity: O(V + E). We simply perform a standard DFS, visiting every vert
 Space Complexity: O(V). We use extra space for the visited array, the Stack, and the recursion call stack space
 
 
+# Graph Concepts & Qns - 8: Kahn's Algorithm (Topological Sort using BFS)
 
+**Video Link:** [Graph Concepts & Qns - 8 | Kahn's Algorithm | Topological Sort using BFS](https://youtu.be/uVl4ftleTes)  
+**Channel:** codestorywithMIK  
+
+## Overview
+In the previous video, we learned how to perform a Topological Sort using DFS. This video explains how to achieve the exact same Topological Sort using **Breadth-First Search (BFS)**. This specific BFS approach to topological sorting is famously known as **Kahn's Algorithm**.
+
+## Core Concept: In-Degree
+To understand Kahn's Algorithm, you must first understand the concept of **In-Degree**.
+*   **In-Degree:** The number of incoming edges pointing *towards* a specific node.
+*   If a node has an In-Degree of `0`, it means *nothing* comes before it. No other node needs to be processed before this node.
+*   **Logical Deduction:** In a valid Topological Sort, nodes with an In-Degree of `0` are completely free of dependencies and can safely be placed at the very beginning of the sorted order.
+
+## Kahn's Algorithm (The Strategy)
+1.  **Calculate In-Degrees:** Iterate through all edges in the graph and calculate the initial In-Degree for every node. Store this in an array.
+2.  **Initialize the Queue:** Find all nodes that currently have an In-Degree of `0` and push them into a Queue. (These are our starting points).
+3.  **Process the Queue (BFS):**
+    *   Pop a node `U` from the queue.
+    *   Add `U` to your final Topological Sort result list (because its dependencies are cleared).
+    *   Iterate through all neighbors `V` of `U`.
+    *   Since `U` has been processed, we effectively "remove" the edge `U -> V`. We simulate this by **decrementing the In-Degree of `V` by 1**.
+    *   **The Check:** If the In-Degree of `V` becomes `0` after decrementing, it means all of `V`'s dependencies have been processed! Push `V` into the Queue.
+4.  Repeat step 3 until the Queue is empty.
+
+## Java Implementation
+
+```java
+import java.util.*;
+
+class KahnsAlgorithm {
+    
+    // Function to return topological sort using BFS (Kahn's Algorithm)
+    public int[] topoSort(int V, List<List<Integer>> adj) {
+        int[] inDegree = new int[V];
+        
+        // Step 1: Calculate In-Degree for all nodes
+        // Iterate over all nodes 'u'
+        for (int u = 0; u < V; u++) {
+            // For every neighbor 'v' of 'u', increment inDegree of 'v'
+            for (int v : adj.get(u)) {
+                inDegree[v]++;
+            }
+        }
+        
+        // Step 2: Initialize Queue with all nodes having In-Degree == 0
+        Queue<Integer> queue = new LinkedList<>();
+        for (int i = 0; i < V; i++) {
+            if (inDegree[i] == 0) {
+                queue.add(i);
+            }
+        }
+        
+        int[] result = new int[V];
+        int index = 0;
+        
+        // Step 3: Process the Queue (Standard BFS)
+        while (!queue.isEmpty()) {
+            int u = queue.poll();
+            
+            // Add to result since all its dependencies are resolved
+            result[index++] = u;
+            
+            // Go through all neighbors of the popped node
+            for (int v : adj.get(u)) {
+                // Remove the edge u -> v by decreasing in-degree of v
+                inDegree[v]--;
+                
+                // If in-degree becomes 0, add to queue
+                if (inDegree[v] == 0) {
+                    queue.add(v);
+                }
+            }
+        }
+        
+        return result;
+    }
+}
+```
+
+Complexity Analysis
+Time Complexity: O(V + E).
+Calculating in-degrees takes O(V + E).
+The BFS processes each node once (O(V)) and iterates through all edges overall (O(E)).
+Space Complexity: O(V) required for the inDegree array, the Queue, and the result array.
+
+# Graph Concepts & Qns - 9: Detect Cycle in Directed Graph using BFS
+
+**Video Link:** [Graph Concepts & Qns - 9 (Flipkart, Amazon, Microsoft...) : Detect Cycle in Directed Graph using BFS](https://youtu.be/74suJP4bwf0)  
+**Channel:** codestorywithMIK  
+
+## Overview
+This video brings together two concepts we just learned: **Directed Graph Cycle Detection** and **Topological Sorting using BFS (Kahn's Algorithm)**. 
+
+Remember why Kahn's Algorithm was introduced *before* teaching cycle detection with BFS? Because we can use Kahn's Algorithm directly to detect a cycle!
+
+## Core Concept: The Kahn's Algorithm Trick
+Recall the strict rule of Topological Sorting: **It is ONLY possible on a Directed Acyclic Graph (DAG).**
+*   If a directed graph has a cycle, you **cannot** generate a complete topological sort.
+*   *Why?* In a cycle (e.g., `A -> B -> C -> A`), the nodes in the cycle will *never* reach an In-Degree of `0`. Since they never reach `0`, they will never be pushed into the BFS Queue.
+
+**The Strategy:**
+1.  Run Kahn's Algorithm (Topological Sort via BFS) exactly as you normally would.
+2.  Keep a `count` of how many nodes get pushed into the queue (or popped from the queue/added to the result).
+3.  Once the algorithm finishes, compare the `count` with the total number of vertices `V`.
+    *   If `count == V`: We successfully visited all nodes. This means a valid topological sort was created. Therefore, the graph is **Acyclic (No Cycle)**.
+    *   If `count != V`: We couldn't visit all nodes (some were stuck with an in-degree > 0 due to a cycle). Therefore, the graph has a **Cycle**.
+
+## Java Implementation
+
+```java
+import java.util.*;
+
+class DetectCycleDirectedBFS {
+    
+    // Function to detect cycle in a directed graph using BFS (Kahn's Algorithm)
+    public boolean isCyclic(int V, List<List<Integer>> adj) {
+        int[] inDegree = new int[V];
+        
+        // Step 1: Calculate in-degree of every node
+        for (int u = 0; u < V; u++) {
+            for (int v : adj.get(u)) {
+                inDegree[v]++;
+            }
+        }
+        
+        // Step 2: Initialize Queue and add all nodes with in-degree 0
+        Queue<Integer> queue = new LinkedList<>();
+        int count = 0; // To keep track of how many nodes we process
+        
+        for (int i = 0; i < V; i++) {
+            if (inDegree[i] == 0) {
+                queue.add(i);
+                count++; 
+            }
+        }
+        
+        // Step 3: Standard BFS (Kahn's Algorithm)
+        while (!queue.isEmpty()) {
+            int u = queue.poll();
+            
+            // Go through all neighbors
+            for (int v : adj.get(u)) {
+                inDegree[v]--; // Remove the edge u -> v
+                
+                // If in-degree becomes 0, it means dependencies are resolved
+                if (inDegree[v] == 0) {
+                    queue.add(v);
+                    count++; // Increment count when a node is added to the queue
+                }
+            }
+        }
+        
+        // Step 4: Check if we processed all vertices
+        // If count == V, it means we generated a valid topo sort -> NO CYCLE (return false)
+        // If count != V, it means some nodes were stuck -> CYCLE DETECTED (return true)
+        return count != V;
+    }
+}
+```
+
+Complexity Analysis
+Time Complexity: O(V + E). Exactly the same as Kahn's Algorithm. We calculate in-degrees and run a BFS.
+Space Complexity: O(V). Required for the inDegree array and the Queue.
+
+# Graph Concepts & Qns - 10: Number of Provinces (DFS)
+
+**Video Link:** [Number of Provinces - (Google, Microsoft,Amazon) | DFS | Graph Concepts & Qns - 10](https://youtu.be/70LNE8RMPNc)  
+**Channel:** codestorywithMIK  
+
+## Overview
+This video transitions from purely learning concepts to actually solving real-world interview questions (asked by Google, Microsoft, Amazon). The first problem tackled is the classic **Number of Provinces**.
+
+## Problem Breakdown
+**The Story:** You are given `N` cities. Some cities are connected, and some are not. A group of cities connected directly or indirectly forms a **Province**. Your task is to find the total number of distinct provinces.
+
+**The Input:** You are given an `N x N` matrix called `isConnected` where:
+*   `isConnected[i][j] = 1` means City `i` and City `j` are directly connected.
+*   `isConnected[i][j] = 0` means they are not directly connected.
+*   (This input is basically an Adjacency Matrix representation of an Undirected Graph).
+
+**Graph Interpretation:** 
+The problem is simply asking: **Find the number of disconnected components in the graph.**
+
+## Core Concept: Counting Components using DFS
+We already know how to handle disconnected components in a graph using a `visited` array and a `for` loop that iterates from `0` to `N-1`. 
+
+**The Strategy:**
+1. Initialize a `visited` array (size `N`) to `false`.
+2. Initialize a `count` variable to `0`.
+3. Loop `i` from `0` to `N-1`:
+    * If City `i` is NOT `visited`:
+        * It means we have found a new province! Increment `count`.
+        * Trigger a **DFS** starting from City `i`. 
+        * The DFS will traverse *all* cities connected to City `i` (directly or indirectly) and mark them as `visited`. 
+        * By the time the DFS finishes, an entire province is marked as `visited`, so the main loop will skip over them in future iterations.
+4. Return `count`.
+
+## Java Implementation
+
+Instead of converting the given Adjacency Matrix into an Adjacency List, we can perform the DFS directly on the Matrix to save time and space.
+
+```java
+class NumberOfProvincesDFS {
+    
+    // Helper function for DFS directly on the adjacency matrix
+    private void dfs(int[][] isConnected, int u, boolean[] visited) {
+        // Mark the current city as visited
+        visited[u] = true;
+        
+        // Check all potential neighbors (columns in the matrix for row 'u')
+        for (int v = 0; v < isConnected.length; v++) {
+            // If there is a connection AND the neighbor is not visited
+            if (isConnected[u][v] == 1 && !visited[v]) {
+                dfs(isConnected, v, visited);
+            }
+        }
+    }
+
+    // Main function to count the number of provinces
+    public int findCircleNum(int[][] isConnected) {
+        int n = isConnected.length;
+        boolean[] visited = new boolean[n];
+        int count = 0;
+        
+        // Loop through all cities
+        for (int i = 0; i < n; i++) {
+            // If the city is not visited, we found a new province
+            if (!visited[i]) {
+                count++;
+                // Start DFS to mark all connected cities in this province
+                dfs(isConnected, i, visited);
+            }
+        }
+        
+        return count;
+    }
+}
+```
+
+Complexity Analysis
+Time Complexity: O(N^2) where N is the number of cities. We iterate through the N x N matrix. Even though we have nested loops and DFS, we check each matrix cell exactly once.
+Space Complexity: O(N) for the visited array and the implicit DFS recursion stack, which can go N levels deep in the worst case (a single straight-line connected graph).
 
 

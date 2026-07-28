@@ -82,7 +82,8 @@ Coding the Adjacency List (Snippet)
             adj.get(edge[0]).add(edge[1]);
             adj.get(edge[1]).add(edge[0]);
         }
-```# Graph Concepts & Qns - 3: DFS & BFS
+```
+# Graph Concepts & Qns - 3: DFS & BFS
 
 **Video Link:** [Graph Concepts & Qns - 3 : DFS & BFS](https://youtu.be/V4xpJNgxMDY)  
 **Channel:** codestorywithMIK  
@@ -179,4 +180,355 @@ Summary
 DFS goes deep first -> Uses Recursion (Stack).
 BFS goes wide first (level-by-level) -> Uses a Queue.
 Never forget the visited array when dealing with Graphs to prevent cycles!
+
+# Graph Concepts & Qns - 4: Detect Cycle in Undirected Graph using DFS
+
+**Video Link:** [Graph Concepts & Qns - 4 (Miscoroft, Amazon, Flipkart) : Detect Cycle in Undirected Graph using DFS](https://youtu.be/UrQv5YMC060)  
+**Channel:** codestorywithMIK  
+
+## Overview
+Detecting a cycle in an Undirected Graph is a highly popular interview question (asked by Microsoft, Amazon, Flipkart, etc.). This video explains how to detect a cycle using **Depth-First Search (DFS)**. 
+*(Note: A subsequent video will cover cycle detection using BFS).*
+
+## Core Concept: Cycle Detection
+At first glance, you might think: *"If I am traversing the graph and I encounter a node that is already marked as `visited`, it must be a cycle!"* 
+
+**However, in an Undirected Graph, this simple logic fails.** 
+Why? Because in an undirected graph, an edge goes both ways (e.g., `A -- B`). 
+*   If you go from `A` to `B`, node `B` will look at its neighbors to continue the DFS. 
+*   One of `B`'s neighbors is `A`! 
+*   If `B` checks `A`, it sees that `A` is already `visited`. 
+*   If we strictly follow the simple logic, `B` will falsely report a cycle just because it looked back at the node that called it.
+
+### The Fix: Keeping Track of the "Parent"
+To fix this false positive, we must introduce the concept of a **parent node**. 
+When node `U` calls DFS on its neighbor `V`, `U` becomes the parent of `V`.
+When `V` is iterating through its neighbors, it should simply **ignore its parent**. 
+
+**The Golden Rule for Undirected Cycle Detection:**
+While traversing neighbors of current node `U`:
+1. If neighbor `V` is the `parent` of `U` -> **Ignore it (continue).**
+2. If neighbor `V` is NOT the `parent`, BUT is already `visited` -> **A Cycle Exists! (Return True).**
+3. If neighbor `V` is not visited -> **Recursively call DFS on `V` (passing `U` as its new parent).**
+
+## Handling Disconnected Graphs
+A graph might have multiple disconnected components. Calling DFS from node `0` might not visit nodes in an entirely separate cluster. Therefore, we must loop through *all* vertices `0` to `V-1`. If a vertex is not visited, we trigger the DFS cycle check from it. If any component returns `true`, the whole graph contains a cycle.
+
+## Java Implementation
+
+```java
+import java.util.*;
+
+class DetectCycleDFS {
+    
+    // Helper function for DFS cycle detection
+    private boolean isCycleDFS(List<List<Integer>> adj, int u, boolean[] visited, int parent) {
+        // Mark the current node as visited
+        visited[u] = true;
+        
+        // Traverse all neighbors of the current node 'u'
+        for (int v : adj.get(u)) {
+            
+            // Condition 1: If neighbor 'v' is the parent, just ignore it
+            if (v == parent) {
+                continue;
+            }
+            
+            // Condition 2: If neighbor 'v' is already visited and is NOT the parent -> Cycle Detected!
+            if (visited[v]) {
+                return true;
+            }
+            
+            // Condition 3: If neighbor 'v' is not visited, go deeper
+            // Pass current node 'u' as the parent for 'v'
+            if (isCycleDFS(adj, v, visited, u)) {
+                return true;
+            }
+        }
+        
+        return false;
+    }
+
+    // Main function to detect cycle in an undirected graph
+    public boolean isCycle(int V, List<List<Integer>> adj) {
+        boolean[] visited = new boolean[V];
+        
+        // Loop through all nodes to handle disconnected components
+        for (int i = 0; i < V; i++) {
+            if (!visited[i]) {
+                // For the starting node of any component, parent is -1
+                if (isCycleDFS(adj, i, visited, -1)) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
+    }
+}
+```
+
+Complexity Analysis
+Time Complexity: O(V + E) where V is the number of vertices and E is the number of edges. This is standard DFS time complexity.
+Space Complexity: O(V) to maintain the visited array and the recursion call stack space.
+
+# Graph Concepts & Qns - 5: Detect Cycle in Undirected Graph using BFS
+
+**Video Link:** [Graph Concepts & Qns - 5 (Microsoft, Amazon, Flipkart.) : Detect Cycle in Undirected Graph using BFS](https://youtu.be/HqIQmKKo5_I)  
+**Channel:** codestorywithMIK  
+
+## Overview
+Following up on the previous video (which used DFS), this video explains how to detect a cycle in an **Undirected Graph using Breadth-First Search (BFS)**. The core logic remains entirely the same as the DFS approach: we must keep track of the **parent** of each node to avoid falsely identifying the edge we just came from as a cycle.
+
+## Core Concept: BFS Cycle Detection
+In a standard BFS, we use a `Queue` to keep track of the nodes to visit next. 
+For cycle detection, we cannot just store the node in the queue. We must store **both the node and its parent**. 
+*   **Data Structure:** We can use a custom class or an integer array `new int[]{node, parent}` to represent elements in the Queue.
+*   **Initialization:** When pushing the starting node (e.g., `0`) into the queue, its parent is set to `-1` (since it has no parent).
+*   **The Check:** While popping a node `U` from the queue and iterating over its neighbors `V`:
+    *   If `V` is NOT visited: Mark `V` as visited, and push `{V, U}` to the queue (`U` is the parent of `V`).
+    *   If `V` IS visited **AND** `V != parent of U`: We have found a cycle! (Return true).
+
+## Disconnected Components
+Just like in the DFS approach, the graph might be disconnected. We must iterate through all nodes from `0` to `V-1`. If a node is not visited, we trigger the BFS from it.
+
+## Java Implementation
+
+```java
+import java.util.*;
+
+class DetectCycleBFS {
+    
+    // Helper function for BFS cycle detection
+    private boolean isCycleBFS(List<List<Integer>> adj, int startNode, boolean[] visited) {
+        // Queue stores arrays of size 2: {currentNode, parentNode}
+        Queue<int[]> queue = new LinkedList<>();
+        
+        // Start BFS from startNode, parent is -1
+        queue.add(new int[]{startNode, -1});
+        visited[startNode] = true;
+        
+        while (!queue.isEmpty()) {
+            int[] current = queue.poll();
+            int u = current[0];
+            int parent = current[1];
+            
+            // Go through all neighbors of the current node
+            for (int v : adj.get(u)) {
+                
+                // If neighbor is not visited, mark visited and push to queue
+                if (!visited[v]) {
+                    visited[v] = true;
+                    queue.add(new int[]{v, u}); // u becomes the parent of v
+                } 
+                // If neighbor is visited AND is not the parent -> Cycle Detected!
+                else if (v != parent) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
+    }
+
+    // Main function to detect cycle in an undirected graph
+    public boolean isCycle(int V, List<List<Integer>> adj) {
+        boolean[] visited = new boolean[V];
+        
+        // Loop through all nodes to handle disconnected components
+        for (int i = 0; i < V; i++) {
+            if (!visited[i]) {
+                if (isCycleBFS(adj, i, visited)) {
+                    return true; // Cycle found in this component
+                }
+            }
+        }
+        
+        return false; // No cycle found in any component
+    }
+}
+```
+Complexity Analysis
+Time Complexity: O(V + E) where V is the number of vertices and E is the number of edges. We visit every node and traverse every edge exactly once.
+Space Complexity: O(V) required for the visited array and the Queue.
+
+# Graph Concepts & Qns - 6: Detect Cycle in Directed Graph using DFS
+
+**Video Link:** [Graph Concepts & Qns - 6 | Flipkart, Amazon, Microsoft | Detect Cycle in Directed Graph using DFS](https://youtu.be/K_LamGUvwUc)  
+**Channel:** codestorywithMIK  
+
+## Overview
+This video moves on from undirected graphs to **Directed Graphs** and explains how to detect cycles within them using **Depth-First Search (DFS)**. 
+A cycle in a directed graph means you can start at a node and, by following the *directed* edges, return to that exact same node. 
+
+## Core Concept: Why the Undirected Logic Fails
+In an *undirected* graph, we detected cycles by checking if a neighbor was `visited` and was *not the parent*.
+If you try to apply this exact same logic to a *directed* graph, it **fails**. 
+
+**Example of Failure:**
+Consider edges: `0 -> 1`, `0 -> 2`, `2 -> 1`.
+1. DFS starts at `0`. Marks `0` visited.
+2. Goes to `1`. Marks `1` visited. DFS from `1` finishes. Backtracks to `0`.
+3. Goes to `2`. Marks `2` visited.
+4. From `2`, goes to `1`. 
+5. Sees `1` is already `visited`. Since `1` is not the parent of `2` (the parent of `2` is `0`), the old logic would declare a **cycle**. 
+But looking at the edges, there is no cycle! You just found two different paths to reach `1`.
+
+### The Fix: "In Recursion Stack" Array
+To solve this, we need to know if the node we are revisiting is part of our **current DFS path (current recursion stack)**. 
+*   If we revisit a node that is in our *current* recursion stack, we have found a cycle. 
+*   If we revisit a node that was visited in a *previous, completed* DFS path, it is just a cross-edge, NOT a cycle.
+
+**Data Structures Needed:**
+1.  `boolean[] visited`: Tracks if a node has *ever* been visited.
+2.  `boolean[] inRecursion`: Tracks if a node is part of the *current, ongoing* DFS path.
+
+**The Golden Rule for Directed Cycle Detection (DFS):**
+While exploring neighbors of `U`:
+1.  If neighbor `V` is NOT `visited` -> Call DFS on `V`.
+2.  If neighbor `V` IS `visited` **AND** `V` is in `inRecursion` (`inRecursion[V] == true`) -> **Cycle Detected!**
+
+*Crucial Step:* When a DFS call for a node finishes (before returning false), you MUST unmark it from the recursion stack (`inRecursion[u] = false`).
+
+## Java Implementation
+
+```java
+import java.util.*;
+
+class DetectCycleDirectedDFS {
+    
+    // Helper function for DFS cycle detection in a Directed Graph
+    private boolean isCycleDFS(List<List<Integer>> adj, int u, boolean[] visited, boolean[] inRecursion) {
+        // Mark the node as visited overall and part of the current recursion stack
+        visited[u] = true;
+        inRecursion[u] = true;
+        
+        // Traverse all neighbors
+        for (int v : adj.get(u)) {
+            
+            // Condition 1: Neighbor is not visited
+            if (!visited[v]) {
+                if (isCycleDFS(adj, v, visited, inRecursion)) {
+                    return true;
+                }
+            }
+            // Condition 2: Neighbor IS visited AND is in the current recursion stack -> CYCLE!
+            else if (inRecursion[v]) {
+                return true;
+            }
+        }
+        
+        // As we backtrack out of the DFS, remove the node from the current recursion stack
+        inRecursion[u] = false;
+        return false;
+    }
+
+    // Main function to detect a cycle in a directed graph
+    public boolean isCyclic(int V, List<List<Integer>> adj) {
+        boolean[] visited = new boolean[V];
+        boolean[] inRecursion = new boolean[V]; // Tracks the current path
+        
+        // Loop through all nodes to handle disconnected components
+        for (int i = 0; i < V; i++) {
+            if (!visited[i]) {
+                if (isCycleDFS(adj, i, visited, inRecursion)) {
+                    return true;
+                }
+            }
+        }
+        
+        return false;
+    }
+}
+```
+
+Complexity Analysis
+Time Complexity: O(V + E) where V is the number of vertices and E is the number of edges. Even with two boolean arrays, we only visit each node and edge exactly once.
+Space Complexity: O(V) required for the visited array, the inRecursion array, and the implicit recursion stack space.
+
+# Graph Concepts & Qns - 7: Topological Sort using DFS
+
+**Video Link:** [Graph Concepts & Qns - 7 (Microsoft, Accolite, Amazon, Flipkart) : Topological Sort using DFS](https://youtu.be/WbbYZRr4arw)  
+**Channel:** codestorywithMIK  
+
+## Overview
+This video introduces a very important and often intimidating concept: **Topological Sorting**. Despite its complex name, if you know DFS, you already know 90% of Topological Sort.
+
+## What is Topological Sorting?
+Topological sorting is a linear ordering of vertices such that for every directed edge `U -> V`, vertex `U` comes before vertex `V` in the ordering.
+*   **Real-world Analogy:** Think of course prerequisites. If Course A (`U`) is a prerequisite for Course B (`V`), you MUST take Course A before Course B. The topological sort gives you a valid schedule to take all courses.
+*   **Crucial Condition:** Topological sorting is ONLY possible on **Directed Acyclic Graphs (DAG)**. 
+    *   *Why Directed?* Undirected edges don't have a concept of "before" or "after".
+    *   *Why Acyclic?* If there's a cycle (`A -> B -> A`), `A` must come before `B`, but `B` must also come before `A`. This is a contradiction, making sorting impossible.
+
+*Note: A single DAG can have multiple valid topological sorts.*
+
+## Core Concept: Topological Sort using DFS
+To achieve this ordering, we will use DFS combined with a **Stack**. 
+Let's personify a node `U`. 
+Node `U` says: *"Before I can be added to the final sorted result, all the nodes I point to (my dependencies/children) must be fully processed and added first."*
+
+**The Strategy:**
+1. Run a standard DFS.
+2. When you visit a node `U`, mark it as visited.
+3. Call DFS on all unvisited neighbors of `U`.
+4. **The Magic Step:** ONLY when the DFS loop for `U` finishes (meaning all its neighbors and paths originating from `U` have been fully explored), you push `U` onto a **Stack**.
+
+Because `U` is pushed onto the stack *after* all its children, `U` will sit *on top* of its children in the stack. When you finally pop elements from the stack to create the result array, `U` will naturally come before its children!
+
+## Java Implementation
+
+```java
+import java.util.*;
+
+class TopologicalSortDFS {
+    
+    // Helper function for DFS
+    private void dfs(List<List<Integer>> adj, int u, boolean[] visited, Stack<Integer> stack) {
+        // Mark the current node as visited
+        visited[u] = true;
+        
+        // Visit all children/neighbors first
+        for (int v : adj.get(u)) {
+            if (!visited[v]) {
+                dfs(adj, v, visited, stack);
+            }
+        }
+        
+        // ALL children have been processed. 
+        // Now it is safe to push the current node to the stack.
+        stack.push(u);
+    }
+
+    // Main function to return topological sort
+    public int[] topoSort(int V, List<List<Integer>> adj) {
+        boolean[] visited = new boolean[V];
+        Stack<Integer> stack = new Stack<>();
+        
+        // Loop through all nodes to handle disconnected components
+        for (int i = 0; i < V; i++) {
+            if (!visited[i]) {
+                dfs(adj, i, visited, stack);
+            }
+        }
+        
+        // Pop elements from the stack to build the final sorted array
+        int[] result = new int[V];
+        int index = 0;
+        while (!stack.isEmpty()) {
+            result[index++] = stack.pop();
+        }
+        
+        return result;
+    }
+}
+```
+
+Complexity Analysis
+Time Complexity: O(V + E). We simply perform a standard DFS, visiting every vertex and edge exactly once. Pushing to and popping from the stack takes O(1) time.
+Space Complexity: O(V). We use extra space for the visited array, the Stack, and the recursion call stack space
+
+
+
+
 

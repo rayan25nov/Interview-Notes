@@ -1232,5 +1232,536 @@ class CourseScheduleIIDFS {
     }
 }
 
+```
+# Graph Concepts & Qns - 16: Is Graph Bipartite? (DFS)
+
+**Video Link:** [Is Graph Bipartite ? | DFS | Graph Concepts & Qns - 16](https://youtu.be/NeU-C1PTWB8)  
+**Channel:** codestorywithMIK  
+**Practice Link:** [Is Graph Bipartite? on LeetCode](https://leetcode.com/problems/is-graph-bipartite/)
+
+## Overview
+This video introduces the concept of a **Bipartite Graph** and teaches how to determine whether a given graph is bipartite using **Depth-First Search (DFS)**. *(A subsequent video will cover the BFS approach).*
+
+## What is a Bipartite Graph?
+A graph is bipartite if it is possible to divide its vertices into **two independent sets (groups)** such that every edge connects a vertex in set 1 to a vertex in set 2. 
+*   **Alternative Definition (Coloring Rule):** A graph is bipartite if you can color its nodes using **at most 2 different colors** such that no two adjacent connected nodes share the exact same color.
+
+### Important Properties:
+1.  **Even Cycles vs. Odd Cycles:** 
+    *   If a graph contains a cycle of **odd length** (e.g., triangle of 3 nodes), it can **never** be bipartite. 
+    *   If a graph contains a cycle of **even length**, or no cycles at all (like trees or linear graphs), it is always bipartite.
+2.  **Disconnected Graphs:** Just like previous graph problems, a bipartite check must handle disconnected components by looping through all unvisited nodes.
+
+## Core Concept: Two-Coloring using DFS
+To check if a graph is bipartite, we attempt to color every node using two colors (e.g., `0` for Green and `1` for Red).
+
+**The Strategy:**
+1. Maintain a `color` array of size `V` initialized to `-1` (meaning unvisited/uncolored).
+2. Loop through all nodes `0` to `V-1`. If a node is uncolored (`color[i] == -1`):
+    * Start a DFS from that node, assigning it an initial color (e.g., `1`).
+3. During DFS traversal from node `U`:
+    * Iterate through all neighbors `V` of `U`.
+    * If neighbor `V` is uncolored (`color[v] == -1`), assign it the *opposite* color of `U` (`1 - color[u]`) and recursively call DFS on `V`.
+    * If neighbor `V` is already colored AND its color is **equal** to `U`'s color (`color[v] == color[u]`), we have found a color conflict! The graph is **not bipartite** (return `false`).
+4. If all nodes are successfully colored without conflicts, return `true`.
+
+## Java Implementation
+
+```java
+import java.util.*;
+
+class IsBipartiteDFS {
+    
+    // Helper function for DFS-based coloring
+    private boolean checkBipartiteDFS(List<List<Integer>> adj, int curr, int currColor, int[] color) {
+        // Assign color to the current node
+        color[curr] = currColor;
+        
+        // Traverse all neighbors
+        for (int neighbor : adj.get(curr)) {
+            // If neighbor has the same color as current node -> Conflict! Not bipartite.
+            if (color[neighbor] == color[curr]) {
+                return false;
+            }
+            
+            // If neighbor is uncolored (-1), assign the opposite color and recurse
+            if (color[neighbor] == -1) {
+                int oppositeColor = 1 - currColor; // Flips between 0 and 1
+                if (!checkBipartiteDFS(adj, neighbor, oppositeColor, color)) {
+                    return false;
+                }
+            }
+        }
+        
+        return true;
+    }
+
+    // Main function
+    public boolean isBipartite(int[][] graph) {
+        int V = graph.length;
+        int[] color = new int[V];
+        Arrays.fill(color, -1); // -1 means uncolored
+        
+        // Convert array of arrays to Adjacency List for cleaner handling
+        List<List<Integer>> adj = new ArrayList<>();
+        for (int i = 0; i < V; i++) {
+            List<Integer> neighbors = new ArrayList<>();
+            for (int n : graph[i]) {
+                neighbors.add(n);
+            }
+            adj.add(neighbors);
+        }
+        
+        // Loop through all nodes to handle disconnected components
+        for (int i = 0; i < V; i++) {
+            if (color[i] == -1) {
+                // Start with color 1 (Red)
+                if (!checkBipartiteDFS(adj, i, 1, color)) {
+                    return false;
+                }
+            }
+        }
+        
+        return true;
+    }
+}
+```
+# Graph Concepts & Qns - 17: Is Graph Bipartite? (BFS)
+
+**Video Link:** [Is Graph Bipartite ? | BFS | Graph Concepts & Qns - 17](https://youtu.be/cvhXZt66VhA)  
+**Channel:** codestorywithMIK  
+**Practice Link:** [Is Graph Bipartite? on LeetCode](https://leetcode.com/problems/is-graph-bipartite/)
+
+## Overview
+Following up on the previous video (Video #16) where we checked if a graph is bipartite using Depth-First Search (DFS), this video demonstrates how to solve the exact same problem (LeetCode 785) using **Breadth-First Search (BFS)**.
+
+## Core Concept: Two-Coloring using BFS
+The underlying logic is identical to the DFS approach—we want to color the graph using two colors (e.g., `0` and `1`) such that no two adjacent nodes have the same color. Instead of recursion, we use a **Queue** to explore nodes level by level.
+
+**The Strategy:**
+1. Initialize a `color` array of size `V` with `-1` (uncolored).
+2. Loop through all nodes `0` to `V-1` to handle disconnected components.
+3. If a node is uncolored (`color[i] == -1`):
+    * Start a BFS from that node. Push it to the Queue and color it (e.g., `1`).
+4. While the Queue is not empty:
+    * Pop the current node `u`.
+    * For each neighbor `v` of `u`:
+        * If `color[v] == color[u]`, we found a conflict! Return `false` (not bipartite).
+        * If `color[v] == -1` (uncolored), assign it the opposite color (`1 - color[u]`) and push `v` to the Queue.
+5. If the queue empties without any conflicts, return `true`.
+
+## Java Implementation
+
+```java
+import java.util.*;
+
+class IsBipartiteBFS {
+    
+    // Helper function for BFS-based coloring
+    private boolean checkBipartiteBFS(int[][] graph, int startNode, int[] color) {
+        Queue<Integer> queue = new LinkedList<>();
+        
+        queue.add(startNode);
+        color[startNode] = 1; // Start with color 1 (Red)
+        
+        while (!queue.isEmpty()) {
+            int u = queue.poll();
+            
+            // Traverse all neighbors
+            for (int v : graph[u]) {
+                // If neighbor has the same color -> Conflict! Not bipartite.
+                if (color[v] == color[u]) {
+                    return false;
+                }
+                
+                // If neighbor is uncolored (-1), assign opposite color and push to queue
+                if (color[v] == -1) {
+                    color[v] = 1 - color[u]; // Flips between 0 and 1
+                    queue.add(v);
+                }
+            }
+        }
+        
+        return true;
+    }
+
+    // Main function
+    public boolean isBipartite(int[][] graph) {
+        int V = graph.length;
+        int[] color = new int[V];
+        Arrays.fill(color, -1); // -1 means uncolored
+        
+        // Loop through all nodes to handle disconnected components
+        for (int i = 0; i < V; i++) {
+            if (color[i] == -1) {
+                if (!checkBipartiteBFS(graph, i, color)) {
+                    return false;
+                }
+            }
+        }
+        
+        return true;
+    }
+}
+```
+# Graph Concepts & Qns - 18: Disjoint Set Union (DSU)
+
+**Video Link:** [Disjoint Set Union | DSU | Graph Concepts & Qns - 18 | Explanation+Coding](https://youtu.be/AsAdKHkITBQ)  
+**Channel:** codestorywithMIK  
+
+## Overview
+This video introduces a powerful and advanced graph data structure: **Disjoint Set Union (DSU)**, also commonly referred to as **Union-Find**. DSU is heavily tested in top companies like Netflix, Google, Amazon, and Meta. 
+
+Despite sounding intimidating, the implementation of DSU is surprisingly straightforward. 
+
+## What is a Disjoint Set?
+*   **Disjoint Sets:** A collection of sets where no element is shared between any two sets (their intersection is empty).
+*   **DSU Operations:** A DSU data structure primarily supports two operations:
+    1.  **`Find(x)`**: Determines which set a particular element `x` belongs to. It usually returns the "representative" or "leader" (parent) of that set.
+    2.  **`Union(x, y)`**: Joins/combines two separate sets containing elements `x` and `y` into a single unified set.
+
+## Core Concept: Union & Find Mechanics
+Imagine elements as people in different social groups. 
+*   Every group has a designated **Leader** (or **Parent**). 
+*   Initially, every element is in its own individual set, meaning every element is its own leader (`parent[i] = i`).
+*   **The `Find` Operation:** To find who leads a person `x`, we trace their parent links upwards until we reach an element whose parent is itself (the ultimate leader).
+*   **The `Union` Operation:** To merge the group containing `x` with the group containing `y`:
+    1. Find the leader of `x` (let's call it `rootX`).
+    2. Find the leader of `y` (let's call it `rootY`).
+    3. If they have different leaders, merge them by making one leader point to the other (e.g., `parent[rootX] = rootY`).
+
+## Naive Java Implementation (Without Optimization)
+
+```java
+import java.util.*;
+
+class DisjointSetNaive {
+    int[] parent;
+
+    // Constructor to initialize n elements, each as its own parent
+    public DisjointSetNaive(int n) {
+        parent = new int[n];
+        for (int i = 0; i < n; i++) {
+            parent[i] = i; // Every node is its own leader initially
+        }
+    }
+
+    // Find operation (Naive approach)
+    public int find(int i) {
+        // If the element is its own parent, it is the leader
+        if (parent[i] == i) {
+            return i;
+        }
+        // Otherwise, recursively find the leader of the parent
+        return find(parent[i]);
+    }
+
+    // Union operation (Naive approach)
+    public void union(int i, int j) {
+        int rootI = find(i);
+        int rootJ = find(j);
+        
+        // If they belong to different sets, merge them
+        if (rootI != rootJ) {
+            parent[rootI] = rootJ; // Make rootJ the parent of rootI
+        }
+    }
+}
+```
+# Graph Concepts & Qns - 19: Disjoint Set Union by Rank and Path Compression
+
+**Video Link:** [Disjoint Set Union By Rank and Path Compression | DSU | Graph Concepts & Qns -19| Explanation+Code](https://youtu.be/iH3XVIVzl7M)  
+**Channel:** codestorywithMIK  
+
+## Overview
+In the previous video, we learned the basic structure of Disjoint Set Union (DSU) using a naive approach. However, the naive approach can lead to skewed, linear trees, making the `find()` operation slow (`O(N)`). 
+
+This video introduces two powerful optimizations to make DSU nearly constant time (`O(1)`): **Path Compression** and **Union by Rank**.
+
+---
+
+## 1. Path Compression
+When you call `find(x)`, you traverse all the way up the tree to find the ultimate representative (leader). 
+*   **The Optimization:** As you backtrack from the leader during the recursive `find` call, you can directly attach every node along that path straight to the leader (`parent[node] = root`).
+*   **The Benefit:** The next time you search for any of those nodes, you can find the leader in `O(1)` time because the tree is flattened.
+
+### Optimized Find Implementation in Java
+```java
+public int find(int i, int[] parent) {
+    if (parent[i] == i) {
+        return i;
+    }
+    // Path Compression: point the node directly to the root during return
+    return parent[i] = find(parent[i], parent);
+}
+```
+
+# Graph Concepts & Qns - 19: Disjoint Set Union by Rank and Path Compression
+
+**Video Link:** https://youtu.be/iH3XVIVzl7M  
+**Channel:** codestorywithMIK
+
+---
+
+# Overview
+
+In the previous video, we looked at the basic implementation of the Disjoint Set Union (DSU) data structure using a naive approach. While functional, that implementation could produce tall and skewed trees, causing the `find()` operation to take **O(N)** time in the worst case.
+
+To optimize DSU, two important techniques are introduced:
+
+- **Path Compression**
+- **Union by Rank**
+
+When both optimizations are combined, the time complexity of DSU operations becomes almost constant.
+
+---
+
+# 1. Path Compression
+
+Whenever we call `find(x)`, we move upward in the tree until we reach the ultimate parent (leader) of the set.
+
+Instead of simply returning the leader, we update the parent of every node encountered during recursion so that it directly points to the root.
+
+This process is called **Path Compression**.
+
+### Benefits
+
+- Flattens the tree.
+- Future `find()` operations become much faster.
+- Greatly reduces the height of the tree over time.
+
+### Java Implementation
+
+```java
+public int find(int i, int[] parent) {
+    if (parent[i] == i) {
+        return i;
+    }
+
+    // Path Compression
+    return parent[i] = find(parent[i], parent);
+}
+```
+
+---
+
+# 2. Union by Rank
+
+While Path Compression optimizes searching, **Union by Rank** optimizes merging.
+
+Each tree maintains a **rank**, which approximately represents its depth.
+
+When performing a union:
+
+1. Find the leaders of both sets.
+2. Attach the tree having smaller rank below the tree having larger rank.
+3. If both trees have equal rank:
+   - Attach either tree under the other.
+   - Increase the rank of the new root by 1.
+
+### Benefits
+
+- Prevents trees from becoming tall.
+- Keeps tree height as small as possible.
+- Makes future operations efficient.
+
+### Java Implementation
+
+```java
+public void unionByRank(int i, int j, int[] parent, int[] rank) {
+
+    int rootI = find(i, parent);
+    int rootJ = find(j, parent);
+
+    if (rootI == rootJ)
+        return;
+
+    if (rank[rootI] < rank[rootJ]) {
+        parent[rootI] = rootJ;
+    } else if (rank[rootI] > rank[rootJ]) {
+        parent[rootJ] = rootI;
+    } else {
+        parent[rootI] = rootJ;
+        rank[rootJ]++;
+    }
+}
+```
+
+---
+
+# Complete DSU Class (Path Compression + Union by Rank)
+
+```java
+class DisjointSet {
+
+    int[] parent;
+    int[] rank;
+
+    public DisjointSet(int n) {
+
+        parent = new int[n];
+        rank = new int[n];
+
+        for (int i = 0; i < n; i++) {
+            parent[i] = i;
+            rank[i] = 0;
+        }
+    }
+
+    public int find(int i) {
+
+        if (parent[i] == i) {
+            return i;
+        }
+
+        return parent[i] = find(parent[i]);
+    }
+
+    public void unionByRank(int i, int j) {
+
+        int rootI = find(i);
+        int rootJ = find(j);
+
+        if (rootI == rootJ)
+            return;
+
+        if (rank[rootI] < rank[rootJ]) {
+            parent[rootI] = rootJ;
+        } else if (rank[rootI] > rank[rootJ]) {
+            parent[rootJ] = rootI;
+        } else {
+            parent[rootI] = rootJ;
+            rank[rootJ]++;
+        }
+    }
+}
+```
+
+---
+
+# Complexity Analysis
+
+### Time Complexity
+
+- **Find:** `O(α(N))`
+- **Union:** `O(α(N))`
+
+where **α(N)** is the **Inverse Ackermann Function**.
+
+Since `α(N) ≤ 4` for every practical value of `N`, both operations are considered **almost O(1)** (constant time).
+
+### Space Complexity
+
+- **O(N)**
+
+Used for storing:
+
+- `parent[]`
+- `rank[]`
+
+---
+
+# Key Takeaways
+
+- **Path Compression** flattens the tree during every `find()` operation.
+- **Union by Rank** always attaches the shorter tree under the taller tree.
+- Together, these optimizations make DSU one of the fastest data structures for handling connectivity problems.
+- DSU with Path Compression and Union by Rank is widely used in graph algorithms like **Kruskal's Algorithm**, **Connected Components**, and **Dynamic Connectivity**.
+
+# Graph Concepts & Qns - 20: Detect Cycle using DSU (Disjoint Set Union)
+
+**Video Link:** [Detect Cycle using DSU - (Google, Microsoft) | Graph Concepts & Qns - 20](https://youtu.be/0X0lEtTkk-8)  
+**Channel:** codestorywithMIK  
+**Practice Link:** [Detect Cycle using DSU on GeeksforGeeks](https://www.geeksforgeeks.org/problems/detect-cycle-using-dsu/1)
+
+## Overview
+Now that we have learned how to implement **Disjoint Set Union (DSU)** with Path Compression and Union by Rank (Videos #18 and #19), we can apply it to solve graph problems. This video demonstrates how to detect a cycle in an **Undirected Graph** using DSU. This is a classic interview question asked by companies like Google and Microsoft.
+
+## Core Concept: Cycle Detection using DSU
+The intuition behind using DSU to detect a cycle is based on the idea of sets:
+1.  Initially, every vertex in the graph belongs to its own separate, individual set (its own leader/parent).
+2.  We iterate through all the edges `(u, v)` of the graph.
+3.  For each edge `(u, v)`:
+    *   Find the ultimate leader of `u` (`rootU = find(u)`).
+    *   Find the ultimate leader of `v` (`rootV = find(v)`).
+    *   **The Check:** If `rootU == rootV`, it means both vertices already belong to the exact same set. If they are already connected in the same component and you find *another* edge between them, adding this edge forms a **Cycle!** (Return `true`).
+    *   If `rootU != rootV`, they belong to different sets. We perform a `union(u, v)` to merge their sets.
+4.  If we successfully process all edges without finding any matching roots, there is no cycle (Return `false`).
+
+*Note on Undirected Edges:* To avoid processing the same edge twice (e.g., `u -> v` and `v -> u`), we can add a simple condition like `if (u < v)` or process each undirected edge once.
+
+## Java Implementation
+
+```java
+import java.util.*;
+
+class DetectCycleDSU {
+    
+    // DSU Data Structure Class with Path Compression and Union by Rank
+    static class DisjointSet {
+        int[] parent;
+        int[] rank;
+
+        public DisjointSet(int n) {
+            parent = new int[n];
+            rank = new int[n];
+            for (int i = 0; i < n; i++) {
+                parent[i] = i;
+                rank[i] = 0;
+            }
+        }
+
+        public int find(int i) {
+            if (parent[i] == i) {
+                return i;
+            }
+            return parent[i] = find(parent[i]); // Path compression
+        }
+
+        public void unionByRank(int i, int j) {
+            int rootI = find(i);
+            int rootJ = find(j);
+            
+            if (rootI == rootJ) return;
+            
+            if (rank[rootI] < rank[rootJ]) {
+                parent[rootI] = rootJ;
+            } else if (rank[rootI] > rank[rootJ]) {
+                parent[rootJ] = rootI;
+            } else {
+                parent[rootI] = rootJ;
+                rank[rootJ]++;
+            }
+        }
+    }
+
+    // Function to detect cycle in an undirected graph using DSU
+    public boolean detectCycle(int V, ArrayList<ArrayList<Integer>> adj) {
+        DisjointSet ds = new DisjointSet(V);
+        
+        // Iterate through all vertices and their adjacency lists
+        for (int u = 0; u < V; u++) {
+            for (int v : adj.get(u)) {
+                // To process each undirected edge only once, we can restrict to u < v
+                if (u < v) {
+                    int rootU = ds.find(u);
+                    int rootV = ds.find(v);
+                    
+                    // If both nodes share the same root, a cycle is detected!
+                    if (rootU == rootV) {
+                        return true;
+                    }
+                    
+                    // Otherwise, union the two sets
+                    ds.unionByRank(u, v);
+                }
+            }
+        }
+        
+        return false; // No cycle found
+    }
+}
+```
+
 
 

@@ -774,4 +774,463 @@ Complexity Analysis
 Time Complexity: O(N^2) where N is the number of cities. We iterate through the N x N matrix. Even though we have nested loops and DFS, we check each matrix cell exactly once.
 Space Complexity: O(N) for the visited array and the implicit DFS recursion stack, which can go N levels deep in the worst case (a single straight-line connected graph).
 
+# Graph Concepts & Qns - 11: Number of Provinces (BFS)
+
+**Video Link:** [Number of Provinces - (Google, Microsoft,Amazon) | BFS | Graph Concepts & Qns - 11](https://youtu.be/YDMkSvNdB20)  
+**Channel:** codestorywithMIK  
+
+## Overview
+Following up on the previous video (Video #10) where we solved the "Number of Provinces" (LeetCode 547) problem using Depth-First Search (DFS), this video demonstrates how to solve the exact same problem using **Breadth-First Search (BFS)**. 
+
+The core logic remains completely unchanged: we are still just counting the number of disconnected components in the graph. The only difference is the traversal algorithm used to mark a province as `visited`.
+
+## Core Concept: BFS Traversal for Components
+Instead of recursively diving deep into the graph (DFS), we will use a **Queue** to explore the graph level-by-level (BFS). 
+
+**The Strategy:**
+1. Keep a `visited` array and a `count` variable.
+2. Loop through every city `i` from `0` to `N-1`.
+3. If city `i` is NOT `visited`:
+    * Increment the `count` (we found a new province).
+    * Launch a **BFS** starting from city `i`.
+    * Push `i` to the Queue and mark it `visited`.
+    * While the Queue is not empty, pop a city `U` and check all its potential neighbors `V`.
+    * If `U` is connected to `V` and `V` is NOT `visited`, mark `V` as `visited` and push it to the Queue.
+4. Return `count`.
+
+## Java Implementation
+
+Just like the optimized DFS approach, we can run the BFS directly on the given `isConnected` Adjacency Matrix without explicitly building an Adjacency List.
+
+```java
+import java.util.*;
+
+class NumberOfProvincesBFS {
+    
+    // Helper function to perform BFS directly on the adjacency matrix
+    private void bfs(int[][] isConnected, int startNode, boolean[] visited) {
+        Queue<Integer> queue = new LinkedList<>();
+        
+        // Push the starting node into the queue and mark as visited
+        queue.add(startNode);
+        visited[startNode] = true;
+        
+        while (!queue.isEmpty()) {
+            int u = queue.poll();
+            
+            // Check all potential neighbors (columns in the matrix for row 'u')
+            for (int v = 0; v < isConnected.length; v++) {
+                // If there is a connection AND the neighbor is not visited
+                if (isConnected[u][v] == 1 && !visited[v]) {
+                    visited[v] = true; // Mark visited immediately before pushing
+                    queue.add(v);
+                }
+            }
+        }
+    }
+
+    // Main function to count the number of provinces
+    public int findCircleNum(int[][] isConnected) {
+        int n = isConnected.length;
+        boolean[] visited = new boolean[n];
+        int count = 0;
+        
+        // Loop through all cities
+        for (int i = 0; i < n; i++) {
+            // If the city is not visited, a new province is found
+            if (!visited[i]) {
+                count++;
+                // Start BFS to traverse and mark the entire province
+                bfs(isConnected, i, visited);
+            }
+        }
+        
+        return count;
+    }
+}
+```
+
+Complexity Analysis
+Time Complexity: O(N^2) where N is the number of cities. We iterate through the outer loop, and the BFS explores the adjacency matrix checking every cell [u][v] once.
+Space Complexity: O(N) for the visited array and the Queue, which can hold at most N elements in the worst case.
+
+
+# Graph Concepts & Qns - 12: Course Schedule (Leetcode 207)
+
+**Video Link:** [Course Schedule | Apple | Microsoft | Amazon | BFS | Graph Concepts & Qns - 12 | Leetcode 207](https://youtu.be/lqjlGGMjSMU)  
+**Channel:** codestorywithMIK  
+
+## Overview
+This video applies our Graph knowledge to solve a highly popular interview question asked by Apple, Microsoft, Amazon, and Meta: **Course Schedule (LeetCode 207)**. 
+
+The problem asks a simple question: Given a list of courses and their prerequisites, is it possible for you to finish all the courses?
+
+## Problem Breakdown
+**The Story:** You have `N` courses, labeled `0` to `N-1`. You are given an array `prerequisites` where `prerequisites[i] = [a, b]` indicates that you **must take course `b` first if you want to take course `a`**.
+
+**Graph Interpretation:**
+*   This represents a **Directed Graph**.
+*   A prerequisite `[a, b]` means the flow goes from `b` to `a` (i.e., `b -> a`). You must complete `b` before moving to `a`.
+*   *Can we finish all courses?* 
+    *   If there is a cycle (e.g., `Course 0` requires `Course 1`, and `Course 1` requires `Course 0`), we are stuck in a deadlock and can **never** finish.
+    *   If there is NO cycle, we can arrange the courses in a valid order and finish them.
+*   Therefore, the problem simply reduces to: **Detect if a cycle exists in a Directed Graph.**
+
+## Core Concept: Applying Kahn's Algorithm
+Since we need to detect a cycle in a Directed Graph, we can directly apply **Topological Sorting using BFS (Kahn's Algorithm)**, exactly as we learned in previous videos.
+
+**The Strategy:**
+1.  **Build the Graph & In-Degrees:** Iterate through the `prerequisites` array. For each pair `[a, b]`, add a directed edge `b -> a` in your Adjacency List, and increment the `inDegree` of `a`.
+2.  **Initialize BFS Queue:** Find all courses with an `inDegree` of `0` (meaning they have no prerequisites) and push them to the Queue.
+3.  **Process and Count:**
+    *   Pop a course from the queue.
+    *   Increment a `count` variable (tracking how many courses we successfully complete).
+    *   For all dependent courses (neighbors), decrement their `inDegree`.
+    *   If any neighbor's `inDegree` becomes `0`, push it to the Queue.
+4.  **Final Check:** If the total `count` of processed courses equals `N` (total courses), return `true` (no cycle, all courses completed). Otherwise, return `false` (cycle detected).
+
+## Java Implementation
+
+```java
+import java.util.*;
+
+class CourseSchedule {
+    public boolean canFinish(int numCourses, int[][] prerequisites) {
+        List<List<Integer>> adj = new ArrayList<>();
+        int[] inDegree = new int[numCourses];
+        
+        // Initialize Adjacency List
+        for (int i = 0; i < numCourses; i++) {
+            adj.add(new ArrayList<>());
+        }
+        
+        // Step 1: Build the Graph and Calculate In-Degrees
+        // pair is [a, b] meaning b -> a
+        for (int[] pair : prerequisites) {
+            int a = pair[0];
+            int b = pair[1];
+            adj.get(b).add(a); // Edge from b to a
+            inDegree[a]++;     // a depends on b, so increase a's in-degree
+        }
+        
+        // Step 2: Initialize Queue with 0 in-degree nodes
+        Queue<Integer> queue = new LinkedList<>();
+        for (int i = 0; i < numCourses; i++) {
+            if (inDegree[i] == 0) {
+                queue.add(i);
+            }
+        }
+        
+        // Step 3: Standard BFS (Kahn's Algorithm)
+        int count = 0;
+        
+        while (!queue.isEmpty()) {
+            int curr = queue.poll();
+            count++; // We successfully took this course
+            
+            // Resolve dependencies for neighbors
+            for (int neighbor : adj.get(curr)) {
+                inDegree[neighbor]--;
+                
+                // If neighbor has no more prerequisites, we can take it
+                if (inDegree[neighbor] == 0) {
+                    queue.add(neighbor);
+                }
+            }
+        }
+        
+        // Step 4: Check if we were able to take all courses
+        return count == numCourses;
+    }
+}
+```
+Complexity Analysis
+Time Complexity: O(V + E). V is the number of courses (numCourses) and E is the number of prerequisite dependencies. Building the graph and running BFS both take linear time relative to vertices and edges.
+Space Complexity: O(V + E) to store the Adjacency List adj, plus O(V) for the inDegree array and the Queue.
+
+# Graph Concepts & Qns - 13: Course Schedule II (Leetcode 210)
+
+**Video Link:** [Course Schedule-II | Apple | Microsoft | Amazon | BFS | Graph Concepts & Qns - 13 | Leetcode 210](https://youtu.be/W1WhSN9wAw0)  
+**Channel:** codestorywithMIK  
+**Practice Link:** [Course Schedule II on LeetCode](https://leetcode.com/problems/course-schedule-ii/)
+
+## Overview
+Following up on "Course Schedule I", this video covers **Course Schedule II (LeetCode 210)**. This problem is heavily tested by companies like Apple, Microsoft, Amazon, and Meta. 
+
+In "Course Schedule I", you only had to return `true` or `false` based on whether it was *possible* to finish all courses (i.e., detecting a cycle). 
+In "Course Schedule II", you are asked to go one step further: **Return the exact order in which you should take the courses.** If it is impossible, return an empty array.
+
+## Problem Breakdown
+Because the problem explicitly asks for an ordering of items based on their dependencies, it is asking you to return the **Topological Sort** of the graph.
+
+**The Strategy:**
+We will use **Kahn's Algorithm (Topological Sort using BFS)**. The logic remains 99% identical to the previous video.
+1. Build the Adjacency List and compute the `inDegree` for each course.
+2. Push all courses with an `inDegree` of `0` into the Queue and into our `result` array.
+3. Keep track of a `count` to see how many courses we process.
+4. Process the Queue: 
+    * Pop a node `U`.
+    * For each neighbor `V`, decrement its `inDegree`.
+    * If `inDegree` of `V` becomes `0`, push `V` to the Queue, push `V` to the `result` array, and increment `count`.
+5. Finally, check if `count == numCourses`. 
+    * If yes, return the `result` array (you successfully ordered all courses).
+    * If no, it means there was a cycle, so return an empty array `[]`.
+
+## Java Implementation
+
+```java
+import java.util.*;
+
+class CourseScheduleII {
+    public int[] findOrder(int numCourses, int[][] prerequisites) {
+        List<List<Integer>> adj = new ArrayList<>();
+        int[] inDegree = new int[numCourses];
+        
+        // Initialize Adjacency List
+        for (int i = 0; i < numCourses; i++) {
+            adj.add(new ArrayList<>());
+        }
+        
+        // Step 1: Build Graph and calculate in-degrees
+        // prerequisites[i] = [a, b] means you must take 'b' before 'a'. Edge: b -> a
+        for (int[] pair : prerequisites) {
+            int a = pair[0];
+            int b = pair[1];
+            adj.get(b).add(a);
+            inDegree[a]++;
+        }
+        
+        // Step 2: Initialize Queue and result array
+        Queue<Integer> queue = new LinkedList<>();
+        int[] result = new int[numCourses];
+        int count = 0; // Keep track of how many courses we have successfully taken
+        
+        // Add all courses with 0 prerequisites to the queue
+        for (int i = 0; i < numCourses; i++) {
+            if (inDegree[i] == 0) {
+                queue.add(i);
+                result[count++] = i;
+            }
+        }
+        
+        // Step 3: Standard BFS (Kahn's Algorithm)
+        while (!queue.isEmpty()) {
+            int u = queue.poll();
+            
+            // Go through all dependent courses
+            for (int v : adj.get(u)) {
+                inDegree[v]--; // Requirement 'u' is fulfilled for 'v'
+                
+                // If 'v' has no more prerequisites, we can take it
+                if (inDegree[v] == 0) {
+                    queue.add(v);
+                    result[count++] = v; 
+                }
+            }
+        }
+        
+        // Step 4: If we processed all courses, return the valid order
+        if (count == numCourses) {
+            return result;
+        } 
+        // Else, there was a cycle, return an empty array
+        else {
+            return new int[0];
+        }
+    }
+}
+```
+
+Complexity Analysis
+Time Complexity: O(V + E) where V is the total number of courses and E is the total number of prerequisite pairs.
+Space Complexity: O(V + E) for the Adjacency List, plus O(V) for the inDegree array, queue, and result array.
+
+# Graph Concepts & Qns - 14: Course Schedule (DFS)
+
+**Video Link:** [Course Schedule | Apple | Microsoft | Amazon | DFS | Graph Concepts & Qns - 14 | Leetcode 207](https://youtu.be/X1TIkW4C254)  
+**Channel:** codestorywithMIK  
+**Practice Link:** [Course Schedule on LeetCode](https://leetcode.com/problems/course-schedule/)
+
+## Overview
+Earlier in the series (Video #12), we solved **Course Schedule (LeetCode 207)** using BFS (Kahn's Algorithm). In this video, we revisit the exact same problem to solve it using **Depth-First Search (DFS)**. 
+
+Just like before, the problem asks whether we can finish all courses given their prerequisites. 
+*   **Graph Interpretation:** A dependency `[a, b]` means `b -> a`.
+*   **The Goal:** Detect if there is a cycle in this directed graph. If there is a cycle, we cannot finish all courses (`false`). If there is no cycle, we can (`true`).
+
+## Core Concept: Cycle Detection in a Directed Graph using DFS
+To detect a cycle in a directed graph using DFS, a standard `visited` array is not enough. We must also track the **current recursion stack** using an `inRecursion` array (or path visited array).
+*   `visited[u]`: Tracks if a node has ever been visited across all DFS traversals.
+*   `inRecursion[u]`: Tracks if a node is currently part of the active DFS branch we are exploring. 
+*   If during our DFS we encounter a neighbor `v` that is *already visited* AND is currently *in our recursion stack*, we have found a cycle!
+
+## Java Implementation
+
+```java
+import java.util.*;
+
+class CourseScheduleDFS {
+    
+    // Helper function to detect cycle using DFS
+    private boolean isCyclicDFS(List<List<Integer>> adj, int u, boolean[] visited, boolean[] inRecursion) {
+        visited[u] = true;
+        inRecursion[u] = true;
+        
+        // Traverse all neighbors
+        for (int v : adj.get(u)) {
+            // If the neighbor is not visited, recurse down
+            if (!visited[v]) {
+                if (isCyclicDFS(adj, v, visited, inRecursion)) {
+                    return true;
+                }
+            } 
+            // If the neighbor is visited AND is in the current recursion path -> Cycle!
+            else if (inRecursion[v]) {
+                return true;
+            }
+        }
+        
+        // Backtrack: remove node from current recursion stack before returning
+        inRecursion[u] = false;
+        return false;
+    }
+
+    // Main function
+    public boolean canFinish(int numCourses, int[][] prerequisites) {
+        List<List<Integer>> adj = new ArrayList<>();
+        for (int i = 0; i < numCourses; i++) {
+            adj.add(new ArrayList<>());
+        }
+        
+        // Step 1: Build the Directed Graph. pair is [a, b] -> edge is b -> a
+        for (int[] pair : prerequisites) {
+            int a = pair[0];
+            int b = pair[1];
+            adj.get(b).add(a);
+        }
+        
+        boolean[] visited = new boolean[numCourses];
+        boolean[] inRecursion = new boolean[numCourses];
+        
+        // Step 2: Check for cycles across all components
+        for (int i = 0; i < numCourses; i++) {
+            if (!visited[i]) {
+                if (isCyclicDFS(adj, i, visited, inRecursion)) {
+                    return false; // Cycle found -> cannot finish courses
+                }
+            }
+        }
+        
+        return true; // No cycle found -> can finish all courses
+    }
+}
+```
+# Graph Concepts & Qns - 15: Course Schedule II (DFS)
+
+**Video Link:** [Course Schedule-II | Apple | Microsoft | Amazon | DFS | Graph Concepts & Qns - 15 | Leetcode 210](https://youtu.be/yiR95dxinjs)  
+**Channel:** codestorywithMIK  
+**Practice Link:** [Course Schedule II on LeetCode](https://leetcode.com/problems/course-schedule-ii/)
+
+## Overview
+In the previous video, we solved **Course Schedule II (LeetCode 210)** using BFS (Kahn's Algorithm). This video completes the circle by showing how to solve the exact same problem using **Depth-First Search (DFS)**. 
+
+To solve this with DFS, we need to combine two concepts we learned previously:
+1.  **Topological Sorting using DFS (Video #7):** Using a Stack to ensure a parent node is added *after* all its children are fully processed.
+2.  **Directed Graph Cycle Detection using DFS (Video #14):** Using an `inRecursion` (or current path) array to detect if we encounter a back-edge indicating a cycle.
+
+## Core Concept: Combining Topological Sort & Cycle Detection
+The problem requires returning a valid course order (Topological Sort). However, if there is a cycle, no valid order exists, and we must return an empty array.
+
+Therefore, our DFS must do two things simultaneously:
+*   Push nodes to a `Stack` when their DFS branches finish (for Topo Sort).
+*   Check `inRecursion` for neighbors to catch cycles. If a cycle is detected, we trigger a global flag `hasCycle`.
+
+**The Strategy:**
+1. Build the Adjacency List.
+2. Maintain `visited`, `inRecursion`, and a global (or passed-by-reference) `hasCycle` flag.
+3. For each unvisited node, run `DFS`.
+4. Inside `DFS(u)`:
+    * Mark `u` as `visited` and `inRecursion[u] = true`.
+    * For each neighbor `v`:
+        * If `v` is NOT `visited`, call `DFS(v)`.
+        * If `v` IS `visited` AND `inRecursion[v] == true`, mark `hasCycle = true` and return.
+    * Backtrack: `inRecursion[u] = false`.
+    * **Topo Sort Step:** Push `u` to the `Stack`.
+5. After checking all components, check `hasCycle`.
+    * If `true`, return `[]`.
+    * If `false`, pop all elements from the `Stack` into a result array and return it.
+
+## Java Implementation
+
+```java
+import java.util.*;
+
+class CourseScheduleIIDFS {
+    
+    private boolean hasCycle; // Global flag to track cycles
+    
+    private void dfs(List<List<Integer>> adj, int u, boolean[] visited, boolean[] inRecursion, Stack<Integer> stack) {
+        visited[u] = true;
+        inRecursion[u] = true; // Add to current path
+        
+        for (int v : adj.get(u)) {
+            if (!visited[v]) {
+                dfs(adj, v, visited, inRecursion, stack);
+            } 
+            // Cycle detected!
+            else if (inRecursion[v]) {
+                hasCycle = true;
+                return;
+            }
+        }
+        
+        // Backtrack
+        inRecursion[u] = false; 
+        
+        // Push to stack after all neighbors are processed
+        stack.push(u); 
+    }
+
+    public int[] findOrder(int numCourses, int[][] prerequisites) {
+        List<List<Integer>> adj = new ArrayList<>();
+        for (int i = 0; i < numCourses; i++) {
+            adj.add(new ArrayList<>());
+        }
+        
+        // Build graph: prerequisites[i] = [a, b] means b -> a
+        for (int[] pair : prerequisites) {
+            int a = pair[0];
+            int b = pair[1];
+            adj.get(b).add(a);
+        }
+        
+        boolean[] visited = new boolean[numCourses];
+        boolean[] inRecursion = new boolean[numCourses];
+        Stack<Integer> stack = new Stack<>();
+        hasCycle = false;
+        
+        // Run DFS on all unvisited nodes
+        for (int i = 0; i < numCourses; i++) {
+            if (!visited[i] && !hasCycle) {
+                dfs(adj, i, visited, inRecursion, stack);
+            }
+        }
+        
+        // If a cycle was detected, return an empty array
+        if (hasCycle) {
+            return new int[0];
+        }
+        
+        // Otherwise, pop elements from stack to get the topological order
+        int[] result = new int[numCourses];
+        int index = 0;
+        while (!stack.isEmpty()) {
+            result[index++] = stack.pop();
+        }
+        
+        return result;
+    }
+}
+
+
 

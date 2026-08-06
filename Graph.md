@@ -1468,33 +1468,6 @@ class DisjointSetNaive {
     }
 }
 ```
-# Graph Concepts & Qns - 19: Disjoint Set Union by Rank and Path Compression
-
-**Video Link:** [Disjoint Set Union By Rank and Path Compression | DSU | Graph Concepts & Qns -19| Explanation+Code](https://youtu.be/iH3XVIVzl7M)  
-**Channel:** codestorywithMIK  
-
-## Overview
-In the previous video, we learned the basic structure of Disjoint Set Union (DSU) using a naive approach. However, the naive approach can lead to skewed, linear trees, making the `find()` operation slow (`O(N)`). 
-
-This video introduces two powerful optimizations to make DSU nearly constant time (`O(1)`): **Path Compression** and **Union by Rank**.
-
----
-
-## 1. Path Compression
-When you call `find(x)`, you traverse all the way up the tree to find the ultimate representative (leader). 
-*   **The Optimization:** As you backtrack from the leader during the recursive `find` call, you can directly attach every node along that path straight to the leader (`parent[node] = root`).
-*   **The Benefit:** The next time you search for any of those nodes, you can find the leader in `O(1)` time because the tree is flattened.
-
-### Optimized Find Implementation in Java
-```java
-public int find(int i, int[] parent) {
-    if (parent[i] == i) {
-        return i;
-    }
-    // Path Compression: point the node directly to the root during return
-    return parent[i] = find(parent[i], parent);
-}
-```
 
 # Graph Concepts & Qns - 19: Disjoint Set Union by Rank and Path Compression
 
@@ -1762,6 +1735,502 @@ class DetectCycleDSU {
     }
 }
 ```
+# Graph Concepts & Qns - 21: Satisfiability of Equality Equations (Google)
 
+**Video Link:** [Satisfiability of Equality Equations - (GOOGLE) | Graph Concepts & Qns - 21 | Explanation+Coding](https://youtu.be/0Z8lt7U_kiE)  
+**Channel:** codestorywithMIK  
+**Practice Link:** [Satisfiability of Equality Equations on LeetCode](https://leetcode.com/problems/satisfiability-of-equality-equations/)
 
+## Overview
+This video solves a classic Google interview question: **Satisfiability of Equality Equations (LeetCode 990)** using **Disjoint Set Union (DSU)**.
 
+## Problem Breakdown
+**The Story:** You are given an array of strings representing equations, where each equation is of the form `"a==b"` or `"a!=b"`. Each string has a length of 4, where index 0 is a variable, indices 1 and 2 are `"=="` or `"!="`, and index 3 is another variable.
+You need to return `true` if it is possible to satisfy all given equations simultaneously, or `false` otherwise.
+
+*   **Example:** `["a==b", "b!=a"]` -> Returns `false` because `a` cannot equal `b` and simultaneously not equal `a`.
+
+## Core Concept: Using DSU for Equivalence Relations
+Variables that are equal (`==`) belong to the same group/set. Variables that are not equal (`!=`) must belong to different groups.
+This forms a classic **Equivalence Relation** problem, which can be efficiently solved using DSU:
+
+**The Strategy:**
+1.  **Phase 1 (Process Equality Equations):** 
+    *   Iterate through all equations. First, process **only** the `==` equations.
+    *   For every equation `"a==b"`, perform a `union(a, b)` to merge variables `a` and `b` into the same set.
+2.  **Phase 2 (Check Inequality Equations):**
+    *   Iterate through the equations a second time, processing **only** the `!=` equations.
+    *   For every equation `"a!=b"`, find their ultimate parents using `find(a)` and `find(b)`.
+    *   **The Check:** If `find(a) == find(b)`, it means `a` and `b` belong to the same set (they are equal according to DSU), but the equation explicitly states they are *not* equal (`!=`). This is a contradiction! Return `false`.
+3.  If all inequality checks pass without any contradictions, return `true`.
+
+*Note on Characters:* Since variables are lowercase English letters (`'a'` to `'z'`), we can map them to indices `0` to `25` by subtracting `'a'` (e.g., `s.charAt(0) - 'a'`).
+
+## Java Implementation
+
+```java
+import java.util.*;
+
+class SatisfiabilityOfEqualityEquations {
+    
+    // DSU Class with Path Compression and Union by Rank
+    static class DisjointSet {
+        int[] parent;
+        int[] rank;
+
+        public DisjointSet(int n) {
+            parent = new int[n];
+            rank = new int[n];
+            for (int i = 0; i < n; i++) {
+                parent[i] = i;
+                rank[i] = 0;
+            }
+        }
+
+        public int find(int i) {
+            if (parent[i] == i) {
+                return i;
+            }
+            return parent[i] = find(parent[i]); // Path compression
+        }
+
+        public void unionByRank(int i, int j) {
+            int rootI = find(i);
+            int rootJ = find(j);
+            
+            if (rootI == rootJ) return;
+            
+            if (rank[rootI] < rank[rootJ]) {
+                parent[rootI] = rootJ;
+            } else if (rank[rootI] > rank[rootJ]) {
+                parent[rootJ] = rootI;
+            } else {
+                parent[rootI] = rootJ;
+                rank[rootJ]++;
+            }
+        }
+    }
+
+    public boolean equationsPossible(String[] equations) {
+        DisjointSet ds = new DisjointSet(26); // 26 lowercase English letters
+        
+        // Phase 1: Process all '==' equations and union them
+        for (String eq : equations) {
+            if (eq.charAt(1) == '=') {
+                int u = eq.charAt(0) - 'a';
+                int v = eq.charAt(3) - 'a';
+                ds.unionByRank(u, v);
+            }
+        }
+        
+        // Phase 2: Process all '!=' equations and check for contradictions
+        for (String eq : equations) {
+            if (eq.charAt(1) == '!') {
+                int u = eq.charAt(0) - 'a';
+                int v = eq.charAt(3) - 'a';
+                
+                int rootU = ds.find(u);
+                int rootV = ds.find(v);
+                
+                // If they have the same root but equation says they are not equal -> Contradiction!
+                if (rootU == rootV) {
+                    return false;
+                }
+            }
+        }
+        
+        return true; // No contradictions found
+    }
+}
+```
+
+# Graph Concepts & Qns - 22: Number of Operations to Make Network Connected (Amazon)
+
+**Video Link:** [Number of Operations to Make Network Connected - (AMAZON) | Graph Concepts & Qns - 22](https://youtu.be/q2xBd-D_1KQ)  
+**Channel:** codestorywithMIK  
+**Practice Link:** [Number of Operations to Make Network Connected on LeetCode](https://leetcode.com/problems/number-of-operations-to-make-network-connected/)
+
+## Overview
+This video covers another fantastic application of Disjoint Set Union (DSU): **Number of Operations to Make Network Connected (LeetCode 1319)**, a popular interview problem asked by Amazon.
+
+## Problem Breakdown
+**The Story:** There are `n` computers numbered from `0` to `n-1` connected by ethernet cables `connections` forming a network, where `connections[i] = [a, b]` represents a connection between computer `a` and computer `b`. You can extract certain cables and place them anywhere between any pair of computers. Return the *minimum number of times* you need to do this so that all computers are connected. If it's impossible, return `-1`.
+
+## Core Logic & DSU Intuition
+
+### 1. Is it even possible?
+To connect `n` computers into a single connected component, you need **at least `n - 1` edges (cables)**. 
+*   If the total number of connections given (`connections.length`) is less than `n - 1`, it is physically impossible to connect all computers. Immediately return `-1`.
+
+### 2. Finding Extra Edges & Components
+*   Every time we process an edge `(u, v)` using DSU:
+    *   Find their roots: `rootU = find(u)`, `rootV = find(v)`.
+    *   If `rootU == rootV`, it means `u` and `v` are already in the same connected component. This cable is redundant—it's an **extra/redundant edge**. We can extract this cable and use it later.
+    *   If `rootU != rootV`, we perform a `union(u, v)` to merge the components. Each successful union decreases our total number of independent components by 1.
+*   Initially, there are `n` separate components (every node is its own component).
+
+### 3. The Final Formula
+After processing all edges:
+*   Let `extraEdges` be the count of redundant edges found.
+*   Let `components` be the final number of disconnected components remaining.
+*   To connect `C` separate components together, you need **`C - 1` additional edges**.
+*   If your `extraEdges >= components - 1`, you can successfully connect everything! The minimum operations required will simply be **`components - 1`**.
+
+---
+
+## Java Implementation
+
+```java
+import java.util.*;
+
+class MakeNetworkConnected {
+    
+    // DSU Class with Path Compression and Union by Rank
+    static class DisjointSet {
+        int[] parent;
+        int[] rank;
+
+        public DisjointSet(int n) {
+            parent = new int[n];
+            rank = new int[n];
+            for (int i = 0; i < n; i++) {
+                parent[i] = i;
+                rank[i] = 0;
+            }
+        }
+
+        public int find(int i) {
+            if (parent[i] == i) {
+                return i;
+            }
+            return parent[i] = find(parent[i]); // Path compression
+        }
+
+        public void unionByRank(int i, int j) {
+            int rootI = find(i);
+            int rootJ = find(j);
+            
+            if (rootI == rootJ) return;
+            
+            if (rank[rootI] < rank[rootJ]) {
+                parent[rootI] = rootJ;
+            } else if (rank[rootI] > rank[rootJ]) {
+                parent[rootJ] = rootI;
+            } else {
+                parent[rootI] = rootJ;
+                rank[rootJ]++;
+            }
+        }
+    }
+
+    public int makeConnected(int n, int[][] connections) {
+        // Rule 1: To connect n nodes, we need at least n - 1 cables
+        if (connections.length < n - 1) {
+            return -1;
+        }
+        
+        DisjointSet ds = new DisjointSet(n);
+        int components = n; // Initially, all n computers are separate components
+        
+        // Process all connections
+        for (int[] conn : connections) {
+            int u = conn[0];
+            int v = conn[1];
+            
+            int rootU = ds.find(u);
+            int rootV = ds.find(v);
+            
+            // If they are not in the same set, union them and reduce component count
+            if (rootU != rootV) {
+                ds.unionByRank(u, v);
+                components--;
+            }
+            // If rootU == rootV, this is an extra/redundant edge (handled implicitly)
+        }
+        
+        // Minimum operations to connect 'components' components is components - 1
+        return components - 1;
+    }
+}
+```
+# Graph Concepts & Qns - 23: Count Unreachable Pairs of Nodes in an Undirected Graph (DSU)
+
+**Video Link:** [Count Unreachable Pairs of Nodes in an Undirected Graph | DSU | Leetcode 2316 | Graph Concepts- 23](https://youtu.be/Hh_9ppxgzpo)  
+**Channel:** codestorywithMIK  
+**Practice Link:** [Count Unreachable Pairs of Nodes in an Undirected Graph on LeetCode](https://leetcode.com/problems/count-unreachable-pairs-of-nodes-in-an-undirected-graph/)
+
+## Overview
+This video explains how to solve the problem **Count Unreachable Pairs of Nodes in an Undirected Graph (LeetCode 2316)**. While this problem can be solved using BFS or DFS (to find component sizes), this video specifically demonstrates how to solve it using **Disjoint Set Union (DSU)**.
+
+## Problem Breakdown
+**The Story:** You are given an integer `n` representing `n` nodes numbered from `0` to `n - 1`. You are also given a 2D integer array `edges`, representing undirected edges between nodes.
+Your task is to return the **number of pairs of different nodes that are unreachable from each other**.
+
+*   If two nodes belong to different disconnected components, they can never reach each other. We need to find the total number of such pairs.
+
+## Core Logic & Intuition
+
+### 1. The Math Behind the Pairs
+Suppose we have a graph that forms 3 distinct components with the following sizes:
+*   Component 1: `4` nodes
+*   Component 2: `2` nodes
+*   Component 3: `1` node
+*(Total nodes `n = 7`)*
+
+How many unreachable pairs can we form?
+*   Nodes in Component 1 (`4` nodes) cannot reach the other `7 - 4 = 3` nodes. So, pairs formed = `4 * 3 = 12`.
+*   Nodes in Component 2 (`2` nodes) cannot reach the remaining `7 - 4 - 2 = 1` node. So, pairs formed = `2 * 1 = 2`.
+    *   *(Note: We don't pair Component 2 back with Component 1 because we already counted those pairs in the first step).*
+*   Nodes in Component 3 (`1` node) cannot reach the remaining `1 - 1 = 0` nodes. Pairs formed = `1 * 0 = 0`.
+*   **Total Unreachable Pairs:** `12 + 2 + 0 = 14`.
+
+**The General Formula:**
+For each component of size `S`, the number of new pairs it forms is:
+`S * (Remaining Nodes - S)`
+After processing the component, update `Remaining Nodes = Remaining Nodes - S`.
+
+### 2. Using DSU to Find Component Sizes
+To apply the math formula, we just need the size of every connected component. DSU is perfect for grouping connected nodes:
+1.  **Process Edges:** Loop through all `edges` and perform `union(u, v)`. This groups all connected nodes into sets under a single "parent" or "leader".
+2.  **Calculate Sizes:** Loop through all `n` nodes, find their ultimate leader (`find(i)`), and use a Map/Frequency Array to count how many nodes belong to each leader.
+3.  **Apply Formula:** Iterate through the sizes stored in the Map, applying the `Size * (Remaining - Size)` formula to calculate the final result.
+
+---
+
+## Java Implementation
+
+```java
+import java.util.*;
+
+class UnreachablePairs {
+    
+    // DSU Class with Path Compression and Union by Rank
+    static class DisjointSet {
+        int[] parent;
+        int[] rank;
+
+        public DisjointSet(int n) {
+            parent = new int[n];
+            rank = new int[n];
+            for (int i = 0; i < n; i++) {
+                parent[i] = i;
+                rank[i] = 0;
+            }
+        }
+
+        public int find(int i) {
+            if (parent[i] == i) {
+                return i;
+            }
+            return parent[i] = find(parent[i]); // Path compression
+        }
+
+        public void unionByRank(int i, int j) {
+            int rootI = find(i);
+            int rootJ = find(j);
+            
+            if (rootI == rootJ) return;
+            
+            if (rank[rootI] < rank[rootJ]) {
+                parent[rootI] = rootJ;
+            } else if (rank[rootI] > rank[rootJ]) {
+                parent[rootJ] = rootI;
+            } else {
+                parent[rootI] = rootJ;
+                rank[rootJ]++;
+            }
+        }
+    }
+
+    public long countPairs(int n, int[][] edges) {
+        DisjointSet ds = new DisjointSet(n);
+        
+        // Step 1: Process edges to form connected components
+        for (int[] edge : edges) {
+            ds.unionByRank(edge[0], edge[1]);
+        }
+        
+        // Step 2: Calculate the size of each component
+        // We can use a HashMap where Key = Parent/Leader, Value = Size of Component
+        Map<Integer, Integer> componentSizes = new HashMap<>();
+        for (int i = 0; i < n; i++) {
+            int root = ds.find(i);
+            componentSizes.put(root, componentSizes.getOrDefault(root, 0) + 1);
+        }
+        
+        // Step 3: Apply the math formula to count unreachable pairs
+        long totalPairs = 0;
+        long remainingNodes = n;
+        
+        for (int size : componentSizes.values()) {
+            totalPairs += (long) size * (remainingNodes - size);
+            remainingNodes -= size; // Remove this component's nodes from the remaining pool
+        }
+        
+        return totalPairs;
+    }
+}
+```
+# Graph Concepts & Qns - 24: Dijkstra's Algorithm | PART-1
+
+**Video Link:** [Dijkstra's Algorithm | PART-1 | Graph Concepts & Qns - 24 | Explanation+Coding](https://youtu.be/xQ3vjWwFRuI)  
+**Channel:** codestorywithMIK  
+
+## Overview
+This video introduces **Dijkstra's Algorithm**, a fundamental graph algorithm used to find the shortest path from a starting node (source) to all other nodes in a weighted graph. This specific video covers the implementation using a **Min-Heap (Priority Queue)**. It is frequently asked in interviews by companies like Flipkart and Amazon.
+
+## Core Concept: Dijkstra's Algorithm using Min-Heap
+Dijkstra's algorithm is essentially a greedy algorithm that explores the closest nodes first. 
+
+**The Strategy:**
+1.  **Result Array:** We maintain a `result` (or `distance`) array of size `V` initialized to infinity (`Integer.MAX_VALUE`), which will store the shortest distance from the source to each node. The distance from the source to itself is `0` (`result[source] = 0`).
+2.  **Min-Heap:** We use a Priority Queue (Min-Heap) that stores pairs of `(distance, node)`. The heap is ordered by distance, ensuring we always process the node that is currently closest to the source.
+3.  **Traversal:**
+    *   Push the starting node into the Priority Queue: `PQ.add((0, source))`.
+    *   While the Priority Queue is not empty:
+        *   Extract the pair with the minimum distance `(currDist, u)`.
+        *   Iterate through all neighbors `v` of node `u`. Let the weight of the edge between `u` and `v` be `weight`.
+        *   **Relaxation Step:** If the current known shortest distance to `v` (`result[v]`) is greater than the distance to reach `u` plus the edge weight (`currDist + weight`), we have found a shorter path!
+        *   Update `result[v] = currDist + weight`.
+        *   Push the new shorter path into the Priority Queue: `PQ.add((result[v], v))`.
+4.  Once the Queue is empty, the `result` array contains the shortest distances from the source to all other reachable nodes.
+
+## Java Implementation
+
+```java
+import java.util.*;
+
+class DijkstraAlgorithm {
+    
+    // Helper class to represent a Pair (distance, node)
+    static class Pair {
+        int distance;
+        int node;
+        
+        public Pair(int distance, int node) {
+            this.distance = distance;
+            this.node = node;
+        }
+    }
+
+    // Function to implement Dijkstra's Algorithm
+    public int[] dijkstra(int V, ArrayList<ArrayList<ArrayList<Integer>>> adj, int source) {
+        
+        // Priority Queue (Min-Heap) sorted by distance
+        PriorityQueue<Pair> pq = new PriorityQueue<>((a, b) -> a.distance - b.distance);
+        
+        // Array to store shortest distances, initialized to infinity
+        int[] result = new int[V];
+        Arrays.fill(result, Integer.MAX_VALUE);
+        
+        // Distance to source is 0
+        result[source] = 0;
+        pq.add(new Pair(0, source));
+        
+        while (!pq.isEmpty()) {
+            Pair curr = pq.poll();
+            int currDist = curr.distance;
+            int u = curr.node;
+            
+            // Traverse all adjacent nodes of u
+            for (ArrayList<Integer> edge : adj.get(u)) {
+                int v = edge.get(0); // neighbor node
+                int weight = edge.get(1); // edge weight
+                
+                // Relaxation Step: If we found a shorter path to v
+                if (currDist + weight < result[v]) {
+                    result[v] = currDist + weight;
+                    pq.add(new Pair(result[v], v));
+                }
+            }
+        }
+        
+        return result;
+    }
+}
+```
+# Graph Concepts & Qns - 25: Dijkstra's Algorithm | PART-2 (Using Set)
+
+**Video Link:** [Dijkstra's Algorithm | PART-2 | (Microsoft) | Graph Concepts & Qns - 25 | Explanation+Coding](https://youtu.be/3qIoYIMidpc)  
+**Channel:** codestorywithMIK  
+**Practice Link:** [Implementing Dijkstra Algorithm on GeeksforGeeks](https://practice.geeksforgeeks.org/problems/implementing-dijkstra-set-1-adjacency-matrix/1) (Or similar problem portal as mentioned in the video)
+
+## Overview
+In the previous video, we learned how to implement Dijkstra's Algorithm using a Priority Queue (Min-Heap). In this video, we explore an alternative way to implement Dijkstra's Algorithm: **using a Set** (specifically, `std::set` in C++ or `TreeSet` in Java).
+
+Both data structures keep elements sorted, giving us the node with the minimum distance at the top. The core difference and advantage of using a Set lies in its ability to **find and erase existing elements**.
+
+## Core Concept: Why use a Set instead of a Priority Queue?
+When using a Priority Queue, if you find a new shorter path to a node that is already in the queue, you cannot easily update or remove the old, longer path. You simply add the new shorter path to the queue. This means the Priority Queue might store multiple paths for the same node, and you will process the stale (longer) paths later, which is essentially wasted effort.
+
+**The Advantage of a Set:**
+A Set (like `TreeSet` in Java or `std::set` in C++) maintains elements in ascending order just like a Min-Heap. However, it also allows you to **remove elements**. 
+*   **The Optimization:** If you discover a shorter path to a neighbor `v`, and `v` has already been assigned a distance (i.e., it's not infinity), you can **erase the old `(old_distance, v)` entry** from the Set before inserting the new `(new_distance, v)` entry. 
+*   This prevents the Set from growing unnecessarily large and saves future iterations from processing obsolete, longer paths.
+
+## Java Implementation
+
+*Note: In Java, we use a `TreeSet` to mimic the behavior of C++'s `std::set`. Since a `TreeSet` cannot contain duplicate identical objects, and we are storing pairs, we must provide a custom comparator. If distances are equal, we compare by node ID to ensure distinct entries aren't treated as duplicates.*
+
+```java
+import java.util.*;
+
+class DijkstraAlgorithmSet {
+    
+    // Helper class to represent a Pair (distance, node)
+    static class Pair {
+        int distance;
+        int node;
+        
+        public Pair(int distance, int node) {
+            this.distance = distance;
+            this.node = node;
+        }
+    }
+
+    public int[] dijkstra(int V, ArrayList<ArrayList<ArrayList<Integer>>> adj, int source) {
+        
+        // TreeSet sorted by distance. If distances are equal, sort by node ID to keep them distinct.
+        TreeSet<Pair> set = new TreeSet<>((a, b) -> {
+            if (a.distance == b.distance) {
+                return a.node - b.node;
+            }
+            return a.distance - b.distance;
+        });
+        
+        int[] result = new int[V];
+        Arrays.fill(result, Integer.MAX_VALUE);
+        
+        result[source] = 0;
+        set.add(new Pair(0, source));
+        
+        while (!set.isEmpty()) {
+            // Extract the minimum element (first element in TreeSet)
+            Pair curr = set.pollFirst();
+            int currDist = curr.distance;
+            int u = curr.node;
+            
+            // Traverse all adjacent nodes of u
+            for (ArrayList<Integer> edge : adj.get(u)) {
+                int v = edge.get(0);
+                int weight = edge.get(1);
+                
+                // Relaxation Step
+                if (currDist + weight < result[v]) {
+                    
+                    // If v was already reached before via a longer path, remove that old path from the set
+                    if (result[v] != Integer.MAX_VALUE) {
+                        set.remove(new Pair(result[v], v));
+                    }
+                    
+                    // Update to the new shorter path and add to the set
+                    result[v] = currDist + weight;
+                    set.add(new Pair(result[v], v));
+                }
+            }
+        }
+        
+        return result;
+    }
+}
+```

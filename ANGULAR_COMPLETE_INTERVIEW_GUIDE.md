@@ -7143,7 +7143,7 @@ The next operation starts only after the previous one completes.
 
 ---
 
-**### 🟢 13.23 `exhaustMap()`**
+### 🟢 13.23 `exhaustMap()`
 
 `exhaustMap()` ignores new source emissions while the current inner Observable is running.
 
@@ -7174,7 +7174,7 @@ Click 4 → Accepted
 
 ---
 
-**### 🟢 13.24 switchMap vs mergeMap vs concatMap vs exhaustMap**
+### 🟢 13.24 switchMap vs mergeMap vs concatMap vs exhaustMap
 
 | Operator     | Concurrency   | Previous operation | New emission             |
 | ------------ | ------------- | ------------------ | ------------------------ |
@@ -7194,7 +7194,7 @@ exhaustMap → First one wins while busy
 
 ---
 
-**### 🟢 13.25 Subject**
+### 🟢 13.25 Subject
 
 A `Subject` is both:
 
@@ -7236,7 +7236,7 @@ Subjects are commonly used for:
 
 ---
 
-**### 🟢 13.26 BehaviorSubject**
+### 🟢 13.26 BehaviorSubject
 
 `BehaviorSubject` is a Subject that:
 
@@ -7267,7 +7267,7 @@ This makes `BehaviorSubject` useful for simple shared state.
 
 ---
 
-**### 🟢 13.27 Subject vs BehaviorSubject**
+### 🟢 13.27 Subject vs BehaviorSubject
 
 | Feature                          | Subject         | BehaviorSubject |
 | -------------------------------- | --------------- | --------------- |
@@ -7289,7 +7289,7 @@ currentUser$ = new BehaviorSubject<User | null>(null);
 
 ---
 
-**### 🟡 13.28 ReplaySubject**
+### 🟡 13.28 ReplaySubject
 
 `ReplaySubject` stores previous emissions and replays them to new subscribers.
 
@@ -7326,7 +7326,7 @@ New subscribers need access to previous emissions.
 
 ---
 
-**### 🟡 13.29 AsyncSubject**
+### 🟡 13.29 AsyncSubject
 
 `AsyncSubject` emits only the **last value**, and only when the Observable completes.
 
@@ -7354,7 +7354,7 @@ Output:
 
 ---
 
-**### 🟢 13.30 forkJoin()**
+### 🟢 13.30 forkJoin()
 
 `forkJoin()` waits until all supplied Observables complete and then emits their final values.
 
@@ -7390,7 +7390,7 @@ If an Observable never completes, `forkJoin()` never emits.
 
 ---
 
-**### 🟢 13.31 combineLatest()**
+### 🟢 13.31 combineLatest()
 
 `combineLatest()` combines the latest value from multiple Observables.
 
@@ -7421,7 +7421,7 @@ Useful for:
 
 ---
 
-**### 🟢 13.32 forkJoin vs combineLatest**
+### 🟢 13.32 forkJoin vs combineLatest
 
 | Feature                       | `forkJoin()`        | `combineLatest()`                |
 | ----------------------------- | ------------------- | -------------------------------- |
@@ -7441,7 +7441,7 @@ combineLatest → Give me the latest state whenever something changes
 
 ---
 
-**### 🟡 13.33 withLatestFrom()**
+### 🟡 13.33 withLatestFrom()
 
 `withLatestFrom()` combines the latest value from another Observable when the **source Observable emits**.
 
@@ -7462,7 +7462,7 @@ This differs from `combineLatest()` because changes to `formState$` alone do not
 
 ---
 
-**### 🟡 13.34 share()**
+### 🟡 13.34 share()
 
 `share()` allows multiple subscribers to share a single execution of an Observable.
 
@@ -7488,7 +7488,7 @@ The exact behavior depends on the lifecycle of the shared stream.
 
 ---
 
-**### 🟡 13.35 shareReplay()**
+### 🟡 13.35 shareReplay()**
 
 `shareReplay()` shares an Observable and can replay previously emitted values to later subscribers.
 
@@ -7521,7 +7521,7 @@ Use it intentionally.
 
 ---
 
-**### 🟢 13.36 AsyncPipe**
+### 🟢 13.36 AsyncPipe**
 
 The `AsyncPipe` subscribes to an Observable or Promise in the Angular template and displays its latest value.
 
@@ -7561,7 +7561,7 @@ Modern Angular control flow:
 
 ---
 
-**### 🟢 13.37 AsyncPipe vs Manual Subscription**
+### 🟢 13.37 AsyncPipe vs Manual Subscription**
 
 **Manual subscription:**
 
@@ -7597,7 +7597,7 @@ When data is only needed for template rendering, prefer the `AsyncPipe` instead 
 
 ---
 
-**### 🟡 13.38 Multiple AsyncPipe Subscriptions**
+### 🟡 13.38 Multiple AsyncPipe Subscriptions**
 
 Consider:
 
@@ -7624,7 +7624,7 @@ For shared/cached streams, `shareReplay()` may also be appropriate depending on 
 
 ---
 
-**### 🟢 13.39 RxJS with Angular HttpClient**
+### 🟢 13.39 RxJS with Angular HttpClient**
 
 Angular's `HttpClient` returns Observables.
 
@@ -7679,7 +7679,7 @@ Template
 
 ---
 
-**### 🟡 13.40 RxJS Subscription Management**
+### 🟡 13.40 RxJS Subscription Management**
 
 Avoid unnecessary nested or unmanaged subscriptions.
 
@@ -7729,7 +7729,7 @@ this.userService
 
 ---
 
-**### 🟡 13.41 Common RxJS Mistakes**
+### 🟡 13.41 Common RxJS Mistakes**
 
 **1. Nested subscriptions**
 
@@ -7799,7 +7799,7 @@ Caching an Observable without considering its lifecycle can result in stale data
 
 ---
 
-**### 🟡 13.42 RxJS and Signals**
+### 🟡 13.42 RxJS and Signals**
 
 Modern Angular provides Signals as another reactive primitive.
 
@@ -7850,7 +7850,7 @@ Signals and RxJS are not necessarily competing technologies. They solve differen
 
 ---
 
-**### 🟢 13.43 RxJS Interview Questions**
+### 🟢 13.43 RxJS Interview Questions**
 
 **Beginner: What is an Observable?**
 
@@ -7890,7 +7890,7 @@ Signals and RxJS are not necessarily competing technologies. They solve differen
 
 ---
 
-**### 🟡 13.44 RxJS Follow-up Questions**
+### 🟡 13.44 RxJS Follow-up Questions**
 
 1. What happens when an Observable emits an error?
 2. What happens after an Observable completes?
@@ -7915,7 +7915,7 @@ Signals and RxJS are not necessarily competing technologies. They solve differen
 
 ---
 
-**### Key Takeaways: RxJS**
+### Key Takeaways: RxJS**
 
 ✅ **Observables represent streams of values over time**
 
@@ -7959,9 +7959,9 @@ Signals and RxJS are not necessarily competing technologies. They solve differen
 
 **Most important interview topic:** Understand the behavioral difference between `switchMap`, `mergeMap`, `concatMap`, and `exhaustMap`. You should be able to choose the correct operator for a real-world scenario, not just memorize their definitions.
 
-**## 13. RxJS in Angular**
+## 13. RxJS in Angular**
 
-**### 🟢 13.1 What is RxJS?**
+### 🟢 13.1 What is RxJS?**
 
 RxJS (Reactive Extensions for JavaScript) is a library used to work with **asynchronous data and data streams**.
 
@@ -7992,7 +7992,7 @@ Observable → emits values → subscriber receives values
 
 ---
 
-**### 🟢 13.2 Observable**
+### 🟢 13.2 Observable**
 
 An Observable represents a stream of values that can arrive over time.
 
@@ -8033,7 +8033,7 @@ An Observable can:
 
 ---
 
-**### 🟢 13.3 Subscription**
+### 🟢 13.3 Subscription**
 
 A subscription is created when we subscribe to an Observable.
 
@@ -8063,7 +8063,7 @@ takeUntilDestroyed();
 
 ---
 
-**### 🟢 13.4 Observable vs Promise**
+### 🟢 13.4 Observable vs Promise**
 
 | Observable               | Promise                            |
 | ------------------------ | ---------------------------------- |
@@ -8081,7 +8081,7 @@ users$ = this.http.get<User[]>("/api/users");
 
 ---
 
-**### 🟢 13.5 RxJS Operators**
+### 🟢 13.5 RxJS Operators**
 
 Operators are used to modify or control Observable streams.
 
@@ -8109,7 +8109,7 @@ combineLatest()
 
 ---
 
-**### 🟢 13.6 map()**
+### 🟢 13.6 map()**
 
 `map()` transforms each emitted value.
 
@@ -8129,7 +8129,7 @@ Result:
 
 ---
 
-**### 🟢 13.7 filter()**
+### 🟢 13.7 filter()**
 
 `filter()` allows only values that satisfy a condition.
 
@@ -8148,7 +8148,7 @@ Result:
 
 ---
 
-**### 🟢 13.8 tap()**
+### 🟢 13.8 tap()**
 
 `tap()` is used for side effects such as logging or debugging.
 
@@ -8167,7 +8167,7 @@ tap() → performs an action
 
 ---
 
-**### 🟢 13.9 debounceTime()**
+### 🟢 13.9 debounceTime()**
 
 `debounceTime()` waits for a specified amount of time before emitting a value.
 
@@ -8187,7 +8187,7 @@ Angular waits until the user stops typing before processing the search.
 
 ---
 
-**### 🟢 13.10 distinctUntilChanged()**
+### 🟢 13.10 distinctUntilChanged()**
 
 Prevents consecutive duplicate values.
 
@@ -8215,7 +8215,7 @@ Spring
 
 ---
 
-**### 🟢 13.11 switchMap()**
+### 🟢 13.11 switchMap()**
 
 `switchMap()` switches to the latest Observable and unsubscribes from the previous one.
 
@@ -8248,7 +8248,7 @@ only the latest search is important.
 
 ---
 
-**### 🟢 13.12 mergeMap()**
+### 🟢 13.12 mergeMap()**
 
 `mergeMap()` allows multiple inner Observables to run at the same time.
 
@@ -8264,7 +8264,7 @@ If three items arrive, all three operations can run concurrently.
 
 ---
 
-**### 🟢 13.13 concatMap()**
+### 🟢 13.13 concatMap()**
 
 `concatMap()` runs operations one after another.
 
@@ -8286,7 +8286,7 @@ Item 3 → complete
 
 ---
 
-**### 🟢 13.14 exhaustMap()**
+### 🟢 13.14 exhaustMap()**
 
 `exhaustMap()` ignores new values while the current operation is running.
 
@@ -8314,7 +8314,7 @@ Preventing duplicate form submissions.
 
 ---
 
-**### 🟢 13.15 switchMap vs mergeMap vs concatMap vs exhaustMap**
+### 🟢 13.15 switchMap vs mergeMap vs concatMap vs exhaustMap**
 
 | Operator     | Behavior                      | Common Use             |
 | ------------ | ----------------------------- | ---------------------- |
@@ -8334,7 +8334,7 @@ exhaustMap → First
 
 ---
 
-**### 🟢 13.16 Subject**
+### 🟢 13.16 Subject**
 
 A `Subject` is both an Observable and an Observer.
 
@@ -8359,7 +8359,7 @@ Subjects are commonly used for:
 
 ---
 
-**### 🟢 13.17 BehaviorSubject**
+### 🟢 13.17 BehaviorSubject**
 
 A `BehaviorSubject` is similar to a Subject but stores the latest value.
 
@@ -8385,7 +8385,7 @@ A new subscriber immediately receives the current value.
 
 ---
 
-**### 🟡 13.18 ReplaySubject**
+### 🟡 13.18 ReplaySubject**
 
 `ReplaySubject` can replay previous values to new subscribers.
 
@@ -8408,7 +8408,7 @@ because the last two values were configured to be replayed.
 
 ---
 
-**### 🟢 13.19 catchError()**
+### 🟢 13.19 catchError()**
 
 `catchError()` handles errors from an Observable.
 
@@ -8429,7 +8429,7 @@ It can:
 
 ---
 
-**### 🟢 13.20 finalize()**
+### 🟢 13.20 finalize()**
 
 `finalize()` runs when an Observable finishes, errors, or is unsubscribed.
 
@@ -8443,7 +8443,7 @@ this.userService.getUsers().pipe(finalize(() => (this.loading = false)));
 
 ---
 
-**### 🟢 13.21 forkJoin()**
+### 🟢 13.21 forkJoin()**
 
 `forkJoin()` waits for multiple Observables to complete and then gives their final results.
 
@@ -8463,7 +8463,7 @@ Common use case:
 
 ---
 
-**### 🟢 13.22 combineLatest()**
+### 🟢 13.22 combineLatest()**
 
 `combineLatest()` combines the latest values from multiple Observables.
 
@@ -8485,7 +8485,7 @@ It is useful when the application needs the **current/latest value from multiple
 
 ---
 
-**### 🟢 13.23 AsyncPipe**
+### 🟢 13.23 AsyncPipe**
 
 `AsyncPipe` subscribes to an Observable in the template and automatically unsubscribes when the component is destroyed.
 
@@ -8513,7 +8513,7 @@ If the Observable is only needed to display data in the template, prefer `AsyncP
 
 ---
 
-**### 🟢 13.24 takeUntilDestroyed()**
+### 🟢 13.24 takeUntilDestroyed()**
 
 Modern Angular provides `takeUntilDestroyed()` for automatic subscription cleanup.
 
@@ -8532,7 +8532,7 @@ The subscription is automatically cleaned up when the Angular component/directiv
 
 ---
 
-**### 🟡 13.25 Cold vs Hot Observable**
+### 🟡 13.25 Cold vs Hot Observable**
 
 ### Cold Observable
 
@@ -8565,7 +8565,7 @@ Subjects are a common example.
 
 ---
 
-**### 🟡 13.26 RxJS with Angular HTTP**
+### 🟡 13.26 RxJS with Angular HTTP**
 
 Angular's `HttpClient` returns Observables.
 
@@ -8609,7 +8609,7 @@ Template
 
 ---
 
-**### 🟡 13.27 Common RxJS Mistakes**
+### 🟡 13.27 Common RxJS Mistakes**
 
 **1. Nested subscriptions**
 
@@ -8655,7 +8655,7 @@ Subjects are useful, but modern Angular Signals can be a better choice for many 
 
 ---
 
-**### 🟡 13.28 RxJS and Signals**
+### 🟡 13.28 RxJS and Signals**
 
 Angular Signals and RxJS are both reactive technologies, but they are useful for different situations.
 
@@ -8692,7 +8692,7 @@ Signals do not replace RxJS completely. RxJS remains very useful for HTTP stream
 
 ---
 
-**### 🟢 13.29 RxJS Interview Questions**
+### 🟢 13.29 RxJS Interview Questions**
 
 **Beginner: What is an Observable?**
 
@@ -8736,7 +8736,7 @@ Signals do not replace RxJS completely. RxJS remains very useful for HTTP stream
 
 ---
 
-**### 🟡 13.30 RxJS Follow-up Questions**
+### 🟡 13.30 RxJS Follow-up Questions**
 
 1. What is the difference between cold and hot Observables?
 2. Why does Angular HttpClient return Observables?
@@ -8761,7 +8761,7 @@ Signals do not replace RxJS completely. RxJS remains very useful for HTTP stream
 
 ---
 
-**### Key Takeaways: RxJS**
+### Key Takeaways: RxJS**
 
 ✅ **Observable** → Stream of values over time
 ✅ **Subscription** → Subscribes to an Observable
@@ -8810,7 +8810,7 @@ Form logic is mainly defined in the TypeScript class.
 
 ---
 
-**### 🟢 14.2 Template-driven Forms**
+### 🟢 14.2 Template-driven Forms**
 
 Template-driven forms use directives such as:
 
@@ -8849,7 +8849,7 @@ The form state is automatically created by Angular.
 
 ---
 
-**### 🟢 14.3 Two-way Binding with ngModel**
+### 🟢 14.3 Two-way Binding with ngModel**
 
 `ngModel` provides two-way binding between the component and the form control.
 
@@ -8878,7 +8878,7 @@ Changing the input updates `username`, and changing `username` updates the input
 
 ---
 
-**### 🟢 14.4 Template-driven Form Validation**
+### 🟢 14.4 Template-driven Form Validation**
 
 Common validators:
 
@@ -8916,7 +8916,7 @@ Example:
 
 ---
 
-**### 🟢 14.5 Reactive Forms**
+### 🟢 14.5 Reactive Forms**
 
 Reactive Forms define the form structure in TypeScript.
 
@@ -8953,7 +8953,7 @@ Template:
 
 ---
 
-**### 🟢 14.6 FormControl**
+### 🟢 14.6 FormControl**
 
 `FormControl` represents a single form field.
 
@@ -8980,7 +8980,7 @@ name.errors;
 
 ---
 
-**### 🟢 14.7 FormGroup**
+### 🟢 14.7 FormGroup**
 
 `FormGroup` represents a collection of related controls.
 
@@ -9012,7 +9012,7 @@ userForm.value;
 
 ---
 
-**### 🟢 14.8 FormArray**
+### 🟢 14.8 FormArray**
 
 `FormArray` is used when the number of controls is dynamic.
 
@@ -9047,7 +9047,7 @@ Template:
 
 ---
 
-**### 🟢 14.9 FormBuilder**
+### 🟢 14.9 FormBuilder**
 
 `FormBuilder` provides a shorter way to create reactive forms.
 
@@ -9084,7 +9084,7 @@ this.fb.group({
 
 ---
 
-**### 🟢 14.10 Common Validators**
+### 🟢 14.10 Common Validators**
 
 Angular provides built-in validators:
 
@@ -9115,7 +9115,7 @@ if (this.userForm.get("email")?.hasError("required")) {
 
 ---
 
-**### 🟢 14.11 Form States**
+### 🟢 14.11 Form States**
 
 Angular forms maintain different states.
 
@@ -9141,7 +9141,7 @@ Example:
 
 ---
 
-**### 🟢 14.12 setValue() vs patchValue()**
+### 🟢 14.12 setValue() vs patchValue()**
 
 Both methods update form values.
 
@@ -9178,7 +9178,7 @@ patchValue() → Partial form value
 
 ---
 
-**### 🟢 14.13 reset()**
+### 🟢 14.13 reset()**
 
 `reset()` resets the form.
 
@@ -9197,7 +9197,7 @@ this.userForm.reset({
 
 ---
 
-**### 🟢 14.14 valueChanges**
+### 🟢 14.14 valueChanges**
 
 `valueChanges` is an Observable that emits whenever a form control's value changes.
 
@@ -9219,7 +9219,7 @@ this.searchControl.valueChanges
 
 ---
 
-**### 🟢 14.15 statusChanges**
+### 🟢 14.15 statusChanges**
 
 `statusChanges` emits whenever the validation status changes.
 
@@ -9240,7 +9240,7 @@ DISABLED
 
 ---
 
-**### 🟡 14.16 Custom Validators**
+### 🟡 14.16 Custom Validators**
 
 You can create your own validator.
 
@@ -9271,7 +9271,7 @@ object     → Invalid
 
 ---
 
-**### 🟡 14.17 Cross-field Validation**
+### 🟡 14.17 Cross-field Validation**
 
 Sometimes validation depends on multiple fields.
 
@@ -9304,7 +9304,7 @@ registerForm = this.fb.group(
 
 ---
 
-**### 🟡 14.18 Async Validators**
+### 🟡 14.18 Async Validators**
 
 Async validators are used when validation requires an asynchronous operation.
 
@@ -9336,7 +9336,7 @@ while the async validator is running.
 
 ---
 
-**### 🟡 14.19 Reactive Forms vs Template-driven Forms**
+### 🟡 14.19 Reactive Forms vs Template-driven Forms**
 
 | Reactive Forms              | Template-driven Forms            |
 | --------------------------- | -------------------------------- |
@@ -9353,7 +9353,7 @@ while the async validator is running.
 
 ---
 
-**### 🟡 14.20 ControlValueAccessor**
+### 🟡 14.20 ControlValueAccessor**
 
 `ControlValueAccessor` allows a custom component to behave like a normal Angular form control.
 
@@ -9382,7 +9382,7 @@ It acts as a bridge between Angular Forms and the custom component.
 
 ---
 
-**### 🟢 14.21 Forms Interview Questions**
+### 🟢 14.21 Forms Interview Questions**
 
 **Beginner: What are the two types of Angular Forms?**
 
@@ -9414,7 +9414,7 @@ It acts as a bridge between Angular Forms and the custom component.
 
 ---
 
-**### 🟡 14.22 Forms Follow-up Questions**
+### 🟡 14.22 Forms Follow-up Questions**
 
 1. What is the difference between `touched` and `dirty`?
 2. What is the difference between `pristine` and `untouched`?
@@ -9431,7 +9431,7 @@ It acts as a bridge between Angular Forms and the custom component.
 
 ---
 
-**### Key Takeaways: Forms**
+### Key Takeaways: Forms**
 
 ✅ **Template-driven Forms** → Simple forms
 ✅ **Reactive Forms** → Complex and scalable forms
@@ -9467,7 +9467,7 @@ The browser URL changes without performing a complete page reload.
 
 ---
 
-**### 🟢 15.2 Basic Routing**
+### 🟢 15.2 Basic Routing**
 
 Define routes:
 
@@ -9496,7 +9496,7 @@ bootstrapApplication(AppComponent, {
 
 ---
 
-**### 🟢 15.3 RouterOutlet**
+### 🟢 15.3 RouterOutlet**
 
 `RouterOutlet` is the location where Angular renders the component associated with the current route.
 
@@ -9529,7 +9529,7 @@ inside:
 
 ---
 
-**### 🟢 15.4 routerLink**
+### 🟢 15.4 routerLink**
 
 `routerLink` is used for navigation from templates.
 
@@ -9547,7 +9547,7 @@ Dynamic route:
 
 ---
 
-**### 🟢 15.5 Programmatic Navigation**
+### 🟢 15.5 Programmatic Navigation**
 
 Use `Router` when navigation needs to happen from TypeScript.
 
@@ -9567,7 +9567,7 @@ this.router.navigate(["/users", userId]);
 
 ---
 
-**### 🟢 15.6 Route Parameters**
+### 🟢 15.6 Route Parameters**
 
 Route:
 
@@ -9604,7 +9604,7 @@ this.route.paramMap.subscribe((params) => {
 
 ---
 
-**### 🟢 15.7 Query Parameters**
+### 🟢 15.7 Query Parameters**
 
 Query parameters are added after `?`.
 
@@ -9643,7 +9643,7 @@ this.route.queryParamMap.subscribe((params) => {
 
 ---
 
-**### 🟢 15.8 Route Parameters vs Query Parameters**
+### 🟢 15.8 Route Parameters vs Query Parameters**
 
 | Route Parameter               | Query Parameter              |
 | ----------------------------- | ---------------------------- |
@@ -9668,7 +9668,7 @@ Example:
 
 ---
 
-**### 🟢 15.9 Child Routes**
+### 🟢 15.9 Child Routes**
 
 Child routes create nested navigation.
 
@@ -9707,7 +9707,7 @@ for child components.
 
 ---
 
-**### 🟡 15.10 Lazy Loading**
+### 🟡 15.10 Lazy Loading**
 
 Lazy loading loads a feature only when it is needed.
 
@@ -9741,7 +9741,7 @@ Benefits:
 
 ---
 
-**### 🟢 15.11 Route Guards**
+### 🟢 15.11 Route Guards**
 
 Route guards control whether navigation is allowed.
 
@@ -9777,7 +9777,7 @@ If the user is not authenticated, navigation can be prevented or redirected.
 
 ---
 
-**### 🟢 15.12 CanActivate**
+### 🟢 15.12 CanActivate**
 
 `CanActivate` determines whether a user can enter a route.
 
@@ -9805,7 +9805,7 @@ Common use case:
 
 ---
 
-**### 🟡 15.13 CanActivateChild**
+### 🟡 15.13 CanActivateChild**
 
 `CanActivateChild` protects child routes.
 
@@ -9831,7 +9831,7 @@ The guard can protect all child routes under `/admin`.
 
 ---
 
-**### 🟡 15.14 CanDeactivate**
+### 🟡 15.14 CanDeactivate**
 
 `CanDeactivate` controls whether the user can leave a route.
 
@@ -9856,7 +9856,7 @@ Typical use case:
 
 ---
 
-**### 🟡 15.15 Route Resolvers**
+### 🟡 15.15 Route Resolvers**
 
 A resolver loads data before activating a route.
 
@@ -9896,7 +9896,7 @@ Resolvers can be useful when the component should receive required route data be
 
 ---
 
-**### 🟢 15.16 ActivatedRoute**
+### 🟢 15.16 ActivatedRoute**
 
 `ActivatedRoute` provides information about the currently activated route.
 
@@ -9922,7 +9922,7 @@ ngOnInit() {
 
 ---
 
-**### 🟡 15.17 Route Data**
+### 🟡 15.17 Route Data**
 
 Static data can be attached to a route.
 
@@ -9948,7 +9948,7 @@ Route data can also contain information produced by resolvers.
 
 ---
 
-**### 🟡 15.18 Wildcard Route**
+### 🟡 15.18 Wildcard Route**
 
 A wildcard route handles URLs that don't match any defined route.
 
@@ -9982,7 +9982,7 @@ export const routes: Routes = [
 
 ---
 
-**### 🟢 15.19 Route Order**
+### 🟢 15.19 Route Order**
 
 Angular evaluates routes in order.
 
@@ -10001,7 +10001,7 @@ If `**` appears first, it can catch routes before the intended routes are reache
 
 ---
 
-**### 🟡 15.20 Router Events**
+### 🟡 15.20 Router Events**
 
 Angular Router provides navigation events.
 
@@ -10034,7 +10034,7 @@ These can be useful for:
 
 ---
 
-**### 🟡 15.21 Navigation Flow**
+### 🟡 15.21 Navigation Flow**
 
 A simplified navigation flow is:
 
@@ -10060,7 +10060,7 @@ Not every route necessarily uses guards or resolvers.
 
 ---
 
-**### 🟡 15.22 Authentication and Routing**
+### 🟡 15.22 Authentication and Routing**
 
 A common enterprise flow:
 
@@ -10095,7 +10095,7 @@ export const authGuard: CanActivateFn = () => {
 
 ---
 
-**### 🟢 15.23 Routing Interview Questions**
+### 🟢 15.23 Routing Interview Questions**
 
 **Beginner: What is Angular Router?**
 
@@ -10131,7 +10131,7 @@ export const authGuard: CanActivateFn = () => {
 
 ---
 
-**### 🟡 15.24 Routing Follow-up Questions**
+### 🟡 15.24 Routing Follow-up Questions**
 
 1. What is the difference between `CanActivate` and `CanActivateChild`?
 2. When would you use `CanDeactivate`?
@@ -10156,7 +10156,7 @@ export const authGuard: CanActivateFn = () => {
 
 ---
 
-**### Key Takeaways: Routing**
+### Key Takeaways: Routing**
 
 ✅ **Router** → Handles navigation
 ✅ **RouterOutlet** → Where routed components are displayed
@@ -10224,7 +10224,7 @@ Observable
 
 ---
 
-**### 🟢 16.2 Configuring HttpClient**
+### 🟢 16.2 Configuring HttpClient**
 
 Modern Angular applications commonly use `provideHttpClient()`.
 
@@ -10247,7 +10247,7 @@ export class AppModule {}
 
 ---
 
-**### 🟢 16.3 GET Request**
+### 🟢 16.3 GET Request**
 
 Used to retrieve data.
 
@@ -10267,7 +10267,7 @@ getUser(id: number): Observable<User> {
 
 ---
 
-**### 🟢 16.4 POST Request**
+### 🟢 16.4 POST Request**
 
 Used to create data.
 
@@ -10284,7 +10284,7 @@ The second argument is the request body.
 
 ---
 
-**### 🟢 16.5 PUT vs PATCH**
+### 🟢 16.5 PUT vs PATCH**
 
 ### PUT
 
@@ -10321,7 +10321,7 @@ PATCH → Partial update
 
 ---
 
-**### 🟢 16.6 DELETE Request**
+### 🟢 16.6 DELETE Request**
 
 Used to delete a resource.
 
@@ -10335,7 +10335,7 @@ deleteUser(id: number) {
 
 ---
 
-**### 🟢 16.7 HttpParams**
+### 🟢 16.7 HttpParams**
 
 `HttpParams` is used to send query parameters.
 
@@ -10362,7 +10362,7 @@ Useful for:
 
 ---
 
-**### 🟢 16.8 HttpHeaders**
+### 🟢 16.8 HttpHeaders**
 
 HTTP headers provide additional information with a request.
 
@@ -10386,7 +10386,7 @@ Accept
 
 ---
 
-**### 🟢 16.9 Typed HTTP Responses**
+### 🟢 16.9 Typed HTTP Responses**
 
 TypeScript interfaces can be used to describe API responses.
 
@@ -10412,7 +10412,7 @@ This provides compile-time type checking and better IDE support.
 
 ---
 
-**### 🟢 16.10 Handling HTTP Errors**
+### 🟢 16.10 Handling HTTP Errors**
 
 Use `catchError()` to handle errors.
 
@@ -10439,7 +10439,7 @@ HTTP errors can include:
 
 ---
 
-**### 🟢 16.11 HTTP Interceptors**
+### 🟢 16.11 HTTP Interceptors**
 
 Interceptors allow us to process HTTP requests and responses globally.
 
@@ -10475,7 +10475,7 @@ provideHttpClient(withInterceptors([authInterceptor]));
 
 ---
 
-**### 🟢 16.12 Why clone an HttpRequest?**
+### 🟢 16.12 Why clone an HttpRequest?**
 
 Angular's `HttpRequest` is immutable.
 
@@ -10502,7 +10502,7 @@ const newRequest = req.clone({
 
 ---
 
-**### 🟢 16.13 JWT Authentication with HttpClient**
+### 🟢 16.13 JWT Authentication with HttpClient**
 
 A common Angular + backend flow is:
 
@@ -10538,7 +10538,7 @@ const request = req.clone({
 
 ---
 
-**### 🟡 16.14 CORS**
+### 🟡 16.14 CORS**
 
 CORS (Cross-Origin Resource Sharing) is a browser security mechanism controlling whether a frontend from one origin can access resources from another origin.
 
@@ -10564,7 +10564,7 @@ CORS is primarily enforced by the browser. Angular does not "fix" CORS.
 
 ---
 
-**### 🟡 16.15 File Upload**
+### 🟡 16.15 File Upload**
 
 Angular can send files using `FormData`.
 
@@ -10580,7 +10580,7 @@ Do not manually set `Content-Type: multipart/form-data` in this case. The browse
 
 ---
 
-**### 🟡 16.16 HTTP Request Cancellation**
+### 🟡 16.16 HTTP Request Cancellation**
 
 Angular HTTP requests can be cancelled by unsubscribing from the Observable.
 
@@ -10601,7 +10601,7 @@ This is useful for search/autocomplete functionality.
 
 ---
 
-**### 🟡 16.17 API Service Architecture**
+### 🟡 16.17 API Service Architecture**
 
 A good Angular application generally keeps HTTP communication inside services rather than directly inside every component.
 
@@ -10650,7 +10650,7 @@ Benefits:
 
 ---
 
-**### 🟢 16.18 HTTP Interview Questions**
+### 🟢 16.18 HTTP Interview Questions**
 
 **Beginner: What is HttpClient?**
 
@@ -10682,7 +10682,7 @@ Benefits:
 
 ---
 
-**### 🟡 16.19 HTTP Follow-up Questions**
+### 🟡 16.19 HTTP Follow-up Questions**
 
 1. What is the difference between PUT and PATCH?
 2. What is the difference between HttpParams and HttpHeaders?
@@ -10702,7 +10702,7 @@ Benefits:
 
 ---
 
-**### Key Takeaways: HTTP**
+### Key Takeaways: HTTP**
 
 ✅ **HttpClient** → Communicates with backend APIs
 ✅ **GET** → Retrieve data
@@ -10747,7 +10747,7 @@ Other Components
 
 ---
 
-**### 🟢 17.2 Local Component State**
+### 🟢 17.2 Local Component State**
 
 The simplest form of state is state stored directly inside a component.
 
@@ -10774,7 +10774,7 @@ Examples:
 
 ---
 
-**### 🟢 17.3 Shared State Using a Service**
+### 🟢 17.3 Shared State Using a Service**
 
 When multiple components need the same state, a service can hold it.
 
@@ -10803,7 +10803,7 @@ This is suitable for relatively simple shared state.
 
 ---
 
-**### 🟢 17.4 BehaviorSubject for State**
+### 🟢 17.4 BehaviorSubject for State**
 
 A common older/simple Angular pattern is:
 
@@ -10830,7 +10830,7 @@ user$ = this.userState.user$;
 
 ---
 
-**### 🟢 17.5 Signals for State**
+### 🟢 17.5 Signals for State**
 
 Modern Angular provides Signals for reactive state.
 
@@ -10860,7 +10860,7 @@ Signals are often a good choice for local component state and simpler shared sta
 
 ---
 
-**### 🟢 17.6 Signals vs BehaviorSubject**
+### 🟢 17.6 Signals vs BehaviorSubject**
 
 | Signals                            | BehaviorSubject                          |
 | ---------------------------------- | ---------------------------------------- |
@@ -10877,7 +10877,7 @@ Choose based on the problem.
 
 ---
 
-**### 🟡 17.7 When Do You Need Global State?**
+### 🟡 17.7 When Do You Need Global State?**
 
 Not every application needs a global state-management library.
 
@@ -10917,7 +10917,7 @@ Use global state management when:
 
 ---
 
-**### 🟡 17.8 NgRx**
+### 🟡 17.8 NgRx**
 
 NgRx is a popular state-management library for Angular based on Redux-style principles.
 
@@ -10957,7 +10957,7 @@ Store
 
 ---
 
-**### 🟡 17.9 NgRx Actions**
+### 🟡 17.9 NgRx Actions**
 
 Actions describe something that happened.
 
@@ -10974,7 +10974,7 @@ Actions should describe events rather than directly modifying state.
 
 ---
 
-**### 🟡 17.10 NgRx Reducers**
+### 🟡 17.10 NgRx Reducers**
 
 Reducers calculate the next state from the current state and an action.
 
@@ -11005,7 +11005,7 @@ Reducers should be:
 
 ---
 
-**### 🟡 17.11 NgRx Selectors**
+### 🟡 17.11 NgRx Selectors**
 
 Selectors retrieve specific parts of the state.
 
@@ -11026,7 +11026,7 @@ Selectors help components consume only the state they need.
 
 ---
 
-**### 🟡 17.12 NgRx Effects**
+### 🟡 17.12 NgRx Effects**
 
 Effects handle side effects such as HTTP calls.
 
@@ -11058,7 +11058,7 @@ Success/Failure Action
 
 ---
 
-**### 🟡 17.13 When Should You Use NgRx?**
+### 🟡 17.13 When Should You Use NgRx?**
 
 NgRx can be useful when:
 
@@ -11075,7 +11075,7 @@ For small applications, it can add unnecessary complexity.
 
 ---
 
-**### 🟡 17.14 State Management Approaches**
+### 🟡 17.14 State Management Approaches**
 
 | Approach          | Best For                       |
 | ----------------- | ------------------------------ |
@@ -11087,7 +11087,7 @@ For small applications, it can add unnecessary complexity.
 
 ---
 
-**### 🟢 17.15 State Management Interview Questions**
+### 🟢 17.15 State Management Interview Questions**
 
 **Beginner: What is state management?**
 
@@ -11115,7 +11115,7 @@ For small applications, it can add unnecessary complexity.
 
 ---
 
-**### 🟡 17.16 State Management Follow-up Questions**
+### 🟡 17.16 State Management Follow-up Questions**
 
 1. What is local state?
 2. What is global state?
@@ -11135,7 +11135,7 @@ For small applications, it can add unnecessary complexity.
 
 ---
 
-**### Key Takeaways: State Management**
+### Key Takeaways: State Management**
 
 ✅ **Local state** → State used by one component
 ✅ **Service state** → Simple shared state
@@ -11173,7 +11173,7 @@ However, modern Angular applications can use **Standalone Components** instead o
 
 ---
 
-**### 🟢 18.2 NgModule Metadata**
+### 🟢 18.2 NgModule Metadata**
 
 Important NgModule properties:
 
@@ -11187,7 +11187,7 @@ Important NgModule properties:
 
 ---
 
-**### 🟢 18.3 declarations**
+### 🟢 18.3 declarations**
 
 `declarations` defines components, directives, and pipes belonging to an NgModule.
 
@@ -11202,7 +11202,7 @@ A component should not normally be declared in multiple NgModules.
 
 ---
 
-**### 🟢 18.4 imports**
+### 🟢 18.4 imports**
 
 `imports` makes functionality from other modules or standalone components available.
 
@@ -11215,7 +11215,7 @@ export class UserModule {}
 
 ---
 
-**### 🟢 18.5 exports**
+### 🟢 18.5 exports**
 
 `exports` makes declarations available to modules that import this module.
 
@@ -11232,7 +11232,7 @@ Another module can then import `SharedModule` and use `UserCardComponent`.
 
 ---
 
-**### 🟡 18.6 providers**
+### 🟡 18.6 providers**
 
 Providers configure dependencies for the Angular DI system.
 
@@ -11256,7 +11256,7 @@ which is generally preferred for application-wide services.
 
 ---
 
-**### 🟢 18.7 Standalone Components**
+### 🟢 18.7 Standalone Components**
 
 Modern Angular allows components to be standalone.
 
@@ -11274,7 +11274,7 @@ Standalone components do not need to be declared in an NgModule.
 
 ---
 
-**### 🟢 18.8 Standalone vs NgModule**
+### 🟢 18.8 Standalone vs NgModule**
 
 | Standalone                               | NgModule                                  |
 | ---------------------------------------- | ----------------------------------------- |
@@ -11290,7 +11290,7 @@ Standalone components do not need to be declared in an NgModule.
 
 ---
 
-**### 🟢 18.9 Core Module**
+### 🟢 18.9 Core Module**
 
 In older enterprise Angular applications, a `CoreModule` often contains application-wide singleton services and core functionality.
 
@@ -11310,7 +11310,7 @@ Modern Angular applications often replace much of this structure with root/envir
 
 ---
 
-**### 🟢 18.10 Shared Module**
+### 🟢 18.10 Shared Module**
 
 A `SharedModule` traditionally contains reusable components, directives, and pipes.
 
@@ -11329,7 +11329,7 @@ It is intended for functionality reused across multiple features.
 
 ---
 
-**### 🟡 18.11 Feature Modules**
+### 🟡 18.11 Feature Modules**
 
 Feature modules organize code around a business feature.
 
@@ -11357,7 +11357,7 @@ Feature-based organization is usually easier to maintain than organizing the ent
 
 ---
 
-**### 🟡 18.12 Lazy-loaded Feature Modules**
+### 🟡 18.12 Lazy-loaded Feature Modules**
 
 In older Angular applications, a feature module can be lazy-loaded.
 
@@ -11385,7 +11385,7 @@ Both patterns are important when working with different Angular codebases.
 
 ---
 
-**### 🟢 18.13 Angular Application Architecture**
+### 🟢 18.13 Angular Application Architecture**
 
 A typical enterprise Angular application can be organized like:
 
@@ -11423,7 +11423,7 @@ Application shell and common layouts.
 
 ---
 
-**### 🟡 18.14 Feature-based vs Layer-based Architecture**
+### 🟡 18.14 Feature-based vs Layer-based Architecture**
 
 ### Layer-based
 
@@ -11455,7 +11455,7 @@ Feature-based architecture is often easier to scale because everything related t
 
 ---
 
-**### 🟡 18.15 Smart vs Presentational Components**
+### 🟡 18.15 Smart vs Presentational Components**
 
 ### Smart/Container Component
 
@@ -11489,7 +11489,7 @@ The page component can manage data while the child components focus on presentat
 
 ---
 
-**### 🟡 18.16 Separation of Concerns**
+### 🟡 18.16 Separation of Concerns**
 
 A good Angular application separates responsibilities.
 
@@ -11531,7 +11531,7 @@ Instead, separate responsibilities into appropriate services/state layers.
 
 ---
 
-**### 🟡 18.17 Reusable Components**
+### 🟡 18.17 Reusable Components**
 
 Reusable components should have clear responsibilities and configurable inputs.
 
@@ -11555,7 +11555,7 @@ A reusable component should avoid depending unnecessarily on a specific feature.
 
 ---
 
-**### 🟡 18.18 Angular Architecture Best Practices**
+### 🟡 18.18 Angular Architecture Best Practices**
 
 Good practices include:
 
@@ -11573,7 +11573,7 @@ Good practices include:
 
 ---
 
-**### 🟢 18.19 Angular Architecture Interview Questions**
+### 🟢 18.19 Angular Architecture Interview Questions**
 
 **Beginner: What is an NgModule?**
 
@@ -11601,7 +11601,7 @@ Good practices include:
 
 ---
 
-**### 🟡 18.20 Architecture Follow-up Questions**
+### 🟡 18.20 Architecture Follow-up Questions**
 
 1. What is the purpose of `declarations`?
 2. What is the purpose of `imports`?
@@ -11626,7 +11626,7 @@ Good practices include:
 
 ---
 
-**### Key Takeaways: Angular Modules & Architecture**
+### Key Takeaways: Angular Modules & Architecture**
 
 ✅ **NgModule** → Traditional Angular organization mechanism
 ✅ **Standalone Components** → Modern Angular approach
@@ -11677,7 +11677,7 @@ This reduces the initial JavaScript bundle and can improve the initial loading e
 
 ---
 
-**### 🟢 19.2 Lazy Loading Routes**
+### 🟢 19.2 Lazy Loading Routes**
 
 Angular supports lazy-loaded routes.
 
@@ -11714,7 +11714,7 @@ For a standalone component:
 
 ---
 
-**### 🟢 19.3 Why Lazy Loading Improves Performance**
+### 🟢 19.3 Why Lazy Loading Improves Performance**
 
 Suppose an application contains:
 
@@ -11751,7 +11751,7 @@ The user does not need to download code for features they never visit.
 
 ---
 
-**### 🟢 19.4 Lazy Loading vs Eager Loading**
+### 🟢 19.4 Lazy Loading vs Eager Loading**
 
 | Lazy Loading              | Eager Loading                    |
 | ------------------------- | -------------------------------- |
@@ -11766,7 +11766,7 @@ The user does not need to download code for features they never visit.
 
 ---
 
-**### 🟡 19.5 Preloading**
+### 🟡 19.5 Preloading**
 
 Sometimes we want lazy-loaded features to load in the background after the initial page has loaded.
 
@@ -11795,7 +11795,7 @@ Angular can use routing strategies to control preloading.
 
 ---
 
-**### 🟢 19.6 What is Angular Performance?**
+### 🟢 19.6 What is Angular Performance?**
 
 Angular performance is mainly about:
 
@@ -11816,7 +11816,7 @@ Performance
 
 ---
 
-**### 🟢 19.7 Initial Load Performance**
+### 🟢 19.7 Initial Load Performance**
 
 Initial load is affected by:
 
@@ -11841,7 +11841,7 @@ Remove unnecessary dependencies
 
 ---
 
-**### 🟢 19.8 Change Detection and Performance**
+### 🟢 19.8 Change Detection and Performance**
 
 Angular uses change detection to keep the UI synchronized with application state.
 
@@ -11868,7 +11868,7 @@ total = computed(() => price() * quantity());
 
 ---
 
-**### 🟢 19.9 OnPush Change Detection**
+### 🟢 19.9 OnPush Change Detection**
 
 `OnPush` can reduce unnecessary change detection work.
 
@@ -11894,7 +11894,7 @@ It works particularly well with:
 
 ---
 
-**### 🟢 19.10 track with @for**
+### 🟢 19.10 track with @for**
 
 When rendering lists, Angular needs to know which items correspond to which DOM elements.
 
@@ -11918,7 +11918,7 @@ track user.id
 
 ---
 
-**### 🟡 19.11 Virtual Scrolling**
+### 🟡 19.11 Virtual Scrolling**
 
 If thousands of items need to be displayed, rendering all of them at once can be expensive.
 
@@ -11944,7 +11944,7 @@ It is useful for:
 
 ---
 
-**### 🟢 19.12 Image Optimization**
+### 🟢 19.12 Image Optimization**
 
 Images can have a major impact on application performance.
 
@@ -11960,7 +11960,7 @@ Angular provides `NgOptimizedImage` for image optimization.
 
 ---
 
-**### 🟡 19.13 Server-Side Rendering (SSR)**
+### 🟡 19.13 Server-Side Rendering (SSR)**
 
 Normally Angular renders the application in the browser.
 
@@ -11984,7 +11984,7 @@ Benefits can include:
 
 ---
 
-**### 🟡 19.14 Hydration**
+### 🟡 19.14 Hydration**
 
 When Angular uses SSR, the server sends already-rendered HTML.
 
@@ -12004,7 +12004,7 @@ Interactive Angular application
 
 ---
 
-**### 🟡 19.15 @defer for Performance**
+### 🟡 19.15 @defer for Performance**
 
 `@defer` allows Angular to delay loading the code for components, directives, and pipes until needed.
 
@@ -12020,7 +12020,7 @@ This can reduce the initial bundle size.
 
 ---
 
-**### 🟢 19.16 Measuring Angular Performance**
+### 🟢 19.16 Measuring Angular Performance**
 
 Do not optimize blindly.
 
@@ -12050,7 +12050,7 @@ Measure again
 
 ---
 
-**### 🟢 19.17 Common Angular Performance Techniques**
+### 🟢 19.17 Common Angular Performance Techniques**
 
 ```text
 Lazy loading
@@ -12088,7 +12088,7 @@ Find actual bottlenecks
 
 ---
 
-**### 🟢 19.18 Lazy Loading & Performance Interview Questions**
+### 🟢 19.18 Lazy Loading & Performance Interview Questions**
 
 **Beginner: What is lazy loading?**
 
@@ -12112,7 +12112,7 @@ Find actual bottlenecks
 
 ---
 
-**### 🟡 19.19 Performance Follow-up Questions**
+### 🟡 19.19 Performance Follow-up Questions**
 
 1. What is lazy loading?
 2. What is preloading?
@@ -12132,7 +12132,7 @@ Find actual bottlenecks
 
 ---
 
-**### Key Takeaways: Lazy Loading & Performance**
+### Key Takeaways: Lazy Loading & Performance**
 
 ✅ **Lazy loading** → Load features when needed
 ✅ **Preloading** → Load lazy features in the background
@@ -12169,7 +12169,7 @@ Modern Angular applications commonly use standalone APIs.
 
 ---
 
-**### 🟢 20.2 New Control Flow**
+### 🟢 20.2 New Control Flow**
 
 Modern Angular provides built-in control flow syntax.
 
@@ -12221,7 +12221,7 @@ Switch:
 
 ---
 
-**### 🟢 20.3 Signals**
+### 🟢 20.3 Signals**
 
 Signals are Angular's reactive primitive for managing state.
 
@@ -12255,7 +12255,7 @@ Template:
 
 ---
 
-**### 🟢 20.4 computed()**
+### 🟢 20.4 computed()**
 
 `computed()` creates a value derived from Signals.
 
@@ -12283,7 +12283,7 @@ computed() → Derive state
 
 ---
 
-**### 🟢 20.5 effect()**
+### 🟢 20.5 effect()**
 
 `effect()` runs code when the Signals it reads change.
 
@@ -12309,7 +12309,7 @@ Do not use `effect()` as the default way to calculate derived state. Use `comput
 
 ---
 
-**### 🟢 20.6 input()**
+### 🟢 20.6 input()**
 
 Modern Angular supports signal-based inputs.
 
@@ -12336,7 +12336,7 @@ Template:
 
 ---
 
-**### 🟢 20.7 output()**
+### 🟢 20.7 output()**
 
 Modern Angular also provides `output()` for component events.
 
@@ -12361,7 +12361,7 @@ Parent:
 
 ---
 
-**### 🟡 20.8 model()**
+### 🟡 20.8 model()**
 
 `model()` supports a writable signal input that can participate in two-way binding.
 
@@ -12381,7 +12381,7 @@ This can simplify components that need two-way communication.
 
 ---
 
-**### 🟢 20.9 @defer**
+### 🟢 20.9 @defer**
 
 `@defer` allows Angular to defer loading code for components, directives, and pipes.
 
@@ -12429,7 +12429,7 @@ The default trigger is browser idle time.
 
 ---
 
-**### 🟢 20.10 @placeholder, @loading and @error**
+### 🟢 20.10 @placeholder, @loading and @error**
 
 `@defer` can provide different UI states.
 
@@ -12461,7 +12461,7 @@ Error
 
 ---
 
-**### 🟡 20.11 @defer Prefetching**
+### 🟡 20.11 @defer Prefetching**
 
 You can start downloading deferred code before the actual render trigger occurs.
 
@@ -12487,7 +12487,7 @@ This is useful when you expect the user may need the component soon.
 
 ---
 
-**### 🟡 20.12 Important @defer Limitation**
+### 🟡 20.12 Important @defer Limitation**
 
 For a dependency to be directly deferred, it needs to be standalone and should not be referenced outside the `@defer` block in the same file.
 
@@ -12509,7 +12509,7 @@ But if the same component is also eagerly referenced elsewhere in that file, Ang
 
 ---
 
-**### 🟢 20.13 inject()**
+### 🟢 20.13 inject()**
 
 Modern Angular allows dependencies to be retrieved using `inject()`.
 
@@ -12537,7 +12537,7 @@ This can be useful in:
 
 ---
 
-**### 🟢 20.14 takeUntilDestroyed()**
+### 🟢 20.14 takeUntilDestroyed()**
 
 Angular provides `takeUntilDestroyed()` for automatic RxJS cleanup.
 
@@ -12554,7 +12554,7 @@ It automatically stops the subscription when the associated Angular destruction 
 
 ---
 
-**### 🟡 20.15 Zoneless Angular**
+### 🟡 20.15 Zoneless Angular**
 
 Angular can operate without relying on ZoneJS for change detection.
 
@@ -12584,7 +12584,7 @@ You do not need to memorize every internal detail. Understand that zoneless Angu
 
 ---
 
-**### 🟢 20.16 Modern Angular vs Older Angular**
+### 🟢 20.16 Modern Angular vs Older Angular**
 
 | Older Angular Patterns                    | Modern Angular               |
 | ----------------------------------------- | ---------------------------- |
@@ -12603,7 +12603,7 @@ You do not need to memorize every internal detail. Understand that zoneless Angu
 
 ---
 
-**### 🟢 20.17 Modern Angular Interview Questions**
+### 🟢 20.17 Modern Angular Interview Questions**
 
 **Beginner: What are standalone components?**
 
@@ -12639,7 +12639,7 @@ You do not need to memorize every internal detail. Understand that zoneless Angu
 
 ---
 
-**### 🟡 20.18 Modern Angular Follow-up Questions**
+### 🟡 20.18 Modern Angular Follow-up Questions**
 
 1. What are standalone components?
 2. Why were standalone components introduced?
@@ -12668,7 +12668,7 @@ You do not need to memorize every internal detail. Understand that zoneless Angu
 
 ---
 
-**### Key Takeaways: Modern Angular**
+### Key Takeaways: Modern Angular**
 
 ✅ **Standalone components** → Modern Angular architecture
 ✅ **Signals** → Reactive state
@@ -12708,7 +12708,7 @@ The backend must also enforce authentication and authorization.
 
 ---
 
-**### 🟢 21.2 Cross-Site Scripting (XSS)**
+### 🟢 21.2 Cross-Site Scripting (XSS)**
 
 XSS occurs when an attacker manages to execute malicious JavaScript in a user's browser.
 
@@ -12736,7 +12736,7 @@ Angular treats the value as data rather than executable HTML.
 
 ---
 
-**### 🟢 21.3 Angular Sanitization**
+### 🟢 21.3 Angular Sanitization**
 
 Angular sanitizes untrusted values when they are inserted into sensitive DOM contexts.
 
@@ -12756,7 +12756,7 @@ Different DOM contexts have different security risks.
 
 ---
 
-**### 🟡 21.4 DomSanitizer**
+### 🟡 21.4 DomSanitizer**
 
 Angular provides `DomSanitizer` for working with security-sensitive values.
 
@@ -12782,7 +12782,7 @@ Only mark a value as trusted when you have verified that the value is safe.
 
 ---
 
-**### 🟢 21.5 Why Should You Avoid bypassSecurityTrust...?**
+### 🟢 21.5 Why Should You Avoid bypassSecurityTrust...?**
 
 This is dangerous:
 
@@ -12808,7 +12808,7 @@ and let Angular sanitize untrusted content.
 
 ---
 
-**### 🟢 21.6 Authentication vs Authorization**
+### 🟢 21.6 Authentication vs Authorization**
 
 These are different concepts.
 
@@ -12845,7 +12845,7 @@ User  → Cannot access /admin
 
 ---
 
-**### 🟢 21.7 Route Guards and Security**
+### 🟢 21.7 Route Guards and Security**
 
 Angular route guards can prevent users from navigating to protected pages.
 
@@ -12887,7 +12887,7 @@ for protected API requests.
 
 ---
 
-**### 🟢 21.8 JWT Authentication**
+### 🟢 21.8 JWT Authentication**
 
 A common architecture is:
 
@@ -12919,7 +12919,7 @@ const request = req.clone({
 
 ---
 
-**### 🟡 21.9 Where Should JWT Tokens Be Stored?**
+### 🟡 21.9 Where Should JWT Tokens Be Stored?**
 
 Common browser storage choices include:
 
@@ -12947,7 +12947,7 @@ The correct architecture depends on the authentication model and threat model.
 
 ---
 
-**### 🟢 21.10 HttpOnly Cookies**
+### 🟢 21.10 HttpOnly Cookies**
 
 An `HttpOnly` cookie cannot be read directly by JavaScript.
 
@@ -12965,7 +12965,7 @@ However, cookie-based authentication introduces CSRF considerations, so the over
 
 ---
 
-**### 🟡 21.11 CSRF / XSRF**
+### 🟡 21.11 CSRF / XSRF**
 
 CSRF (Cross-Site Request Forgery) occurs when a malicious site causes a user's browser to make an unwanted authenticated request to another site.
 
@@ -12987,7 +12987,7 @@ Angular's `HttpClient` provides XSRF support for cookie-based authentication pat
 
 ---
 
-**### 🟡 21.12 HTTPS**
+### 🟡 21.12 HTTPS**
 
 Always use HTTPS in production.
 
@@ -13019,7 +13019,7 @@ It does not replace authentication or authorization.
 
 ---
 
-**### 🟢 21.13 Content Security Policy (CSP)**
+### 🟢 21.13 Content Security Policy (CSP)**
 
 CSP is a browser security mechanism that restricts where resources such as scripts can come from.
 
@@ -13040,7 +13040,7 @@ It should be configured carefully because an overly strict policy can break appl
 
 ---
 
-**### 🟡 21.14 Trusted Types**
+### 🟡 21.14 Trusted Types**
 
 Trusted Types is a browser security mechanism that helps prevent dangerous DOM-based injection.
 
@@ -13060,7 +13060,7 @@ Angular recommends considering CSP and Trusted Types as additional security laye
 
 ---
 
-**### 🟢 21.15 Avoiding Unsafe DOM Manipulation**
+### 🟢 21.15 Avoiding Unsafe DOM Manipulation**
 
 Avoid directly manipulating the DOM when possible.
 
@@ -13084,7 +13084,7 @@ Angular's template system provides safer abstractions.
 
 ---
 
-**### 🟡 21.16 Sensitive Data**
+### 🟡 21.16 Sensitive Data**
 
 Do not place sensitive information in the frontend bundle.
 
@@ -13109,7 +13109,7 @@ but secrets must remain on the server.
 
 ---
 
-**### 🟢 21.17 Environment Variables Are Not Automatically Secret**
+### 🟢 21.17 Environment Variables Are Not Automatically Secret**
 
 A common mistake is assuming that putting a secret in an Angular environment file makes it secure.
 
@@ -13129,7 +13129,7 @@ Never store private backend credentials or secret keys in frontend code.
 
 ---
 
-**### 🟡 21.18 Dependency Security**
+### 🟡 21.18 Dependency Security**
 
 Angular applications depend on many npm packages.
 
@@ -13151,7 +13151,7 @@ Do not blindly update production dependencies without testing compatibility.
 
 ---
 
-**### 🟢 21.19 Angular Security Best Practices**
+### 🟢 21.19 Angular Security Best Practices**
 
 ```text
 Use Angular templates
@@ -13175,7 +13175,7 @@ Keep dependencies updated
 
 ---
 
-**### 🟢 21.20 Angular Security Interview Questions**
+### 🟢 21.20 Angular Security Interview Questions**
 
 **Beginner: What is XSS?**
 
@@ -13211,7 +13211,7 @@ Keep dependencies updated
 
 ---
 
-**### 🟡 21.21 Security Follow-up Questions**
+### 🟡 21.21 Security Follow-up Questions**
 
 1. What is XSS?
 2. How does Angular prevent XSS?
@@ -13240,7 +13240,7 @@ Keep dependencies updated
 
 ---
 
-**### Key Takeaways: Angular Security**
+### Key Takeaways: Angular Security**
 
 ✅ **XSS** → Prevent malicious script injection
 ✅ **Sanitization** → Angular protects untrusted DOM values
@@ -13287,7 +13287,7 @@ Angular Testing
 
 ---
 
-**### 🟢 22.2 Unit Testing**
+### 🟢 22.2 Unit Testing**
 
 Unit testing tests a small piece of code independently.
 
@@ -13318,7 +13318,7 @@ The goal is to test one piece of behavior without depending on the entire applic
 
 ---
 
-**### 🟢 22.3 Jasmine and Karma**
+### 🟢 22.3 Jasmine and Karma**
 
 Historically, Angular projects commonly used:
 
@@ -13346,7 +13346,7 @@ Modern Angular projects can use other test runners/frameworks as well, such as J
 
 ---
 
-**### 🟢 22.4 describe(), it(), expect()**
+### 🟢 22.4 describe(), it(), expect()**
 
 Basic Jasmine structure:
 
@@ -13370,7 +13370,7 @@ expect()   → Check the result
 
 ---
 
-**### 🟢 22.5 TestBed**
+### 🟢 22.5 TestBed**
 
 `TestBed` is Angular's main utility for configuring a testing environment.
 
@@ -13395,7 +13395,7 @@ It can provide:
 
 ---
 
-**### 🟢 22.6 Testing a Component**
+### 🟢 22.6 Testing a Component**
 
 Example component:
 
@@ -13422,7 +13422,7 @@ it("should display the user name", () => {
 
 ---
 
-**### 🟢 22.7 Component Fixture**
+### 🟢 22.7 Component Fixture**
 
 `ComponentFixture` provides access to the component and its rendered DOM.
 
@@ -13450,7 +13450,7 @@ fixture.detectChanges();
 
 ---
 
-**### 🟢 22.8 detectChanges()**
+### 🟢 22.8 detectChanges()**
 
 `detectChanges()` tells Angular to run change detection for the test fixture.
 
@@ -13466,7 +13466,7 @@ Without change detection, the DOM may not yet contain the updated value.
 
 ---
 
-**### 🟢 22.9 DebugElement**
+### 🟢 22.9 DebugElement**
 
 `DebugElement` provides Angular-specific access to elements in a test.
 
@@ -13484,7 +13484,7 @@ This is useful for interacting with the component's DOM in tests.
 
 ---
 
-**### 🟢 22.10 Testing Services**
+### 🟢 22.10 Testing Services**
 
 Suppose we have:
 
@@ -13519,7 +13519,7 @@ describe("CalculatorService", () => {
 
 ---
 
-**### 🟢 22.11 Dependency Injection in Tests**
+### 🟢 22.11 Dependency Injection in Tests**
 
 Suppose:
 
@@ -13548,7 +13548,7 @@ Or replace it with a mock:
 
 ---
 
-**### 🟢 22.12 Mocking**
+### 🟢 22.12 Mocking**
 
 A mock replaces a real dependency with a controlled test version.
 
@@ -13584,7 +13584,7 @@ Benefits:
 
 ---
 
-**### 🟢 22.13 HttpTestingController**
+### 🟢 22.13 HttpTestingController**
 
 Angular provides `HttpTestingController` to test HTTP requests without making real network calls.
 
@@ -13600,7 +13600,7 @@ This allows you to control the API response.
 
 ---
 
-**### 🟢 22.14 Testing HTTP Services**
+### 🟢 22.14 Testing HTTP Services**
 
 Example service:
 
@@ -13630,7 +13630,7 @@ No actual backend is called.
 
 ---
 
-**### 🟢 22.15 Testing Forms**
+### 🟢 22.15 Testing Forms**
 
 Reactive forms can be tested directly.
 
@@ -13654,7 +13654,7 @@ You can test:
 
 ---
 
-**### 🟡 22.16 Testing Observables**
+### 🟡 22.16 Testing Observables**
 
 RxJS Observables can be tested using normal subscriptions or specialized testing utilities.
 
@@ -13670,7 +13670,7 @@ For complex asynchronous streams, RxJS provides tools such as marble testing.
 
 ---
 
-**### 🟡 22.17 Async Testing**
+### 🟡 22.17 Async Testing**
 
 Angular tests may involve asynchronous operations.
 
@@ -13698,7 +13698,7 @@ it("should update after delay", fakeAsync(() => {
 
 ---
 
-**### 🟡 22.18 Testing Pipes**
+### 🟡 22.18 Testing Pipes**
 
 Example pipe:
 
@@ -13727,7 +13727,7 @@ Pipes are often easy to unit test because they are simple transformations.
 
 ---
 
-**### 🟡 22.19 What Should You Test?**
+### 🟡 22.19 What Should You Test?**
 
 Focus on behavior rather than implementation details.
 
@@ -13747,7 +13747,7 @@ Avoid testing Angular internals that your code does not control.
 
 ---
 
-**### 🟢 22.20 Testing Interview Questions**
+### 🟢 22.20 Testing Interview Questions**
 
 **Beginner: What is unit testing?**
 
@@ -13775,7 +13775,7 @@ Avoid testing Angular internals that your code does not control.
 
 ---
 
-**### 🟡 22.21 Testing Follow-up Questions**
+### 🟡 22.21 Testing Follow-up Questions**
 
 1. What is TestBed?
 2. What is ComponentFixture?
@@ -13798,7 +13798,7 @@ Avoid testing Angular internals that your code does not control.
 
 ---
 
-**### Key Takeaways: Testing**
+### Key Takeaways: Testing**
 
 ✅ **Unit test** → Test small pieces of code
 ✅ **TestBed** → Configure Angular testing environment
@@ -13831,7 +13831,7 @@ ng build
 
 ---
 
-**### 🟢 23.2 ng new**
+### 🟢 23.2 ng new**
 
 Creates a new Angular application.
 
@@ -13854,7 +13854,7 @@ my-app/
 
 ---
 
-**### 🟢 23.3 ng serve**
+### 🟢 23.3 ng serve**
 
 Starts the development server.
 
@@ -13872,7 +13872,7 @@ ng serve --port 4201
 
 ---
 
-**### 🟢 23.4 ng generate**
+### 🟢 23.4 ng generate**
 
 Generates Angular code.
 
@@ -13898,7 +13898,7 @@ ng g pipe currency
 
 ---
 
-**### 🟢 23.5 ng build**
+### 🟢 23.5 ng build**
 
 Builds the Angular application.
 
@@ -13916,7 +13916,7 @@ The build produces optimized browser assets.
 
 ---
 
-**### 🟢 23.6 Development vs Production Build**
+### 🟢 23.6 Development vs Production Build**
 
 Development builds prioritize developer experience.
 
@@ -13943,7 +13943,7 @@ Smaller output
 
 ---
 
-**### 🟢 23.7 Angular Build Output**
+### 🟢 23.7 Angular Build Output**
 
 A production build typically produces files such as:
 
@@ -13960,7 +13960,7 @@ The exact output depends on the Angular version and build configuration.
 
 ---
 
-**### 🟡 23.8 AOT Compilation**
+### 🟡 23.8 AOT Compilation**
 
 AOT means:
 
@@ -13987,7 +13987,7 @@ Modern Angular production builds use AOT by default.
 
 ---
 
-**### 🟢 23.9 JIT vs AOT**
+### 🟢 23.9 JIT vs AOT**
 
 ### JIT
 
@@ -14021,7 +14021,7 @@ Browser receives compiled output
 
 ---
 
-**### 🟡 23.10 Tree Shaking**
+### 🟡 23.10 Tree Shaking**
 
 Tree shaking removes unused code from the final bundle.
 
@@ -14045,7 +14045,7 @@ Faster loading
 
 ---
 
-**### 🟡 23.11 Code Splitting**
+### 🟡 23.11 Code Splitting**
 
 Code splitting divides the application into smaller JavaScript chunks.
 
@@ -14065,7 +14065,7 @@ Lazy loading and `@defer` can create opportunities for separate chunks.
 
 ---
 
-**### 🟢 23.12 Source Maps**
+### 🟢 23.12 Source Maps**
 
 Source maps help developers debug compiled JavaScript by mapping it back to the original TypeScript source.
 
@@ -14091,7 +14091,7 @@ This is especially useful during development.
 
 ---
 
-**### 🟢 23.13 angular.json**
+### 🟢 23.13 angular.json**
 
 `angular.json` contains Angular CLI workspace configuration.
 
@@ -14125,7 +14125,7 @@ The exact structure can vary between Angular versions and builders.
 
 ---
 
-**### 🟢 23.14 package.json**
+### 🟢 23.14 package.json**
 
 `package.json` defines project metadata, scripts, and dependencies.
 
@@ -14152,7 +14152,7 @@ typescript
 
 ---
 
-**### 🟢 23.15 TypeScript Configuration**
+### 🟢 23.15 TypeScript Configuration**
 
 Angular projects use TypeScript configuration files.
 
@@ -14168,7 +14168,7 @@ They control TypeScript compiler settings for different parts of the application
 
 ---
 
-**### 🟡 23.16 Environment Configuration**
+### 🟡 23.16 Environment Configuration**
 
 Applications often need different configuration for development and production.
 
@@ -14196,7 +14196,7 @@ Environment configuration is **not a secure storage mechanism**. Values shipped 
 
 ---
 
-**### 🟢 23.17 npm vs npx vs ng**
+### 🟢 23.17 npm vs npx vs ng**
 
 ### npm
 
@@ -14227,7 +14227,7 @@ ng generate
 
 ---
 
-**### 🟡 23.18 Angular Compiler and Build System**
+### 🟡 23.18 Angular Compiler and Build System**
 
 The Angular build process roughly looks like:
 
@@ -14253,7 +14253,7 @@ You should understand the purpose of the build system rather than memorize its i
 
 ---
 
-**### 🟢 23.19 Angular CLI Interview Questions**
+### 🟢 23.19 Angular CLI Interview Questions**
 
 **Beginner: What is Angular CLI?**
 
@@ -14285,7 +14285,7 @@ You should understand the purpose of the build system rather than memorize its i
 
 ---
 
-**### 🟡 23.20 Build & Tooling Follow-up Questions**
+### 🟡 23.20 Build & Tooling Follow-up Questions**
 
 1. What does `ng new` do?
 2. What does `ng serve` do?
@@ -14310,7 +14310,7 @@ You should understand the purpose of the build system rather than memorize its i
 
 ---
 
-**### Key Takeaways: Build System & Tooling**
+### Key Takeaways: Build System & Tooling**
 
 ✅ **Angular CLI** → Angular development tool
 ✅ **ng serve** → Development server
@@ -14357,7 +14357,7 @@ View updates
 
 ---
 
-**### 🟢 24.2 Component**
+### 🟢 24.2 Component**
 
 A Component is the basic building block of an Angular application.
 
@@ -14384,7 +14384,7 @@ Component
 
 ---
 
-**### 🟢 24.3 Component Metadata**
+### 🟢 24.3 Component Metadata**
 
 The `@Component()` decorator tells Angular how to treat the class.
 
@@ -14411,7 +14411,7 @@ changeDetection
 
 ---
 
-**### 🟢 24.4 Angular Template Compilation**
+### 🟢 24.4 Angular Template Compilation**
 
 Angular compiles templates into efficient JavaScript instructions.
 
@@ -14431,7 +14431,7 @@ This is why Angular can update only the parts of the UI that need updating rathe
 
 ---
 
-**### 🟡 24.5 Ivy**
+### 🟡 24.5 Ivy**
 
 Ivy is Angular's modern rendering and compilation architecture.
 
@@ -14452,7 +14452,7 @@ Ivy provides:
 
 ---
 
-**### 🟢 24.6 Change Detection**
+### 🟢 24.6 Change Detection**
 
 Change detection is the process Angular uses to determine whether the view needs to be updated.
 
@@ -14492,7 +14492,7 @@ Alice
 
 ---
 
-**### 🟢 24.7 Change Detection Tree**
+### 🟢 24.7 Change Detection Tree**
 
 Angular applications form a component tree.
 
@@ -14515,7 +14515,7 @@ This is why unnecessarily large or frequently checked component trees can affect
 
 ---
 
-**### 🟢 24.8 Default vs OnPush**
+### 🟢 24.8 Default vs OnPush**
 
 Angular supports different change detection strategies.
 
@@ -14543,7 +14543,7 @@ Angular can skip a component subtree when Angular determines there is no relevan
 
 ---
 
-**### 🟡 24.9 What Triggers OnPush?**
+### 🟡 24.9 What Triggers OnPush?**
 
 Common triggers include:
 
@@ -14563,7 +14563,7 @@ When the input changes appropriately, Angular checks the component.
 
 ---
 
-**### 🟢 24.10 Dependency Injection Internals**
+### 🟢 24.10 Dependency Injection Internals**
 
 Angular has a dependency injection system.
 
@@ -14601,7 +14601,7 @@ UserService instance
 
 ---
 
-**### 🟢 24.11 Dependency Injection Hierarchy**
+### 🟢 24.11 Dependency Injection Hierarchy**
 
 Angular's DI system can have different injector scopes.
 
@@ -14619,7 +14619,7 @@ A provider can therefore have a different lifetime and visibility depending on w
 
 ---
 
-**### 🟢 24.12 providedIn: 'root'**
+### 🟢 24.12 providedIn: 'root'**
 
 A service declared as:
 
@@ -14636,7 +14636,7 @@ It also allows Angular tooling to tree-shake the service when it is unused.
 
 ---
 
-**### 🟡 24.13 Component-level Providers**
+### 🟡 24.13 Component-level Providers**
 
 You can provide a service at the component level:
 
@@ -14664,7 +14664,7 @@ UserStateService B
 
 ---
 
-**### 🟢 24.14 Dependency Injection Resolution**
+### 🟢 24.14 Dependency Injection Resolution**
 
 When Angular needs a dependency, it searches the injector hierarchy for a matching provider.
 
@@ -14684,7 +14684,7 @@ This is why the location of a provider matters.
 
 ---
 
-**### 🟢 24.15 Lifecycle Hooks**
+### 🟢 24.15 Lifecycle Hooks**
 
 Angular provides lifecycle hooks that allow code to run at specific stages of a component's life.
 
@@ -14716,7 +14716,7 @@ ngOnDestroy() {
 
 ---
 
-**### 🟢 24.16 Lifecycle Order**
+### 🟢 24.16 Lifecycle Order**
 
 A simplified lifecycle is:
 
@@ -14742,7 +14742,7 @@ The exact sequence depends on what features are used.
 
 ---
 
-**### 🟢 24.17 Constructor vs ngOnInit**
+### 🟢 24.17 Constructor vs ngOnInit**
 
 ### Constructor
 
@@ -14773,7 +14773,7 @@ ngOnInit() {
 
 ---
 
-**### 🟡 24.18 ZoneJS**
+### 🟡 24.18 ZoneJS**
 
 Historically, Angular commonly used ZoneJS to detect asynchronous activity and trigger change detection.
 
@@ -14793,7 +14793,7 @@ Modern Angular also supports zoneless applications, reducing this dependency.
 
 ---
 
-**### 🟡 24.19 Signals and Change Detection**
+### 🟡 24.19 Signals and Change Detection**
 
 Signals provide Angular with precise information about reactive dependencies.
 
@@ -14819,7 +14819,7 @@ This is one reason Signals are important in modern Angular.
 
 ---
 
-**### 🟡 24.20 Angular Rendering**
+### 🟡 24.20 Angular Rendering**
 
 Angular's rendering system converts component state into DOM updates.
 
@@ -14841,7 +14841,7 @@ It updates the relevant DOM nodes.
 
 ---
 
-**### 🟡 24.21 Angular Dependency Injection vs Normal JavaScript**
+### 🟡 24.21 Angular Dependency Injection vs Normal JavaScript**
 
 Normal JavaScript:
 
@@ -14869,7 +14869,7 @@ Benefits of DI:
 
 ---
 
-**### 🟢 24.22 Angular Internals Interview Questions**
+### 🟢 24.22 Angular Internals Interview Questions**
 
 **Beginner: What is change detection?**
 
@@ -14905,7 +14905,7 @@ Benefits of DI:
 
 ---
 
-**### 🟡 24.23 Angular Internals Follow-up Questions**
+### 🟡 24.23 Angular Internals Follow-up Questions**
 
 1. What is Angular change detection?
 2. How does change detection work?
@@ -14934,7 +14934,7 @@ Benefits of DI:
 
 ---
 
-**### Key Takeaways: Angular Internals**
+### Key Takeaways: Angular Internals**
 
 ✅ **Component** → Basic Angular building block
 ✅ **Template** → Defines UI
@@ -14977,7 +14977,7 @@ Do not immediately change random code. First understand the actual error.
 
 ---
 
-**### 🟢 25.2 Browser Developer Tools**
+### 🟢 25.2 Browser Developer Tools**
 
 Chrome DevTools is one of the most important tools for debugging Angular applications.
 
@@ -15020,7 +15020,7 @@ Used for:
 
 ---
 
-**### 🟢 25.3 Angular DevTools**
+### 🟢 25.3 Angular DevTools**
 
 Angular DevTools helps inspect Angular applications.
 
@@ -15035,7 +15035,7 @@ It is especially useful when debugging component behavior.
 
 ---
 
-**### 🟢 25.4 Reading Angular Errors**
+### 🟢 25.4 Reading Angular Errors**
 
 Do not ignore the complete error message.
 
@@ -15062,7 +15062,7 @@ This usually indicates that a value changed at an unexpected point during Angula
 
 ---
 
-**### 🟢 25.5 Template Errors**
+### 🟢 25.5 Template Errors**
 
 Example:
 
@@ -15088,7 +15088,7 @@ Or modern control flow:
 
 ---
 
-**### 🟢 25.6 Cannot Read Properties of Undefined**
+### 🟢 25.6 Cannot Read Properties of Undefined**
 
 Example:
 
@@ -15122,7 +15122,7 @@ The important point is to understand **why the value is undefined**, rather than
 
 ---
 
-**### 🟢 25.7 HTTP 404 Error**
+### 🟢 25.7 HTTP 404 Error**
 
 A `404` means the requested resource was not found.
 
@@ -15145,7 +15145,7 @@ Check:
 
 ---
 
-**### 🟢 25.8 HTTP 400 Error**
+### 🟢 25.8 HTTP 400 Error**
 
 `400 Bad Request` usually means the server rejected the request because the request data was invalid.
 
@@ -15159,7 +15159,7 @@ Check:
 
 ---
 
-**### 🟢 25.9 HTTP 401 vs 403**
+### 🟢 25.9 HTTP 401 vs 403**
 
 ### 401 Unauthorized
 
@@ -15192,7 +15192,7 @@ Not authorized
 
 ---
 
-**### 🟢 25.10 HTTP 500 Error**
+### 🟢 25.10 HTTP 500 Error**
 
 `500 Internal Server Error` means the server encountered an unexpected error.
 
@@ -15215,7 +15215,7 @@ Angular should still handle the error gracefully.
 
 ---
 
-**### 🟢 25.11 CORS Errors**
+### 🟢 25.11 CORS Errors**
 
 A common Angular development problem is:
 
@@ -15243,7 +15243,7 @@ CORS is generally a server/browser policy issue, not something Angular can solve
 
 ---
 
-**### 🟢 25.12 API Not Being Called**
+### 🟢 25.12 API Not Being Called**
 
 If an API does not appear in the Network tab, check:
 
@@ -15269,7 +15269,7 @@ With HttpClient, the Observable is typically cold, so the request is made when i
 
 ---
 
-**### 🟢 25.13 Observable Not Emitting**
+### 🟢 25.13 Observable Not Emitting**
 
 If an Observable is not producing values, check:
 
@@ -15292,7 +15292,7 @@ this.data$.subscribe({
 
 ---
 
-**### 🟡 25.14 Memory Leaks**
+### 🟡 25.14 Memory Leaks**
 
 Memory leaks can happen when subscriptions, event listeners, timers, or other resources are not cleaned up.
 
@@ -15320,7 +15320,7 @@ It manages the subscription lifecycle automatically.
 
 ---
 
-**### 🟡 25.15 Infinite Change Detection Problems**
+### 🟡 25.15 Infinite Change Detection Problems**
 
 Be careful with expensive or state-changing functions called directly from templates.
 
@@ -15346,7 +15346,7 @@ Then:
 
 ---
 
-**### 🟢 25.16 Debugging Forms**
+### 🟢 25.16 Debugging Forms**
 
 For a reactive form:
 
@@ -15375,7 +15375,7 @@ Useful when debugging:
 
 ---
 
-**### 🟡 25.17 Debugging Build Errors**
+### 🟡 25.17 Debugging Build Errors**
 
 If the application fails during build:
 
@@ -15396,7 +15396,7 @@ Avoid focusing only on the last error because later errors can be consequences o
 
 ---
 
-**### 🟡 25.18 Debugging Dependency Injection Errors**
+### 🟡 25.18 Debugging Dependency Injection Errors**
 
 Example:
 
@@ -15425,7 +15425,7 @@ export class UserService {}
 
 ---
 
-**### 🟢 25.19 Debugging Checklist**
+### 🟢 25.19 Debugging Checklist**
 
 When something is not working:
 
@@ -15451,7 +15451,7 @@ When something is not working:
 
 ---
 
-**### 🟢 25.20 Debugging Interview Questions**
+### 🟢 25.20 Debugging Interview Questions**
 
 **Beginner: How do you debug an Angular application?**
 
@@ -15471,7 +15471,7 @@ When something is not working:
 
 ---
 
-**### 🟡 25.21 Debugging Follow-up Questions**
+### 🟡 25.21 Debugging Follow-up Questions**
 
 1. How do you debug an API request?
 2. What is the Network tab used for?
@@ -15491,7 +15491,7 @@ When something is not working:
 
 ---
 
-**### Key Takeaways: Debugging**
+### Key Takeaways: Debugging**
 
 ✅ **Console** → JavaScript/Angular errors
 ✅ **Network** → API requests and responses
@@ -15547,7 +15547,7 @@ The goal is to keep responsibilities separate.
 
 ---
 
-**### 🟢 26.2 Separation of Concerns**
+### 🟢 26.2 Separation of Concerns**
 
 Each part of the application should have a clear responsibility.
 
@@ -15585,7 +15585,7 @@ Avoid putting everything into one component.
 
 ---
 
-**### 🟢 26.3 Keep Components Small**
+### 🟢 26.3 Keep Components Small**
 
 Avoid components containing:
 
@@ -15615,7 +15615,7 @@ Smaller components are easier to:
 
 ---
 
-**### 🟢 26.4 Feature-based Structure**
+### 🟢 26.4 Feature-based Structure**
 
 A scalable application can be organized by business feature.
 
@@ -15640,7 +15640,7 @@ This keeps related code together.
 
 ---
 
-**### 🟢 26.5 Core vs Shared vs Feature**
+### 🟢 26.5 Core vs Shared vs Feature**
 
 ### Core
 
@@ -15683,7 +15683,7 @@ Reports
 
 ---
 
-**### 🟢 26.6 Smart vs Presentational Components**
+### 🟢 26.6 Smart vs Presentational Components**
 
 ### Smart Component
 
@@ -15716,7 +15716,7 @@ This can make complex applications easier to manage.
 
 ---
 
-**### 🟡 26.7 Avoid Prop Drilling**
+### 🟡 26.7 Avoid Prop Drilling**
 
 Prop drilling happens when data must pass through many unrelated components.
 
@@ -15743,7 +15743,7 @@ Do not introduce global state automatically. Use the simplest solution that fits
 
 ---
 
-**### 🟢 26.8 Reusable Components**
+### 🟢 26.8 Reusable Components**
 
 A reusable component should have a clear API.
 
@@ -15772,7 +15772,7 @@ The component can now be reused in different features.
 
 ---
 
-**### 🟡 26.9 Services Should Have Clear Responsibilities**
+### 🟡 26.9 Services Should Have Clear Responsibilities**
 
 Avoid a service such as:
 
@@ -15805,7 +15805,7 @@ This follows the **Single Responsibility Principle**.
 
 ---
 
-**### 🟢 26.10 DRY Principle**
+### 🟢 26.10 DRY Principle**
 
 DRY means:
 
@@ -15825,7 +15825,7 @@ The goal is reusable and understandable code, not maximum abstraction.
 
 ---
 
-**### 🟡 26.11 SOLID in Angular**
+### 🟡 26.11 SOLID in Angular**
 
 SOLID principles can be applied to Angular applications.
 
@@ -15853,7 +15853,7 @@ In Angular, Dependency Injection naturally supports the last principle.
 
 ---
 
-**### 🟢 26.12 Avoid Hardcoded Values**
+### 🟢 26.12 Avoid Hardcoded Values**
 
 Avoid:
 
@@ -15873,7 +15873,7 @@ But remember:
 
 ---
 
-**### 🟢 26.13 Error Handling**
+### 🟢 26.13 Error Handling**
 
 Do not ignore errors:
 
@@ -15900,7 +15900,7 @@ For global HTTP concerns, an interceptor can also be appropriate.
 
 ---
 
-**### 🟡 26.14 Loading States**
+### 🟡 26.14 Loading States**
 
 Good applications should tell users when data is being loaded.
 
@@ -15935,7 +15935,7 @@ UI:
 
 ---
 
-**### 🟢 26.15 Avoid Memory Leaks**
+### 🟢 26.15 Avoid Memory Leaks**
 
 Use:
 
@@ -15956,7 +15956,7 @@ is often preferable to manually subscribing just to display data.
 
 ---
 
-**### 🟡 26.16 Avoid Overusing Global State**
+### 🟡 26.16 Avoid Overusing Global State**
 
 Not every piece of state belongs in NgRx or another global store.
 
@@ -15981,7 +15981,7 @@ Complex shared state
 
 ---
 
-**### 🟢 26.17 Lazy Load Large Features**
+### 🟢 26.17 Lazy Load Large Features**
 
 Large features should generally be lazy-loaded when they are not needed during the initial application load.
 
@@ -15998,7 +15998,7 @@ This reduces the initial JavaScript required by the application.
 
 ---
 
-**### 🟡 26.18 Use Modern Angular Features**
+### 🟡 26.18 Use Modern Angular Features**
 
 For new Angular applications, consider:
 
@@ -16017,7 +16017,7 @@ But when working on an existing enterprise project, follow the project's establi
 
 ---
 
-**### 🟢 26.19 Naming Conventions**
+### 🟢 26.19 Naming Conventions**
 
 Use clear names:
 
@@ -16044,7 +16044,7 @@ Good names reduce the need for comments.
 
 ---
 
-**### 🟢 26.20 Architecture Best Practices**
+### 🟢 26.20 Architecture Best Practices**
 
 A good Angular application should aim for:
 
@@ -16068,7 +16068,7 @@ Clear error handling
 
 ---
 
-**### 🟢 26.21 Architecture Interview Questions**
+### 🟢 26.21 Architecture Interview Questions**
 
 **Beginner: How would you structure an Angular application?**
 
@@ -16092,7 +16092,7 @@ Clear error handling
 
 ---
 
-**### 🟡 26.22 Architecture Follow-up Questions**
+### 🟡 26.22 Architecture Follow-up Questions**
 
 1. How would you structure a large Angular application?
 2. Core vs Shared vs Feature?
@@ -16117,7 +16117,7 @@ Clear error handling
 
 ---
 
-**### Key Takeaways: Architecture & Best Practices**
+### Key Takeaways: Architecture & Best Practices**
 
 ✅ **Feature-based architecture** → Organize around business features
 ✅ **Small components** → Easier to maintain
@@ -16173,7 +16173,7 @@ PostgreSQL
 
 ---
 
-**### 🟢 27.2 REST API**
+### 🟢 27.2 REST API**
 
 REST APIs expose resources through HTTP endpoints.
 
@@ -16192,7 +16192,7 @@ Angular calls these endpoints using `HttpClient`.
 
 ---
 
-**### 🟢 27.3 Angular Service for Backend Communication**
+### 🟢 27.3 Angular Service for Backend Communication**
 
 Example:
 
@@ -16223,7 +16223,7 @@ The component should generally use the service rather than directly building HTT
 
 ---
 
-**### 🟢 27.4 Request and Response Flow**
+### 🟢 27.4 Request and Response Flow**
 
 Example:
 
@@ -16251,7 +16251,7 @@ UI
 
 ---
 
-**### 🟢 27.5 DTOs**
+### 🟢 27.5 DTOs**
 
 DTO means:
 
@@ -16287,7 +16287,7 @@ this.http.get<User[]>("/api/users");
 
 ---
 
-**### 🟢 27.6 HTTP Status Codes**
+### 🟢 27.6 HTTP Status Codes**
 
 Angular should understand common backend responses.
 
@@ -16309,7 +16309,7 @@ The exact status code used for validation/conflict cases depends on the backend 
 
 ---
 
-**### 🟢 27.7 Handling Backend Errors**
+### 🟢 27.7 Handling Backend Errors**
 
 Example:
 
@@ -16333,7 +16333,7 @@ For application-wide handling, an HTTP interceptor may be more appropriate.
 
 ---
 
-**### 🟢 27.8 Angular + Spring Boot CORS**
+### 🟢 27.8 Angular + Spring Boot CORS**
 
 During development:
 
@@ -16369,7 +16369,7 @@ Spring Boot
 
 ---
 
-**### 🟢 27.9 Proxy Configuration**
+### 🟢 27.9 Proxy Configuration**
 
 During local development, Angular can use a development proxy so frontend requests can be made through the development server.
 
@@ -16390,7 +16390,7 @@ It does not replace proper production CORS/security configuration.
 
 ---
 
-**### 🟢 27.10 Authentication Flow**
+### 🟢 27.10 Authentication Flow**
 
 Typical Angular + Spring Boot JWT flow:
 
@@ -16418,7 +16418,7 @@ Protected API
 
 ---
 
-**### 🟢 27.11 Authorization**
+### 🟢 27.11 Authorization**
 
 Authentication tells the backend who the user is.
 
@@ -16449,7 +16449,7 @@ But the backend must also verify the user's role/permission.
 
 ---
 
-**### 🟢 27.12 Authentication Interceptor**
+### 🟢 27.12 Authentication Interceptor**
 
 An interceptor can add the JWT to requests.
 
@@ -16477,7 +16477,7 @@ This avoids manually adding the token to every API call.
 
 ---
 
-**### 🟡 27.13 Handling 401 Globally**
+### 🟡 27.13 Handling 401 Globally**
 
 If the backend returns:
 
@@ -16505,7 +16505,7 @@ Be careful with automatic retries so that the application does not create an inf
 
 ---
 
-**### 🟡 27.14 Pagination**
+### 🟡 27.14 Pagination**
 
 Backend:
 
@@ -16537,7 +16537,7 @@ Angular displays results
 
 ---
 
-**### 🟡 27.15 Searching and Filtering**
+### 🟡 27.15 Searching and Filtering**
 
 Example:
 
@@ -16559,7 +16559,7 @@ searchControl.valueChanges.pipe(
 
 ---
 
-**### 🟡 27.16 File Upload with Backend**
+### 🟡 27.16 File Upload with Backend**
 
 Angular:
 
@@ -16577,7 +16577,7 @@ The exact backend implementation depends on the backend framework.
 
 ---
 
-**### 🟢 27.17 Environment-specific API URLs**
+### 🟢 27.17 Environment-specific API URLs**
 
 Development:
 
@@ -16595,7 +16595,7 @@ The frontend should use configuration rather than hardcoding backend URLs throug
 
 ---
 
-**### 🟡 27.18 Error Response Structure**
+### 🟡 27.18 Error Response Structure**
 
 A backend should ideally return a consistent error format.
 
@@ -16623,7 +16623,7 @@ The exact error contract should be agreed between frontend and backend teams.
 
 ---
 
-**### 🟡 27.19 Angular + Spring Boot Architecture**
+### 🟡 27.19 Angular + Spring Boot Architecture**
 
 A clean architecture can look like:
 
@@ -16663,7 +16663,7 @@ A clean architecture can look like:
 
 ---
 
-**### 🟢 27.20 Full CRUD Flow**
+### 🟢 27.20 Full CRUD Flow**
 
 ### Create
 
@@ -16721,7 +16721,7 @@ Database DELETE
 
 ---
 
-**### 🟢 27.21 Angular + Backend Interview Questions**
+### 🟢 27.21 Angular + Backend Interview Questions**
 
 **Beginner: How does Angular communicate with Spring Boot?**
 
@@ -16753,7 +16753,7 @@ Database DELETE
 
 ---
 
-**### 🟡 27.22 Backend Integration Follow-up Questions**
+### 🟡 27.22 Backend Integration Follow-up Questions**
 
 1. How does Angular communicate with Spring Boot?
 2. What is REST?
@@ -16783,7 +16783,7 @@ Database DELETE
 
 ---
 
-**### Key Takeaways: Angular + Backend Integration**
+### Key Takeaways: Angular + Backend Integration**
 
 ✅ **HttpClient** → Angular ↔ Backend communication
 ✅ **Service** → Centralize API calls
@@ -16830,7 +16830,7 @@ This is better than simply saying:
 
 ---
 
-**### 🟢 28.2 Definition vs Practical Understanding**
+### 🟢 28.2 Definition vs Practical Understanding**
 
 Interviewers usually want to know whether you can apply Angular concepts.
 
@@ -16848,7 +16848,7 @@ Better answer:
 
 ---
 
-**### 🟢 28.3 Explain Concepts With Examples**
+### 🟢 28.3 Explain Concepts With Examples**
 
 When answering technical questions, use a small example.
 
@@ -16872,7 +16872,7 @@ Then explain:
 
 ---
 
-**### 🟢 28.4 Be Ready for Follow-up Questions**
+### 🟢 28.4 Be Ready for Follow-up Questions**
 
 If you say:
 
@@ -16906,7 +16906,7 @@ Limitations
 
 ---
 
-**### 🟢 28.5 Important Angular Topics to Know**
+### 🟢 28.5 Important Angular Topics to Know**
 
 Before an Angular interview, make sure you understand:
 
@@ -16941,7 +16941,7 @@ Architecture
 
 ---
 
-**### 🟢 28.6 Questions You Should Be Able to Answer Quickly**
+### 🟢 28.6 Questions You Should Be Able to Answer Quickly**
 
 You should be comfortable answering:
 
@@ -16976,7 +16976,7 @@ You should be comfortable answering:
 
 ---
 
-**### 🟡 28.7 Scenario-Based Questions**
+### 🟡 28.7 Scenario-Based Questions**
 
 Interviewers may ask questions such as:
 
@@ -17027,7 +17027,7 @@ Answer:
 
 ---
 
-**### 🟢 28.8 How to Explain Your Project**
+### 🟢 28.8 How to Explain Your Project**
 
 Use this structure:
 
@@ -17048,7 +17048,7 @@ Example:
 
 ---
 
-**### 🟡 28.9 How to Answer "What Was Your Contribution?"**
+### 🟡 28.9 How to Answer "What Was Your Contribution?"**
 
 Avoid:
 
@@ -17072,7 +17072,7 @@ Only mention things you actually worked on.
 
 ---
 
-**### 🟢 28.10 If You Don't Know the Answer**
+### 🟢 28.10 If You Don't Know the Answer**
 
 Do not invent an answer.
 
@@ -17088,7 +17088,7 @@ This is much better than confidently giving an incorrect answer.
 
 ---
 
-**### 🟡 28.11 Interview Preparation Strategy**
+### 🟡 28.11 Interview Preparation Strategy**
 
 Use three levels:
 
@@ -17114,7 +17114,7 @@ Common mistakes
 
 ---
 
-**### 🟢 28.12 Final Interview Preparation Questions**
+### 🟢 28.12 Final Interview Preparation Questions**
 
 Before the interview, practice answering:
 
@@ -17136,7 +17136,7 @@ Before the interview, practice answering:
 
 ---
 
-**### Key Takeaways: Interview Preparation**
+### Key Takeaways: Interview Preparation**
 
 ✅ Understand concepts, don't just memorize definitions  
 ✅ Always know **why** a feature is used  
@@ -17157,7 +17157,7 @@ Comparison questions are extremely common in Angular interviews.
 
 ---
 
-**### 🟢 29.1 Component vs Directive**
+### 🟢 29.1 Component vs Directive**
 
 | Component           | Directive                              |
 | ------------------- | -------------------------------------- |
@@ -17168,7 +17168,7 @@ Comparison questions are extremely common in Angular interviews.
 
 ---
 
-**### 🟢 29.2 Component vs Service**
+### 🟢 29.2 Component vs Service**
 
 | Component        | Service                   |
 | ---------------- | ------------------------- |
@@ -17179,7 +17179,7 @@ Comparison questions are extremely common in Angular interviews.
 
 ---
 
-**### 🟢 29.3 Observable vs Promise**
+### 🟢 29.3 Observable vs Promise**
 
 | Observable                        | Promise                            |
 | --------------------------------- | ---------------------------------- |
@@ -17203,7 +17203,7 @@ fetch("/api/users").then((response) => response.json());
 
 ---
 
-**### 🟢 29.4 Subject vs BehaviorSubject**
+### 🟢 29.4 Subject vs BehaviorSubject**
 
 | Subject                                  | BehaviorSubject                   |
 | ---------------------------------------- | --------------------------------- |
@@ -17222,7 +17222,7 @@ const state = new BehaviorSubject<number>(0);
 
 ---
 
-**### 🟢 29.5 Signals vs Observables**
+### 🟢 29.5 Signals vs Observables**
 
 | Signals                            | Observables                    |
 | ---------------------------------- | ------------------------------ |
@@ -17236,7 +17236,7 @@ They are not necessarily replacements for each other.
 
 ---
 
-**### 🟢 29.6 Promise vs async/await**
+### 🟢 29.6 Promise vs async/await**
 
 `async/await` is syntax built around Promises.
 
@@ -17253,7 +17253,7 @@ It does not turn a Promise into an Observable.
 
 ---
 
-**### 🟢 29.7 `*ngIf` vs `@if`**
+### 🟢 29.7 `*ngIf` vs `@if`**
 
 | `*ngIf`                           | `@if`                           |
 | --------------------------------- | ------------------------------- |
@@ -17264,7 +17264,7 @@ It does not turn a Promise into an Observable.
 
 ---
 
-**### 🟢 29.8 `*ngFor` vs `@for`**
+### 🟢 29.8 `*ngFor` vs `@for`**
 
 | `*ngFor`                        | `@for`                    |
 | ------------------------------- | ------------------------- |
@@ -17283,7 +17283,7 @@ Example:
 
 ---
 
-**### 🟢 29.9 Constructor vs ngOnInit**
+### 🟢 29.9 Constructor vs ngOnInit**
 
 | Constructor                              | ngOnInit                              |
 | ---------------------------------------- | ------------------------------------- |
@@ -17294,7 +17294,7 @@ Example:
 
 ---
 
-**### 🟢 29.10 `set()` vs `update()` for Signals**
+### 🟢 29.10 `set()` vs `update()` for Signals**
 
 ```typescript
 count.set(10);
@@ -17315,7 +17315,7 @@ update() → Calculate the new value
 
 ---
 
-**### 🟢 29.11 `computed()` vs `effect()`**
+### 🟢 29.11 `computed()` vs `effect()`**
 
 | computed()                           | effect()                         |
 | ------------------------------------ | -------------------------------- |
@@ -17340,7 +17340,7 @@ effect(() => {
 
 ---
 
-**### 🟢 29.12 `@defer` vs Lazy Loading**
+### 🟢 29.12 `@defer` vs Lazy Loading**
 
 | Lazy Loading                          | `@defer`                                   |
 | ------------------------------------- | ------------------------------------------ |
@@ -17353,7 +17353,7 @@ They can be used together.
 
 ---
 
-**### 🟢 29.13 Pure vs Impure Pipe**
+### 🟢 29.13 Pure vs Impure Pipe**
 
 | Pure                             | Impure                                      |
 | -------------------------------- | ------------------------------------------- |
@@ -17364,7 +17364,7 @@ They can be used together.
 
 ---
 
-**### 🟢 29.14 `@Input()` vs `input()`**
+### 🟢 29.14 `@Input()` vs `input()`**
 
 | `@Input()`                  | `input()`                 |
 | --------------------------- | ------------------------- |
@@ -17375,7 +17375,7 @@ They can be used together.
 
 ---
 
-**### 🟢 29.15 `@Output()` vs `output()`**
+### 🟢 29.15 `@Output()` vs `output()`**
 
 | `@Output()`                  | `output()`                       |
 | ---------------------------- | -------------------------------- |
@@ -17385,7 +17385,7 @@ They can be used together.
 
 ---
 
-**### 🟢 29.16 Default vs OnPush**
+### 🟢 29.16 Default vs OnPush**
 
 | Default                      | OnPush                                     |
 | ---------------------------- | ------------------------------------------ |
@@ -17396,7 +17396,7 @@ They can be used together.
 
 ---
 
-**### 🟢 29.17 Template-driven vs Reactive Forms**
+### 🟢 29.17 Template-driven vs Reactive Forms**
 
 | Template-driven               | Reactive                        |
 | ----------------------------- | ------------------------------- |
@@ -17408,7 +17408,7 @@ They can be used together.
 
 ---
 
-**### 🟢 29.18 Authentication vs Authorization**
+### 🟢 29.18 Authentication vs Authorization**
 
 | Authentication               | Authorization                     |
 | ---------------------------- | --------------------------------- |
@@ -17419,7 +17419,7 @@ They can be used together.
 
 ---
 
-**### 🟢 29.19 401 vs 403**
+### 🟢 29.19 401 vs 403**
 
 ```text
 401 → Authentication problem
@@ -17436,7 +17436,7 @@ Logged in but no admin permission → 403
 
 ---
 
-**### 🟢 29.20 PUT vs PATCH**
+### 🟢 29.20 PUT vs PATCH**
 
 | PUT                                             | PATCH                              |
 | ----------------------------------------------- | ---------------------------------- |
@@ -17469,7 +17469,7 @@ PATCH might send:
 
 ---
 
-**### 🟢 29.21 localStorage vs sessionStorage vs Cookies**
+### 🟢 29.21 localStorage vs sessionStorage vs Cookies**
 
 | localStorage                         | sessionStorage                 | Cookies                         |
 | ------------------------------------ | ------------------------------ | ------------------------------- |
@@ -17482,7 +17482,7 @@ Security depends on the complete authentication design, not simply the storage m
 
 ---
 
-**### 🟢 29.22 Angular vs React**
+### 🟢 29.22 Angular vs React**
 
 | Angular                                | React                        |
 | -------------------------------------- | ---------------------------- |
@@ -17497,7 +17497,7 @@ Do not say one is universally better. The right choice depends on project requir
 
 ---
 
-**### 🟢 29.23 Angular vs AngularJS**
+### 🟢 29.23 Angular vs AngularJS**
 
 | Angular                  | AngularJS                     |
 | ------------------------ | ----------------------------- |
@@ -17509,7 +17509,7 @@ Do not say one is universally better. The right choice depends on project requir
 
 ---
 
-**### 🟢 29.24 Common Comparison Questions**
+### 🟢 29.24 Common Comparison Questions**
 
 Be prepared for:
 
@@ -17537,7 +17537,7 @@ Angular vs AngularJS
 
 ---
 
-**### Key Takeaways: Comparison Questions**
+### Key Takeaways: Comparison Questions**
 
 ✅ Don't just memorize differences  
 ✅ Explain **when to use each option**  
@@ -17555,7 +17555,7 @@ Interviewers often use your project to test whether you actually understand the 
 
 ---
 
-**### 🟢 30.1 Project Introduction**
+### 🟢 30.1 Project Introduction**
 
 Be prepared to answer:
 
@@ -17583,7 +17583,7 @@ Example structure:
 
 ---
 
-**### 🟢 30.2 Explain Your Architecture**
+### 🟢 30.2 Explain Your Architecture**
 
 Be able to draw:
 
@@ -17609,7 +17609,7 @@ Then explain each layer.
 
 ---
 
-**### 🟢 30.3 Why Angular?**
+### 🟢 30.3 Why Angular?**
 
 Possible answer:
 
@@ -17617,7 +17617,7 @@ Possible answer:
 
 ---
 
-**### 🟢 30.4 Why Spring Boot?**
+### 🟢 30.4 Why Spring Boot?**
 
 Possible answer:
 
@@ -17625,7 +17625,7 @@ Possible answer:
 
 ---
 
-**### 🟢 30.5 Why PostgreSQL?**
+### 🟢 30.5 Why PostgreSQL?**
 
 Possible answer:
 
@@ -17633,7 +17633,7 @@ Possible answer:
 
 ---
 
-**### 🟢 30.6 Explain an API End-to-End**
+### 🟢 30.6 Explain an API End-to-End**
 
 For example:
 
@@ -17667,7 +17667,7 @@ You should be able to explain this without looking at the code.
 
 ---
 
-**### 🟢 30.7 Explain Authentication**
+### 🟢 30.7 Explain Authentication**
 
 Be prepared to explain:
 
@@ -17695,7 +17695,7 @@ Authentication ≠ Authorization
 
 ---
 
-**### 🟢 30.8 Explain Your Angular Structure**
+### 🟢 30.8 Explain Your Angular Structure**
 
 Be ready to explain why you separated:
 
@@ -17714,7 +17714,7 @@ For example:
 
 ---
 
-**### 🟢 30.9 Explain a Difficult Problem**
+### 🟢 30.9 Explain a Difficult Problem**
 
 Use:
 
@@ -17736,7 +17736,7 @@ Example:
 
 ---
 
-**### 🟡 30.10 Be Ready for "Why Did You Choose This Approach?"**
+### 🟡 30.10 Be Ready for "Why Did You Choose This Approach?"**
 
 Interviewers may ask:
 
@@ -17754,7 +17754,7 @@ Always explain the reason, not just the implementation.
 
 ---
 
-**### 🟡 30.11 Project Performance Questions**
+### 🟡 30.11 Project Performance Questions**
 
 Be prepared for:
 
@@ -17777,7 +17777,7 @@ Profiling
 
 ---
 
-**### 🟡 30.12 Project Security Questions**
+### 🟡 30.12 Project Security Questions**
 
 Be prepared for:
 
@@ -17798,7 +17798,7 @@ Important answer:
 
 ---
 
-**### 🟡 30.13 Project Debugging Questions**
+### 🟡 30.13 Project Debugging Questions**
 
 Examples:
 
@@ -17830,7 +17830,7 @@ Console errors
 
 ---
 
-**### 🟢 30.14 Project-Based Questions to Practice**
+### 🟢 30.14 Project-Based Questions to Practice**
 
 1. Explain your project.
 2. What problem does it solve?
@@ -17860,7 +17860,7 @@ Console errors
 
 ---
 
-**### 🟡 30.15 Project Cross-Questioning**
+### 🟡 30.15 Project Cross-Questioning**
 
 If you mention:
 
@@ -17914,7 +17914,7 @@ How does your backend access it?
 
 ---
 
-**### 🟢 30.16 Project Answer Formula**
+### 🟢 30.16 Project Answer Formula**
 
 For almost any project question:
 
@@ -17936,7 +17936,7 @@ This keeps answers structured and prevents rambling.
 
 ---
 
-**### Key Takeaways: Project-Based Interviews**
+### Key Takeaways: Project-Based Interviews**
 
 ✅ Know your architecture  
 ✅ Know your own contribution  
@@ -17957,7 +17957,7 @@ Use this checklist before an Angular interview.
 
 ---
 
-**### 🟢 31.1 Angular Fundamentals**
+### 🟢 31.1 Angular Fundamentals**
 
 - [ ] What is Angular?
 - [ ] Angular architecture
@@ -17977,7 +17977,7 @@ Use this checklist before an Angular interview.
 
 ---
 
-**### 🟢 31.2 Components & Lifecycle**
+### 🟢 31.2 Components & Lifecycle**
 
 - [ ] Component lifecycle
 - [ ] `ngOnInit`
@@ -17993,7 +17993,7 @@ Use this checklist before an Angular interview.
 
 ---
 
-**### 🟢 31.3 Dependency Injection**
+### 🟢 31.3 Dependency Injection**
 
 - [ ] What is DI?
 - [ ] Why use DI?
@@ -18011,7 +18011,7 @@ Use this checklist before an Angular interview.
 
 ---
 
-**### 🟢 31.4 RxJS**
+### 🟢 31.4 RxJS**
 
 - [ ] Observable
 - [ ] Observer
@@ -18037,7 +18037,7 @@ Use this checklist before an Angular interview.
 
 ---
 
-**### 🟢 31.5 Signals**
+### 🟢 31.5 Signals**
 
 - [ ] `signal()`
 - [ ] `computed()`
@@ -18052,7 +18052,7 @@ Use this checklist before an Angular interview.
 
 ---
 
-**### 🟢 31.6 Forms**
+### 🟢 31.6 Forms**
 
 - [ ] Template-driven forms
 - [ ] Reactive forms
@@ -18070,7 +18070,7 @@ Use this checklist before an Angular interview.
 
 ---
 
-**### 🟢 31.7 Routing**
+### 🟢 31.7 Routing**
 
 - [ ] Routes
 - [ ] Router
@@ -18089,7 +18089,7 @@ Use this checklist before an Angular interview.
 
 ---
 
-**### 🟢 31.8 HTTP & APIs**
+### 🟢 31.8 HTTP & APIs**
 
 - [ ] HttpClient
 - [ ] GET
@@ -18110,7 +18110,7 @@ Use this checklist before an Angular interview.
 
 ---
 
-**### 🟢 31.9 State Management**
+### 🟢 31.9 State Management**
 
 - [ ] Local component state
 - [ ] Shared service state
@@ -18127,7 +18127,7 @@ Use this checklist before an Angular interview.
 
 ---
 
-**### 🟢 31.10 Performance**
+### 🟢 31.10 Performance**
 
 - [ ] Lazy loading
 - [ ] `@defer`
@@ -18147,7 +18147,7 @@ Use this checklist before an Angular interview.
 
 ---
 
-**### 🟢 31.11 Modern Angular**
+### 🟢 31.11 Modern Angular**
 
 - [ ] Standalone components
 - [ ] `@if`
@@ -18164,7 +18164,7 @@ Use this checklist before an Angular interview.
 
 ---
 
-**### 🟢 31.12 Security**
+### 🟢 31.12 Security**
 
 - [ ] XSS
 - [ ] Angular sanitization
@@ -18184,7 +18184,7 @@ Use this checklist before an Angular interview.
 
 ---
 
-**### 🟢 31.13 Testing**
+### 🟢 31.13 Testing**
 
 - [ ] Unit testing
 - [ ] Integration testing
@@ -18205,7 +18205,7 @@ Use this checklist before an Angular interview.
 
 ---
 
-**### 🟢 31.14 Build & Tooling**
+### 🟢 31.14 Build & Tooling**
 
 - [ ] Angular CLI
 - [ ] `ng new`
@@ -18225,7 +18225,7 @@ Use this checklist before an Angular interview.
 
 ---
 
-**### 🟢 31.15 Angular Internals**
+### 🟢 31.15 Angular Internals**
 
 - [ ] Ivy
 - [ ] View Engine awareness
@@ -18242,7 +18242,7 @@ Use this checklist before an Angular interview.
 
 ---
 
-**### 🟢 31.16 Architecture**
+### 🟢 31.16 Architecture**
 
 - [ ] Feature-based architecture
 - [ ] Core vs Shared vs Feature
@@ -18260,7 +18260,7 @@ Use this checklist before an Angular interview.
 
 ---
 
-**### 🟢 31.17 Angular + Spring Boot**
+### 🟢 31.17 Angular + Spring Boot**
 
 - [ ] REST APIs
 - [ ] Angular HttpClient
@@ -18283,7 +18283,7 @@ Use this checklist before an Angular interview.
 
 ---
 
-**### 🔴 31.18 Must-Know Interview Questions**
+### 🔴 31.18 Must-Know Interview Questions**
 
 Before the interview, make sure you can answer these **without looking at notes**:
 
@@ -18340,7 +18340,7 @@ Before the interview, make sure you can answer these **without looking at notes*
 
 ---
 
-**### 🔴 31.19 Final Interview Readiness Test**
+### 🔴 31.19 Final Interview Readiness Test**
 
 You are interview-ready when you can do the following without notes:
 
@@ -18384,7 +18384,7 @@ If you can reach **Level 6** for the major Angular topics, you are in a strong p
 
 ---
 
-**### 🔴 Final Rule**
+### 🔴 Final Rule**
 
 Do not try to memorize this entire document word-for-word.
 
@@ -18422,7 +18422,7 @@ Explain your decisions
 
 ---
 
-**### Final Knowledge Checklist**
+### Final Knowledge Checklist**
 
 ✅ Angular fundamentals  
 ✅ Components & lifecycle  

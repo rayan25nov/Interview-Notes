@@ -2234,3 +2234,462 @@ class DijkstraAlgorithmSet {
     }
 }
 ```
+# Graph Concepts & Qns - 26: Dijkstra's Algorithm | PART-3 | Why not Queue?
+
+**Video Link:** [Dijkstra's Algorithm | PART-3 | Why not Queue ? | Microsoft | Graph Concepts & Qns - 26 |Explanation](https://youtu.be/l4cxEQnuH-U)  
+**Channel:** codestorywithMIK  
+
+## Overview
+This is the third and final part of the core explanation of Dijkstra's Algorithm in this series. After covering Priority Queue (Min-Heap) and Set implementations, this video addresses a very common interview question (specifically asked by Microsoft): **Why do we use a Priority Queue (or Set) in Dijkstra's Algorithm instead of a simple Queue?** 
+
+The video also breaks down the **Time Complexity** of Dijkstra's Algorithm.
+
+## Core Concept: Why not a Simple Queue?
+If we use a standard FIFO (First-In, First-Out) Queue instead of a Priority Queue, the algorithm will still eventually find the shortest paths, but it will be highly inefficient.
+
+**The Problem with a Simple Queue:**
+*   **Lack of Prioritization:** A simple Queue processes nodes in the exact order they were discovered, ignoring their current path distances.
+*   **Redundant Updates:** Suppose you reach a node `X` with a path distance of `10` and push it to the Queue. Later, you find a much shorter path to `X` with a distance of `2` and push that to the Queue as well.
+*   Because the Queue doesn't sort, you will eventually pop `(10, X)` and use it to explore all of `X`'s neighbors, updating their distances based on the suboptimal distance of `10`. 
+*   Later, you will pop `(2, X)` and have to explore all of `X`'s neighbors *again*, updating them to the newly found better distances. 
+*   **The Result:** This leads to multiple unnecessary redundant updates and explores suboptimal paths deeply before finding the optimal ones.
+
+**The Benefit of a Priority Queue/Set:**
+A Priority Queue always pops the node with the **minimum** known distance. 
+*   When we pop `X`, we are guaranteed that we have found the absolute shortest path to `X`. 
+*   Therefore, when we explore `X`'s neighbors, we are giving them the best possible starting point, drastically reducing the number of times we have to update them later.
+
+## Time Complexity Analysis
+Let's break down the time complexity based on the Priority Queue implementation:
+1.  **Outer Loop:** We extract (pop) nodes from the Priority Queue. In the worst case, every node `V` is pushed and popped. Popping from a Priority Queue takes $O(\log V)$. So, extracting nodes takes **$O(V \log V)$**.
+2.  **Inner Loop (Edges):** For every popped node, we iterate over its adjacent edges `E`. Across the entire algorithm, we evaluate every edge in the graph.
+3.  **Pushing to PQ:** Every time we successfully relax an edge (find a shorter path), we push the new path into the Priority Queue. Pushing takes $O(\log V)$. In the worst case, we might push for every edge, leading to **$O(E \log V)$**.
+
+**Total Time Complexity:**
+$O(V \log V) + O(E \log V)$
+Since the number of edges $E$ is typically greater than or equal to $V$ (especially in connected graphs), the $E \log V$ term dominates.
+Thus, the final Time Complexity is: **$O(E \log V)$**.
+
+*(Note: In the absolute worst-case dense graph, $E = V^2$, making the complexity $O(V^2 \log V)$, which simplifies back to $O(E \log V)$).*
+
+# Graph Concepts & Qns - 27: Shortest Path in Weighted Undirected Graph (Dijkstra's)
+
+**Video Link:** [Shortest Path in Weighted undirected graph | Dijkstra's | Why not BFS ? | Graph Concepts & Qns - 27](https://youtu.be/icVJUN45f1E)  
+**Channel:** codestorywithMIK  
+**Practice Link:** [Shortest Path in Weighted undirected graph on GeeksforGeeks](https://www.geeksforgeeks.org/problems/shortest-path-in-weighted-undirected-graph/1)
+
+## Overview
+In previous videos, we learned how Dijkstra's Algorithm computes the minimum distances from a source vertex to all other vertices. This video tackles a practical extension of that concept: **Finding and printing the actual shortest path from vertex `1` to vertex `n` in a weighted undirected graph.**
+
+The video also answers an essential interview question: **Why can't standard BFS be used to find the shortest path in a weighted graph?**
+
+---
+
+## 1. Why Not Standard BFS?
+*   **Unweighted Graph:** Standard BFS explores level-by-level (edge-by-edge). In an unweighted graph (or where every edge weight is `1`), the path with the fewest edges is guaranteed to be the shortest path.
+*   **Weighted Graph:** In a weighted graph, a path with fewer edges may have a much larger total weight than an alternate path with more edges having smaller weights (e.g., direct edge with weight `3` vs. two intermediate edges of weight `1 + 1 = 2`).
+*   Standard BFS marks nodes as visited on first discovery, causing it to prematurely lock in suboptimal paths and miss shorter alternatives with lower cumulative weights.
+
+---
+
+## 2. Core Logic: Path Reconstruction in Dijkstra's Algorithm
+To reconstruct and print the shortest path from vertex `1` to vertex `n`:
+
+1.  **Dijkstra Traversal:** Run standard Dijkstra's Algorithm using a Min-Heap (Priority Queue).
+2.  **Parent Tracking Array:**
+    *   Maintain a `parent` array of size `n + 1` where `parent[i]` initially points to `i`.
+    *   Whenever we successfully relax an edge (finding a shorter distance to neighbor `v` coming from node `u`), we update `parent[v] = u`.
+3.  **Backtracking to Build the Path:**
+    *   If `result[n] == Integer.MAX_VALUE`, the destination node `n` is unreachable, so return `[-1]`.
+    *   Otherwise, start at destination node `n` and trace back to source node `1` using the `parent` array (`curr = parent[curr]`).
+    *   Add each node along the backward trace to a list, then reverse the list to get the path from `1` to `n`.
+
+---
+
+## Java Implementation
+
+```java
+import java.util.*;
+
+class ShortestPathWeightedGraph {
+
+    // Helper class to represent a pair (distance, node)
+    static class Pair {
+        int distance;
+        int node;
+
+        public Pair(int distance, int node) {
+            this.distance = distance;
+            this.node = node;
+        }
+    }
+
+    public List<Integer> shortestPath(int n, int m, int[][] edges) {
+        // Step 1: Build Adjacency List (1-indexed nodes)
+        // Each entry contains pairs of (neighbor, weight)
+        List<List<Pair>> adj = new ArrayList<>();
+        for (int i = 0; i <= n; i++) {
+            adj.add(new ArrayList<>());
+        }
+
+        for (int[] edge : edges) {
+            int u = edge[0];
+            int v = edge[1];
+            int w = edge[2];
+            adj.get(u).add(new Pair(w, v));
+            adj.get(v).add(new Pair(w, u)); // Undirected graph
+        }
+
+        // Step 2: Initialize Priority Queue, Distance Array, and Parent Array
+        PriorityQueue<Pair> pq = new PriorityQueue<>((a, b) -> a.distance - b.distance);
+        int[] result = new int[n + 1];
+        int[] parent = new int[n + 1];
+
+        Arrays.fill(result, Integer.MAX_VALUE);
+        for (int i = 1; i <= n; i++) {
+            parent[i] = i; // Every node initially points to itself
+        }
+
+        // Start from source node 1
+        result[1] = 0;
+        pq.add(new Pair(0, 1));
+
+        // Step 3: Standard Dijkstra's Algorithm with Parent Tracking
+        while (!pq.isEmpty()) {
+            Pair curr = pq.poll();
+            int currDist = curr.distance;
+            int u = curr.node;
+
+            for (Pair neighbor : adj.get(u)) {
+                int v = neighbor.node;
+                int weight = neighbor.distance;
+
+                // Relaxation Step
+                if (currDist + weight < result[v]) {
+                    result[v] = currDist + weight;
+                    parent[v] = u; // Track that node v was reached via u
+                    pq.add(new Pair(result[v], v));
+                }
+            }
+        }
+
+        // Step 4: If destination n is unreachable, return [-1]
+        List<Integer> path = new ArrayList<>();
+        if (result[n] == Integer.MAX_VALUE) {
+            path.add(-1);
+            return path;
+        }
+
+        // Step 5: Reconstruct Path from n back to 1
+        int node = n;
+        while (parent[node] != node) {
+            path.add(node);
+            node = parent[node];
+        }
+        path.add(1); // Add the source node
+
+        // Reverse to get path from source (1) to destination (n)
+        Collections.reverse(path);
+
+        return path;
+    }
+}
+```
+
+# Graph Concepts & Qns - 28: Network Delay Time (Leetcode 743 | GOOGLE)
+
+**Video Link:** [Network Delay Time | Leetcode 743 | GOOGLE | Graph Concepts & Qns - 28 | Explanation+Coding](https://youtu.be/hptQEIpvaxM)  
+**Channel:** codestorywithMIK  
+**Practice Link:** [Network Delay Time on LeetCode](https://leetcode.com/problems/network-delay-time/)
+
+## Overview
+This video solves the **Network Delay Time** problem, a popular graph question frequently asked by Google. It serves as a direct application of **Dijkstra's Algorithm**, which was covered in detail in the previous videos of this series. 
+
+## Problem Breakdown
+**The Story:** You are given a network of `n` nodes, labeled from `1` to `n`. You are also given `times`, a list of directed edges where `times[i] = (u, v, w)`, meaning it takes `w` time for a signal to travel from source node `u` to target node `v`.
+You send a signal from a given starting node `k`. 
+
+**The Goal:** Return the **minimum time** it takes for all `n` nodes to receive the signal. If it is impossible for all `n` nodes to receive the signal (i.e., some nodes are unreachable), return `-1`.
+
+## Core Logic & Intuition
+The problem asks for the time it takes for a signal to reach *all* nodes from a single source `k`. Since signals travel simultaneously along all available edges, the time it takes to reach any specific node is exactly the **shortest path distance** from the source `k` to that node.
+
+*   Therefore, the time it takes for the signal to reach the *last* (furthest) node is simply the **maximum of all the shortest paths** from `k` to every other node.
+
+**The Strategy:**
+1.  **Build the Graph:** Create an Adjacency List representing the directed graph and the travel times.
+2.  **Run Dijkstra's Algorithm:** Use a Priority Queue (Min-Heap) to find the shortest path from the source node `k` to all other nodes. Store these minimum travel times in a `result` (or `distance`) array initialized to infinity.
+3.  **Analyze the Results:**
+    *   Find the maximum value in the `result` array (ignoring index `0` since nodes are 1-indexed).
+    *   If the maximum value is still infinity (`Integer.MAX_VALUE`), it means at least one node was unreachable. Return `-1`.
+    *   Otherwise, return that maximum value, as it represents the minimum time required for the signal to finally reach the furthest node.
+
+## Java Implementation
+
+```java
+import java.util.*;
+
+class NetworkDelayTime {
+    
+    // Helper class to represent a Pair (time/distance, node)
+    static class Pair {
+        int time;
+        int node;
+        
+        public Pair(int time, int node) {
+            this.time = time;
+            this.node = node;
+        }
+    }
+
+    public int networkDelayTime(int[][] times, int n, int k) {
+        // Step 1: Build the Adjacency List for a directed graph
+        // List of Lists where each inner list contains Pairs of (target, travel_time)
+        List<List<Pair>> adj = new ArrayList<>();
+        for (int i = 0; i <= n; i++) {
+            adj.add(new ArrayList<>());
+        }
+        
+        for (int[] time : times) {
+            int u = time[0];
+            int v = time[1];
+            int w = time[2];
+            adj.get(u).add(new Pair(w, v)); 
+        }
+        
+        // Step 2: Initialize Dijkstra's Algorithm structures
+        // Min-Heap ordered by travel time
+        PriorityQueue<Pair> pq = new PriorityQueue<>((a, b) -> a.time - b.time);
+        
+        int[] result = new int[n + 1];
+        Arrays.fill(result, Integer.MAX_VALUE);
+        
+        // Signal starts at node k
+        result[k] = 0;
+        pq.add(new Pair(0, k));
+        
+        // Step 3: Run Dijkstra's Algorithm
+        while (!pq.isEmpty()) {
+            Pair curr = pq.poll();
+            int currTime = curr.time;
+            int u = curr.node;
+            
+            // Traverse neighbors
+            for (Pair neighbor : adj.get(u)) {
+                int v = neighbor.node;
+                int travelTime = neighbor.time;
+                
+                // Relaxation step
+                if (currTime + travelTime < result[v]) {
+                    result[v] = currTime + travelTime;
+                    pq.add(new Pair(result[v], v));
+                }
+            }
+        }
+        
+        // Step 4: Find the maximum time among all shortest paths
+        int maxTime = 0;
+        for (int i = 1; i <= n; i++) {
+            if (result[i] == Integer.MAX_VALUE) {
+                return -1; // Node 'i' was unreachable
+            }
+            maxTime = Math.max(maxTime, result[i]);
+        }
+        
+        return maxTime;
+    }
+}
+```
+# Graph Concepts & Qns - 29: Shortest Path in Binary Matrix (Leetcode-1091)
+
+**Video Link:** [Shortest Path in Binary Matrix | Leetcode-1091 | Dijkstra in 2-D Matrix |Graph Concepts & Qns - 29](https://youtu.be/XsF-Xj_y5x8)  
+**Channel:** codestorywithMIK  
+**Practice Link:** [Shortest Path in Binary Matrix on LeetCode](https://leetcode.com/problems/shortest-path-in-binary-matrix/)
+
+## Overview
+This video solves **LeetCode 1091: Shortest Path in Binary Matrix**. It is an excellent problem to understand how pathfinding algorithms (BFS and Dijkstra's) are applied to 2D grids (matrices) instead of standard adjacency lists. 
+
+The video demonstrates three ways to solve it:
+1.  **Standard BFS** (because edge weights are implicitly uniform/equal).
+2.  **Dijkstra's Algorithm using a Priority Queue** (Min-Heap).
+3.  **Dijkstra's Algorithm using a standard Queue**.
+
+## Problem Breakdown
+**The Story:** You are given an `n x n` binary matrix `grid`. You need to find the length of the shortest "clear path" from the top-left cell `(0, 0)` to the bottom-right cell `(n - 1, n - 1)`. 
+*   A "clear path" consists only of cells with a value of `0`.
+*   You can move in all 8 directions (horizontally, vertically, diagonally).
+*   The length of the path is the number of cells visited (including the start and end cells).
+*   If no such path exists, return `-1`.
+
+## Core Logic & Intuition
+
+### Why BFS Works Here:
+Standard BFS explores level-by-level. In this grid, moving from one cell to an adjacent cell always takes exactly 1 "step" (implicit weight of 1). Since all edge weights are uniform, the first time BFS reaches the destination `(n - 1, n - 1)`, it is guaranteed to be the shortest path. 
+
+### Why Dijkstra's Works (and how to adapt it to 2D):
+Dijkstra's algorithm is designed for weighted graphs, but it perfectly handles uniformly weighted graphs too. 
+*   Instead of an Adjacency List, our "neighbors" are determined by checking the 8 valid directions `(dx, dy)` from the current cell `(x, y)`.
+*   Instead of a 1D `result` array storing distances to nodes, we need a **2D `result` matrix** storing the minimum distance to each `(x, y)` cell.
+*   Our Queue/Priority Queue will store: `(distance, (x, y))` instead of `(distance, node_id)`.
+
+*Crucial Optimization:* Since the cost to move to any adjacent cell is always exactly `1`, a standard `Queue` acts identically to a `PriorityQueue` because the distances added to the queue will naturally be monotonically increasing.
+
+## Java Implementation (Dijkstra's using Standard Queue)
+
+*Note: Since edge weights are constant (+1), a standard `Queue` is preferred for optimal performance, though a `PriorityQueue` works exactly the same way logically.*
+
+```java
+import java.util.*;
+
+class ShortestPathBinaryMatrix {
+    public int shortestPathBinaryMatrix(int[][] grid) {
+        int n = grid.length;
+        
+        // Base cases: start or end is blocked
+        if (grid[0][0] != 0 || grid[n - 1][n - 1] != 0) {
+            return -1;
+        }
+        
+        // 2D distance array initialized to infinity
+        int[][] result = new int[n][n];
+        for (int i = 0; i < n; i++) {
+            Arrays.fill(result[i], Integer.MAX_VALUE);
+        }
+        
+        // Queue stores int[]: {distance, x, y}
+        Queue<int[]> pq = new LinkedList<>(); 
+        
+        // Start at (0, 0)
+        result[0][0] = 1; // Path length includes the start cell itself
+        pq.add(new int[]{1, 0, 0});
+        
+        // All 8 possible directional moves
+        int[][] directions = {
+            {0, 1}, {0, -1}, {1, 0}, {-1, 0},
+            {1, 1}, {-1, -1}, {1, -1}, {-1, 1}
+        };
+        
+        while (!pq.isEmpty()) {
+            int[] curr = pq.poll();
+            int d = curr[0];
+            int x = curr[1];
+            int y = curr[2];
+            
+            // If we reached the destination, return the distance
+            if (x == n - 1 && y == n - 1) {
+                return d;
+            }
+            
+            // Traverse all 8 directions
+            for (int[] dir : directions) {
+                int nx = x + dir[0];
+                int ny = y + dir[1];
+                
+                // Check bounds and if the cell is clear (0)
+                if (nx >= 0 && nx < n && ny >= 0 && ny < n && grid[nx][ny] == 0) {
+                    // Relaxation step
+                    if (d + 1 < result[nx][ny]) {
+                        result[nx][ny] = d + 1;
+                        pq.add(new int[]{d + 1, nx, ny});
+                    }
+                }
+            }
+        }
+        
+        return -1; // Path not found
+    }
+}
+```
+   # Graph Concepts & Qns - 30: Path With Minimum Effort (Leetcode-1631)
+
+**Video Link:** [Path With Minimum Effort | Leetcode-1631 | Dijkstra in 2-D Matrix |GOOGLE |Graph Concepts & Qns - 30](https://youtu.be/QIu9HeyEjPc)  
+**Channel:** codestorywithMIK  
+**Practice Link:** [Path With Minimum Effort on LeetCode](https://leetcode.com/problems/path-with-minimum-effort/)
+
+## Overview
+This video explains the problem **Path With Minimum Effort (LeetCode 1631)**. This is an excellent problem to practice applying **Dijkstra's Algorithm on a 2D Matrix**. It relies heavily on the concepts discussed in the previous video (Video #29), where we learned how to adapt Dijkstra's algorithm for grid-based traversals.
+
+## Problem Breakdown
+**The Story:** You are a hiker preparing for a hike given a 2D array `heights` of size `rows x columns`, where `heights[row][col]` represents the height of cell `(row, col)`.
+*   You start at the top-left cell `(0, 0)` and want to travel to the bottom-right cell `(rows-1, columns-1)`.
+*   You can move up, down, left, or right.
+*   **The "Effort" of a Path:** The effort of a path is the **maximum absolute difference in heights** between two consecutive cells along that path.
+*   **The Goal:** Return the *minimum* effort required to travel from the top-left cell to the bottom-right cell.
+
+## Core Logic & Intuition
+If you look closely at the problem, moving from one cell to an adjacent cell incurs a "cost" or "weight" equal to the absolute difference in their heights. 
+*   Since the weight/cost varies depending on the height difference of adjacent cells, **standard BFS will not work here**. (Standard BFS is only for uniform weights).
+*   Because we need the *shortest/minimum* possible cost to reach a destination in a weighted graph, this is a clear application of **Dijkstra's Algorithm**.
+
+### Adapting Dijkstra's for "Maximum Difference"
+In standard Dijkstra's, we add the weights along the path (`current_distance + edge_weight`). 
+Here, the problem defines the effort of a path differently: it is the **maximum** difference encountered along the path, NOT the sum.
+*   When moving from cell `(x, y)` to `(nx, ny)`, the new effort for this path becomes: `Math.max(current_effort, Math.abs(heights[x][y] - heights[nx][ny]))`.
+*   If this new effort is strictly *less* than the previously recorded effort to reach `(nx, ny)` (stored in our `result` matrix), we have found a "better" (less physically demanding) path to `(nx, ny)`. We then update `result[nx][ny]` and push it to the Priority Queue.
+
+## Java Implementation
+
+```java
+import java.util.*;
+
+class PathWithMinimumEffort {
+    public int minimumEffortPath(int[][] heights) {
+        int m = heights.length;
+        int n = heights[0].length;
+        
+        // Result matrix to store the minimum effort to reach each cell
+        int[][] result = new int[m][n];
+        for (int i = 0; i < m; i++) {
+            Arrays.fill(result[i], Integer.MAX_VALUE);
+        }
+        
+        // Priority Queue (Min-Heap) ordered by effort
+        // Stores int[] arrays representing: {effort, x, y}
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[0] - b[0]);
+        
+        // Start at (0, 0) with an effort of 0
+        result[0][0] = 0;
+        pq.add(new int[]{0, 0, 0});
+        
+        // Directions for Up, Down, Left, Right
+        int[][] directions = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+        
+        while (!pq.isEmpty()) {
+            int[] curr = pq.poll();
+            int currEffort = curr[0];
+            int x = curr[1];
+            int y = curr[2];
+            
+            // Optimization: Since it's a Min-Heap, the first time we pop the destination
+            // cell, we are guaranteed it's the absolute minimum effort possible.
+            if (x == m - 1 && y == n - 1) {
+                return currEffort;
+            }
+            
+            // Explore all 4 adjacent neighbors
+            for (int[] dir : directions) {
+                int nx = x + dir[0];
+                int ny = y + dir[1];
+                
+                // If neighbor is within bounds
+                if (nx >= 0 && nx < m && ny >= 0 && ny < n) {
+                    
+                    // Calculate the absolute difference in height
+                    int absDiff = Math.abs(heights[x][y] - heights[nx][ny]);
+                    
+                    // The new effort is the maximum of the current path's effort and this new jump
+                    int maxEffort = Math.max(currEffort, absDiff);
+                    
+                    // Relaxation step: If this path offers a smaller maximum effort, update it
+                    if (maxEffort < result[nx][ny]) {
+                        result[nx][ny] = maxEffort;
+                        pq.add(new int[]{maxEffort, nx, ny});
+                    }
+                }
+            }
+        }
+        
+        return 0; // Fallback, though we should always reach the destination
+    }
+}
+```

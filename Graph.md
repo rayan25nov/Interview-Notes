@@ -2693,3 +2693,841 @@ class PathWithMinimumEffort {
     }
 }
 ```
+# Graph Concepts & Qns - 31: Bellman-Ford Algorithm | Full Detail
+
+**Video Link:** [Bellman-Ford Algorithm | Full Detail | Microsoft, Amazon | Graph Concepts & Qns - 31 | Explanation](https://youtu.be/5yTkgeTqKK0)  
+**Channel:** codestorywithMIK  
+**Practice Link:** [Distance from the Source (Bellman-Ford Algorithm) on GeeksforGeeks](https://practice.geeksforgeeks.org/problems/distance-from-the-source-bellman-ford-algorithm/0) (Or similar problem portal as mentioned in the video)
+
+## Overview
+This video introduces the **Bellman-Ford Algorithm**, an alternative to Dijkstra's Algorithm for finding the shortest path from a single source node to all other nodes in a graph. While Dijkstra's algorithm is generally faster, it fails when graphs contain **negative weight edges** or **negative cycles**. Bellman-Ford was specifically designed to handle these cases.
+
+## Core Concept: Bellman-Ford Algorithm
+
+### Why Dijkstra Fails with Negative Edges
+Dijkstra's is a greedy algorithm. Once it pops a node from the Min-Heap and marks it as processed, it assumes it has found the absolute shortest path to that node. If a negative weight edge exists elsewhere in the graph, it could potentially loop back and offer an even shorter path to an already processed node, trapping Dijkstra's algorithm in an infinite loop or producing incorrect shortest path values.
+
+### The Bellman-Ford Solution
+Bellman-Ford takes a different approach: **Relaxation**.
+*   **Relaxation:** Updating the distance to a destination node `v` if the distance to a source node `u` plus the edge weight `w` is smaller than the currently known distance to `v` (`if (dist[u] + w < dist[v]) then dist[v] = dist[u] + w`).
+*   **The Rule:** If a graph has `V` vertices, the longest possible shortest path without any cycles can contain at most `V - 1` edges. 
+*   Therefore, Bellman-Ford simply iterates and relaxes *all* edges in the graph exactly **`V - 1` times**. After `V - 1` iterations, all shortest paths are guaranteed to be found, even with negative weights.
+*   **Constraint:** Bellman-Ford strictly requires a **Directed Graph**. If you have an undirected graph with a negative edge, it inherently acts as a negative cycle (you can bounce back and forth infinitely), which breaks the shortest path logic.
+
+### Detecting Negative Weight Cycles
+If a graph contains a cycle where the sum of edge weights is negative, you can keep circling it infinitely to get a smaller and smaller path distance. Therefore, a definitive shortest path does not exist.
+*   **Detection Strategy:** Since `V - 1` iterations guarantee finding all valid shortest paths, if we run the relaxation loop exactly *one more time* (the `V`-th time) and any distance still updates, it definitively proves the presence of a **Negative Cycle**.
+
+## Java Implementation
+
+```java
+import java.util.*;
+
+class BellmanFord {
+
+    public int[] bellman_ford(int V, ArrayList<ArrayList<Integer>> edges, int S) {
+        
+        // Step 1: Initialize result array to infinity (use a large number to avoid overflow)
+        int[] result = new int[V];
+        Arrays.fill(result, (int) 1e8);
+        
+        // Distance to source is 0
+        result[S] = 0;
+        
+        // Step 2: Relax all edges exactly V - 1 times
+        for (int i = 1; i <= V - 1; i++) {
+            for (ArrayList<Integer> edge : edges) {
+                int u = edge.get(0);
+                int v = edge.get(1);
+                int weight = edge.get(2);
+                
+                // Relaxation check: ensure we have actually reached 'u' before adding weight
+                if (result[u] != 1e8 && result[u] + weight < result[v]) {
+                    result[v] = result[u] + weight;
+                }
+            }
+        }
+        
+        // Step 3: Detect Negative Cycle
+        // Run relaxation one more time. If anything updates, there's a negative cycle.
+        for (ArrayList<Integer> edge : edges) {
+            int u = edge.get(0);
+            int v = edge.get(1);
+            int weight = edge.get(2);
+            
+            if (result[u] != 1e8 && result[u] + weight < result[v]) {
+                // Negative cycle detected!
+                return new int[]{-1}; 
+            }
+        }
+        
+        return result;
+    }
+}
+```
+# Graph Concepts & Qns - 32: Floyd Warshall Algorithm | Full Detail
+
+**Video Link:** [Floyd Warshall Algorithm | Full Detail | Samsung | Graph Concepts & Qns - 32 | Explanation + Coding](https://youtu.be/DzfmJoFq1pc)  
+**Channel:** codestorywithMIK  
+**Practice Link:** [Floyd Warshall on GeeksforGeeks](https://practice.geeksforgeeks.org/problems/implementing-floyd-warshall2042/1) (or similar problem portal as mentioned in the video)
+
+## Overview
+This video explains the **Floyd Warshall Algorithm**, which is used to find the shortest distance between **every pair of vertices** in a given edge-weighted directed graph. Unlike Dijkstra's or Bellman-Ford algorithms which find the shortest path from a *single* source node to all other nodes, Floyd Warshall calculates the shortest path from *every* node to *every other* node simultaneously.
+
+## Core Concept: The "Via" (Through) Node Strategy
+The core intuition of the Floyd Warshall algorithm revolves around checking if going *through* an intermediate node provides a shorter path than going directly.
+
+**The Strategy:**
+1.  **Adjacency Matrix:** The graph is represented as a 2D adjacency matrix `grid`, where `grid[i][j]` represents the direct distance from node `i` to node `j`. If there is no direct edge, the distance is initialized to infinity (`Integer.MAX_VALUE` or a large number). The distance from a node to itself (`grid[i][i]`) is `0`.
+2.  **The "Via" Loop:** For every possible intermediate node (let's call it `via`), we check every pair of source (`i`) and destination (`j`) nodes.
+3.  **Relaxation:** We check if the path from `i` to `via` plus the path from `via` to `j` is shorter than the currently known path directly from `i` to `j`.
+    *   `grid[i][j] = Math.min(grid[i][j], grid[i][via] + grid[via][j])`
+4.  By iteratively doing this for every `via` node from `0` to `n-1`, the matrix eventually stores the absolute shortest path between every pair of nodes.
+
+### Detecting Negative Weight Cycles
+Similar to Bellman-Ford, Floyd Warshall can also detect negative weight cycles.
+*   **The Check:** After the algorithm finishes, check the diagonal elements of the matrix (`grid[i][i]`). 
+*   The distance from a node to itself should always be `0`. If `grid[i][i] < 0` for any node `i`, it means there is a negative weight cycle in the graph. The algorithm found a way to leave the node, traverse a cycle, and come back with a net negative cost.
+
+## Java Implementation
+
+```java
+class FloydWarshall {
+    public void shortest_distance(int[][] matrix) {
+        int n = matrix.length;
+        
+        // Step 1: Pre-process the matrix
+        // Replace -1 (indicating no edge) with a large value to represent infinity
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (matrix[i][j] == -1) {
+                    matrix[i][j] = (int) 1e5; // Use a large number to avoid overflow during addition
+                }
+                if (i == j) {
+                    matrix[i][j] = 0;
+                }
+            }
+        }
+        
+        // Step 2: Floyd Warshall Algorithm - Triple nested loop
+        // The outer loop picks the intermediate "via" node
+        for (int via = 0; via < n; via++) {
+            // The inner two loops pick the source (i) and destination (j) nodes
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    // Update the shortest path if going through 'via' is shorter
+                    matrix[i][j] = Math.min(matrix[i][j], matrix[i][via] + matrix[via][j]);
+                }
+            }
+        }
+        
+        // Optional Step: Detect Negative Cycle
+        /*
+        for (int i = 0; i < n; i++) {
+            if (matrix[i][i] < 0) {
+                // Negative cycle detected!
+            }
+        }
+        */
+        
+        // Step 3: Post-process the matrix
+        // Revert the large values back to -1 as required by the problem statement
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (matrix[i][j] >= (int) 1e5) {
+                    matrix[i][j] = -1;
+                }
+            }
+        }
+    }
+}
+```
+# Graph Concepts & Qns - 33: Minimum Spanning Tree | Easy Theory Full Detail
+
+**Video Link:** [Minimum Spanning Tree | Easy Theory Full Detail | Amazon, Microsoft | Graph Concepts & Qns - 33](https://youtu.be/xxvY2UX7YPg)  
+**Channel:** codestorywithMIK  
+
+## Overview
+This video introduces the foundational theory of the **Minimum Spanning Tree (MST)**. Understanding this theory is crucial before moving on to solving related coding problems or implementing specific MST algorithms. The concept is frequently asked about in interviews at companies like Amazon and Microsoft.
+
+## Core Concept: What is a Spanning Tree?
+Before understanding a *Minimum* Spanning Tree, we must understand what a generic Spanning Tree is.
+
+Given an undirected, connected graph `G` with `V` vertices and `E` edges, a **Spanning Tree** is a subgraph of `G` that satisfies the following conditions:
+1.  **Contains all Vertices:** It must include exactly `V` vertices (all the vertices present in the original graph).
+2.  **Number of Edges:** It must contain exactly `V - 1` edges.
+3.  **Connected:** It must be a fully connected subgraph (there must be a path between any pair of nodes).
+4.  **Acyclic:** As the name "Tree" suggests, it must **not** contain any cycles.
+
+*Note: A single graph can have multiple valid Spanning Trees.*
+
+## Core Concept: What is a Minimum Spanning Tree (MST)?
+A Minimum Spanning Tree comes into play when the graph is a **weighted, connected, undirected graph**. 
+
+Every Spanning Tree derived from this graph will have a total "weight" (the sum of the weights of all its `V - 1` edges).
+*   A **Minimum Spanning Tree (MST)** is simply the Spanning Tree out of all possible Spanning Trees that has the **minimum possible total edge weight**.
+*   *Note: Just like standard Spanning Trees, there can be multiple MSTs for a single graph if different edge combinations yield the same minimum total weight.*
+
+## Algorithms to Find the MST (Upcoming)
+To programmatically find the Minimum Spanning Tree of a given graph, two famous algorithms are primarily used:
+1.  **Prim's Algorithm**
+2.  **Kruskal's Algorithm**
+
+Both of these algorithms will be covered in deep detail with code implementations in the subsequent videos of this series.
+
+## Complexity Analysis
+*(Note: As this video is purely theoretical and does not introduce a specific algorithm or code implementation, standard time and space complexities are not applicable here. Complexities will be detailed in the upcoming videos for Prim's and Kruskal's algorithms.)*
+
+# Graph Concepts & Qns - 34: Prim's Algorithm | Minimum Spanning Tree
+
+**Video Link:** [Prim's Algorithm | Minimum Spanning Tree | Full Dry Run | INTUITION | Graph Concepts & Qns - 34](https://youtu.be/V9gXzD7g8fw)  
+**Channel:** codestorywithMIK  
+**Practice Link:** [Minimum Spanning Tree on GeeksforGeeks](https://practice.geeksforgeeks.org/problems/minimum-spanning-tree/1) (Or similar platform mentioned in the video)
+
+## Overview
+This video follows up on the previous theory video about **Minimum Spanning Trees (MST)**. It provides a detailed, intuition-based explanation and full code implementation of **Prim's Algorithm**, which is one of the two primary algorithms (alongside Kruskal's) used to find an MST in a weighted, undirected, and connected graph. 
+
+## Problem Breakdown
+**The Goal:** Given an undirected, connected, and weighted graph, find the sum of weights of the edges of its Minimum Spanning Tree (MST). An MST is a subgraph that connects all `V` vertices together without any cycles, using exactly `V - 1` edges, such that the total edge weight is minimized.
+
+## Core Logic & Intuition (Prim's Algorithm)
+Prim's Algorithm builds the MST gradually, one vertex at a time, by always picking the smallest available edge that connects a node *inside* the growing MST to a node *outside* the MST.
+
+**The Strategy:**
+1.  **Tracking Arrays:** We need a boolean array `inMST[]` to track which vertices have already been included in our Minimum Spanning Tree.
+2.  **Priority Queue (Min-Heap):** We use a Min-Heap to always efficiently extract the edge with the minimum weight. The heap stores pairs representing `(weight, node)`.
+3.  **Initialization:** We can start building our MST from *any* arbitrary node (typically node `0`). We push `(0, 0)` into the Priority Queue, representing a weight of `0` to reach node `0`.
+4.  **The Greedy Choice (While Loop):**
+    *   Pop the element with the smallest weight from the Priority Queue: `(currWeight, currNode)`.
+    *   **Crucial Check:** If `inMST[currNode]` is already `true`, we skip it. Why? Because adding an edge to a node already in our MST would create a cycle!
+    *   If it's `false`, we mark `inMST[currNode] = true`.
+    *   We add `currWeight` to our total `sum`. (This represents successfully adding this edge to our MST).
+    *   Now, we look at all adjacent neighbors of `currNode`. If a neighbor is *not* yet in the MST (`inMST[neighbor] == false`), we push `(edgeWeight, neighbor)` into the Priority Queue.
+5.  When the Priority Queue is empty, all reachable vertices have been added to the MST, and `sum` holds the total weight of the Minimum Spanning Tree.
+
+## Java Implementation
+
+```java
+import java.util.*;
+
+class PrimsAlgorithm {
+    
+    // Helper class to represent pairs in the Priority Queue
+    static class Pair {
+        int weight;
+        int node;
+        
+        public Pair(int weight, int node) {
+            this.weight = weight;
+            this.node = node;
+        }
+    }
+
+    // Function to find sum of weights of edges of the Minimum Spanning Tree.
+    static int spanningTree(int V, int E, int edges[][]) {
+        // Step 1: Create Adjacency List for an undirected graph
+        List<List<Pair>> adj = new ArrayList<>();
+        for (int i = 0; i < V; i++) {
+            adj.add(new ArrayList<>());
+        }
+        
+        for (int[] edge : edges) {
+            int u = edge[0];
+            int v = edge[1];
+            int w = edge[2];
+            adj.get(u).add(new Pair(w, v));
+            adj.get(v).add(new Pair(w, u)); // Undirected
+        }
+        
+        // Priority Queue (Min-Heap) ordered by edge weight
+        PriorityQueue<Pair> pq = new PriorityQueue<>((a, b) -> a.weight - b.weight);
+        
+        // Boolean array to keep track of nodes included in MST
+        boolean[] inMST = new boolean[V];
+        
+        int sum = 0;
+        
+        // Start building MST from node 0
+        pq.add(new Pair(0, 0));
+        
+        // Step 2: Run Prim's Algorithm
+        while (!pq.isEmpty()) {
+            Pair curr = pq.poll();
+            int currWeight = curr.weight;
+            int u = curr.node;
+            
+            // If the node is already part of the MST, skip it to avoid cycles
+            if (inMST[u]) {
+                continue;
+            }
+            
+            // Include the node in the MST and add its edge weight to the total sum
+            inMST[u] = true;
+            sum += currWeight;
+            
+            // Explore all adjacent neighbors of the current node
+            for (Pair neighbor : adj.get(u)) {
+                int v = neighbor.node;
+                int weight = neighbor.weight;
+                
+                // If the neighbor is NOT yet in the MST, push it to the PQ
+                if (!inMST[v]) {
+                    pq.add(new Pair(weight, v));
+                }
+            }
+        }
+        
+        return sum;
+    }
+}
+
+```
+# Graph Concepts & Qns - 35: Min Cost to Connect All Points (Prim's Algorithm)
+
+**Video Link:** [Min Cost to Connect All Points | Prim's Algorithm | META | Graph Concepts & Qns - 35 | Leetcode-1584](https://youtu.be/hsr7KolYDH0)  
+**Channel:** codestorywithMIK  
+**Practice Link:** [Min Cost to Connect All Points on LeetCode](https://leetcode.com/problems/min-cost-to-connect-all-points/)
+
+## Overview
+This video solves **LeetCode 1584: Min Cost to Connect All Points**, a problem commonly asked by Meta. This is a direct application of the Minimum Spanning Tree (MST) concept, specifically utilizing **Prim's Algorithm**, which was covered extensively in video #34. 
+
+## Problem Breakdown
+**The Story:** You are given an array `points` representing integer coordinates of some points on a 2D-plane, where `points[i] = [xi, yi]`.
+*   The cost of connecting two points `[xi, yi]` and `[xj, yj]` is the Manhattan distance between them: `|xi - xj| + |yi - yj|`.
+*   **The Goal:** Return the minimum cost to make all points connected. All points are connected if there is exactly one simple path between any two points.
+
+## Core Logic & Intuition
+The phrasing "minimum cost to make all points connected" and "exactly one simple path between any two points" is the textbook definition of a **Minimum Spanning Tree (MST)**.
+
+### Translating the Problem to a Graph
+To apply Prim's Algorithm, we first need to visualize the given array of points as a graph:
+1.  **Nodes (Vertices):** Each point in the `points` array acts as a vertex in our graph. The index of the point (from `0` to `n-1`) will be the node's identifier.
+2.  **Edges:** Since any point can be connected to any other point, this is effectively a **Complete Graph**. There is an implicit edge between every pair of nodes `i` and `j`.
+3.  **Weights:** The weight of the edge between node `i` and node `j` is the Manhattan distance between `points[i]` and `points[j]`.
+
+### The Strategy
+1.  **Build the Adjacency List:** Iterate through every unique pair of points `(i, j)`. Calculate the Manhattan distance `d` between them. Add an undirected edge: `adj.get(i).add(new Pair(d, j))` and `adj.get(j).add(new Pair(d, i))`.
+2.  **Apply Prim's Algorithm:** Once the adjacency list is built, the problem is identical to standard MST finding. We just copy-paste/implement the exact same Prim's Algorithm logic using a Min-Heap (Priority Queue) and an `inMST` boolean array.
+
+## Java Implementation
+
+```java
+import java.util.*;
+
+class MinCostConnectPoints {
+    
+    // Helper class to represent a Pair (weight, node) for the Priority Queue and Adjacency List
+    static class Pair {
+        int weight;
+        int node;
+        
+        public Pair(int weight, int node) {
+            this.weight = weight;
+            this.node = node;
+        }
+    }
+
+    public int minCostConnectPoints(int[][] points) {
+        int n = points.length;
+        
+        // Step 1: Build the Adjacency List
+        List<List<Pair>> adj = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            adj.add(new ArrayList<>());
+        }
+        
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                // Calculate Manhattan Distance
+                int weight = Math.abs(points[i][0] - points[j][0]) + Math.abs(points[i][1] - points[j][1]);
+                
+                // Add undirected edges
+                adj.get(i).add(new Pair(weight, j));
+                adj.get(j).add(new Pair(weight, i));
+            }
+        }
+        
+        // Step 2: Prim's Algorithm
+        // Priority Queue (Min-Heap) ordered by edge weight
+        PriorityQueue<Pair> pq = new PriorityQueue<>((a, b) -> a.weight - b.weight);
+        boolean[] inMST = new boolean[n];
+        int sum = 0;
+        
+        // Start building MST from node 0
+        pq.add(new Pair(0, 0));
+        
+        while (!pq.isEmpty()) {
+            Pair curr = pq.poll();
+            int currWeight = curr.weight;
+            int u = curr.node;
+            
+            // If the node is already part of the MST, skip it to avoid cycles
+            if (inMST[u]) {
+                continue;
+            }
+            
+            // Include the node in the MST and add its edge weight to the total cost
+            inMST[u] = true;
+            sum += currWeight;
+            
+            // Explore all adjacent neighbors of the current node
+            for (Pair neighbor : adj.get(u)) {
+                int v = neighbor.node;
+                int weight = neighbor.weight;
+                
+                // If the neighbor is NOT yet in the MST, push it to the PQ
+                if (!inMST[v]) {
+                    pq.add(new Pair(weight, v));
+                }
+            }
+        }
+        
+        return sum;
+    }
+}
+```
+# Graph Concepts & Qns - 36: Kruskal's Algorithm | Minimum Spanning Tree
+
+**Video Link:** [Kruskal's Algorithm | Minimum Spanning Tree | Full Dry Run | INTUITION | Graph Concepts & Qns - 36](https://youtu.be/3tgekNXWXsY)  
+**Channel:** codestorywithMIK  
+**Practice Link:** [Minimum Spanning Tree on GeeksforGeeks](https://practice.geeksforgeeks.org/problems/minimum-spanning-tree/1)
+
+## Overview
+This video introduces **Kruskal's Algorithm**, the second major algorithm used to find the Minimum Spanning Tree (MST) of a weighted, undirected, and connected graph. While Prim's Algorithm (covered in Video #34) builds the MST node-by-node, Kruskal's Algorithm builds the MST edge-by-edge using a greedy approach combined with the **Disjoint Set Union (DSU)** data structure.
+
+## Core Logic & Intuition (Kruskal's Algorithm)
+The fundamental intuition behind Kruskal's Algorithm is pure greed: To get the *minimum* spanning tree, we should always try to include the edges with the *smallest* weights first. 
+
+**The Strategy:**
+1.  **Extract All Edges:** Convert the given Adjacency List graph representation into a flat list/array of all edges. Each edge is represented as `[u, v, weight]`.
+2.  **Sort Edges:** Sort this entire list of edges in **ascending order based on their weights**. This guarantees we will process the smallest edges first.
+3.  **Iterate and Connect (Using DSU):** 
+    *   Iterate through the sorted edges one by one.
+    *   For each edge `[u, v, weight]`, use the **Disjoint Set Union (DSU)** `find` operation to check the ultimate parent (component leader) of `u` and `v`.
+    *   **The Crucial Check:** 
+        *   If `find(u) == find(v)`, it means `u` and `v` are *already* connected within the same component. Adding this edge would create a **cycle**. So, we discard/ignore this edge.
+        *   If `find(u) != find(v)`, they belong to different components. We safely include this edge in our MST by adding its `weight` to our total `sum`, and then we connect the two components using the DSU `union` operation.
+4.  Once we have processed the edges (or successfully added `V - 1` edges), the algorithm completes, and we have the minimum total weight.
+
+## Java Implementation
+
+```java
+import java.util.*;
+
+class KruskalsAlgorithm {
+    
+    // DSU Class with Path Compression and Union by Rank
+    static class DisjointSet {
+        int[] parent;
+        int[] rank;
+
+        public DisjointSet(int n) {
+            parent = new int[n];
+            rank = new int[n];
+            for (int i = 0; i < n; i++) {
+                parent[i] = i;
+                rank[i] = 0;
+            }
+        }
+
+        public int find(int i) {
+            if (parent[i] == i) {
+                return i;
+            }
+            return parent[i] = find(parent[i]); // Path compression
+        }
+
+        public void unionByRank(int i, int j) {
+            int rootI = find(i);
+            int rootJ = find(j);
+            
+            if (rootI == rootJ) return;
+            
+            if (rank[rootI] < rank[rootJ]) {
+                parent[rootI] = rootJ;
+            } else if (rank[rootI] > rank[rootJ]) {
+                parent[rootJ] = rootI;
+            } else {
+                parent[rootI] = rootJ;
+                rank[rootJ]++;
+            }
+        }
+    }
+
+    // Function to find sum of weights of edges of the Minimum Spanning Tree.
+    static int spanningTree(int V, int E, int edges[][]) {
+        // Step 1: Create a list of all edges (from the input format)
+        // edges[i] contains {u, v, weight}
+        List<int[]> allEdges = new ArrayList<>();
+        for (int i = 0; i < E; i++) {
+            allEdges.add(new int[]{edges[i][0], edges[i][1], edges[i][2]});
+        }
+        
+        // Step 2: Sort all edges in ascending order of their weight
+        Collections.sort(allEdges, (a, b) -> a[2] - b[2]);
+        
+        // Step 3: Initialize DSU and the sum variable
+        DisjointSet ds = new DisjointSet(V);
+        int sum = 0;
+        
+        // Step 4: Iterate through sorted edges and apply Kruskal's logic
+        for (int[] edge : allEdges) {
+            int u = edge[0];
+            int v = edge[1];
+            int weight = edge[2];
+            
+            // Find ultimate parents of u and v
+            int parentU = ds.find(u);
+            int parentV = ds.find(v);
+            
+            // If they are not in the same component, adding this edge won't form a cycle
+            if (parentU != parentV) {
+                // Include the edge weight
+                sum += weight;
+                // Union the two components
+                ds.unionByRank(u, v);
+            }
+        }
+        
+        return sum;
+    }
+}
+
+```
+# Graph Concepts & Qns - 37: Min Cost to Connect All Points (Kruskal's Algorithm)
+
+**Video Link:** [Min Cost to Connect All Points | Kruskal's Algorithm | Graph Concepts & Qns - 37 | Leetcode-1584](https://youtu.be/O6wQQtv71S0)  
+**Channel:** codestorywithMIK  
+**Practice Link:** [Min Cost to Connect All Points on LeetCode](https://leetcode.com/problems/min-cost-to-connect-all-points/)
+
+## Overview
+This video solves the same problem we tackled in Video #35 (**LeetCode 1584: Min Cost to Connect All Points**). However, instead of using Prim's Algorithm, this video demonstrates how to solve it using **Kruskal's Algorithm**, which was thoroughly explained in Video #36.
+
+## Problem Breakdown
+**The Story:** You are given an array `points` where `points[i] = [xi, yi]` representing coordinates on a 2D plane. You need to connect all points such that exactly one simple path exists between any two points. The cost to connect two points is the Manhattan distance between them.
+**The Goal:** Return the minimum cost to make all points connected (which is essentially asking to find the total weight of the Minimum Spanning Tree).
+
+## Core Logic & Intuition (Applying Kruskal's)
+Kruskal's algorithm doesn't care about starting at a specific node and expanding outwards. It simply wants a list of *all* possible edges, sorted by their weights.
+
+**The Strategy:**
+1.  **Generate All Edges:** Since any point can connect to any other point, this represents a complete graph. We iterate through every unique pair of points `(i, j)` where `i < j`.
+2.  **Calculate Distance:** For each pair, calculate the Manhattan distance `d`. We treat this as an edge with weight `d` connecting node `i` to node `j`. Store this as `[i, j, d]` inside a list of all edges.
+3.  **Sort the Edges:** Sort our list of all edges in ascending order based strictly on the distance `d`.
+4.  **Kruskal's DSU Process:**
+    *   Initialize a Disjoint Set Union (DSU) structure where each node (point index) is its own parent.
+    *   Iterate through the sorted list of edges.
+    *   For each edge `[u, v, d]`, check if `u` and `v` belong to the same component using `find(u)` and `find(v)`.
+    *   If they are in different components (`find(u) != find(v)`), it means connecting them will *not* form a cycle. Add `d` to our total cost, and `union(u, v)` to merge their components.
+    *   If they are already in the same component, skip the edge.
+5.  Return the total accumulated cost.
+
+## Java Implementation
+
+```java
+import java.util.*;
+
+class MinCostConnectPointsKruskal {
+    
+    // DSU Class with Path Compression and Union by Rank
+    static class DisjointSet {
+        int[] parent;
+        int[] rank;
+
+        public DisjointSet(int n) {
+            parent = new int[n];
+            rank = new int[n];
+            for (int i = 0; i < n; i++) {
+                parent[i] = i;
+                rank[i] = 0;
+            }
+        }
+
+        public int find(int i) {
+            if (parent[i] == i) {
+                return i;
+            }
+            return parent[i] = find(parent[i]); // Path compression
+        }
+
+        public void unionByRank(int i, int j) {
+            int rootI = find(i);
+            int rootJ = find(j);
+            
+            if (rootI == rootJ) return;
+            
+            if (rank[rootI] < rank[rootJ]) {
+                parent[rootI] = rootJ;
+            } else if (rank[rootI] > rank[rootJ]) {
+                parent[rootJ] = rootI;
+            } else {
+                parent[rootI] = rootJ;
+                rank[rootJ]++;
+            }
+        }
+    }
+
+    public int minCostConnectPoints(int[][] points) {
+        int n = points.length;
+        
+        // Step 1: Create a list of all possible edges {u, v, weight}
+        List<int[]> allEdges = new ArrayList<>();
+        
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j < n; j++) {
+                // Calculate Manhattan distance
+                int weight = Math.abs(points[i][0] - points[j][0]) + Math.abs(points[i][1] - points[j][1]);
+                allEdges.add(new int[]{i, j, weight});
+            }
+        }
+        
+        // Step 2: Sort all edges in ascending order of their weight
+        Collections.sort(allEdges, (a, b) -> Integer.compare(a[2], b[2]));
+        
+        // Step 3: Apply Kruskal's logic using DSU
+        DisjointSet ds = new DisjointSet(n);
+        int sum = 0;
+        int edgesAdded = 0;
+        
+        for (int[] edge : allEdges) {
+            int u = edge[0];
+            int v = edge[1];
+            int weight = edge[2];
+            
+            // If u and v do not share the same ultimate parent, union them
+            if (ds.find(u) != ds.find(v)) {
+                ds.unionByRank(u, v);
+                sum += weight;
+                edgesAdded++;
+                
+                // Optimization: MST requires exactly V - 1 edges. 
+                // We can break early once we have connected all components.
+                if (edgesAdded == n - 1) {
+                    break;
+                }
+            }
+        }
+        
+        return sum;
+    }
+}
+```
+
+# Graph Concepts & Qns - 38: Strongly Connected Components | Kosaraju's Algorithm
+
+**Video Link:** [Strongly Connected Components | Kosaraju's Algorithm | Intuition | AMAZON | Graph Concepts & Qns- 38](https://youtu.be/E6DeC0Zpdns)  
+**Channel:** codestorywithMIK  
+**Practice Link:** [Strongly Connected Components (Kosaraju's Algo) on GeeksforGeeks](https://practice.geeksforgeeks.org/problems/strongly-connected-components-kosarajus-algo/1)
+
+## Overview
+This video introduces the concept of **Strongly Connected Components (SCC)** in a directed graph and explains **Kosaraju's Algorithm** to find them. This algorithm is frequently asked in interviews by top companies like Amazon, Microsoft, and Visa. The video focuses heavily on the *intuition* behind the algorithm—understanding *why* we need to reverse the graph and *why* we process nodes in a topological sort order.
+
+## Core Concept: Strongly Connected Component (SCC)
+In a directed graph, a **Strongly Connected Component (SCC)** is a maximal subgraph such that for every pair of vertices `u` and `v` within the subgraph, there is a directed path from `u` to `v` **AND** a directed path from `v` to `u`. 
+*   Simply put: You can reach any node from any other node *within* that specific component.
+
+## Core Logic & Intuition (Kosaraju's Algorithm)
+If you simply perform a DFS starting from a node inside an SCC, you will discover all nodes in that SCC. However, if there's an outgoing edge from that SCC to another component, the DFS will "leak" out and incorrectly include nodes from the other component. 
+
+Kosaraju's algorithm solves this "leaking" problem using two brilliant observations:
+1.  **Reversing the Graph:** If you reverse the direction of all edges in the graph, the Strongly Connected Components remain exactly the same. However, the edges connecting *different* SCCs change direction. This prevents DFS from leaking *forward* into components it shouldn't.
+2.  **Topological Sort Order:** Reversing the graph isn't enough on its own. If you start a DFS in the reversed graph from the "wrong" component, it might still leak *backward*. To fix this, we must process the components in the reverse topological order of the SCCs. We achieve this by performing a standard DFS first and pushing nodes onto a Stack *after* their children are processed. 
+
+**The 3-Step Strategy of Kosaraju's Algorithm:**
+1.  **Step 1 (Order by Finish Time):** Perform a DFS on the original graph. Keep track of visited nodes. Once a node has finished exploring all its neighbors, push it onto a `Stack`. (This gives us nodes ordered by their finish times, effectively giving a pseudo-topological sort order).
+2.  **Step 2 (Reverse Graph):** Create a new adjacency list where all the edge directions are reversed (if `u -> v`, make it `v -> u`).
+3.  **Step 3 (Count/Extract SCCs):** Pop nodes from the `Stack` one by one. If a popped node is not visited, start a DFS from it on the **Reversed Graph**. Every time you start a new DFS from the Stack, it corresponds to discovering exactly one complete Strongly Connected Component. Increment your SCC count.
+
+## Java Implementation
+
+```java
+import java.util.*;
+
+class KosarajusAlgorithm {
+    
+    // Step 1 Helper: DFS to fill the stack based on finish times
+    private void dfsFillStack(int u, ArrayList<ArrayList<Integer>> adj, boolean[] visited, Stack<Integer> stack) {
+        visited[u] = true;
+        
+        for (int v : adj.get(u)) {
+            if (!visited[v]) {
+                dfsFillStack(v, adj, visited, stack);
+            }
+        }
+        
+        // Push to stack after all neighbors are explored
+        stack.push(u);
+    }
+    
+    // Step 3 Helper: Standard DFS for traversal on the reversed graph
+    private void dfsTraversal(int u, ArrayList<ArrayList<Integer>> adjRev, boolean[] visited) {
+        visited[u] = true;
+        
+        for (int v : adjRev.get(u)) {
+            if (!visited[v]) {
+                dfsTraversal(v, adjRev, visited);
+            }
+        }
+    }
+
+    // Function to find number of strongly connected components in the graph.
+    public int kosaraju(int V, ArrayList<ArrayList<Integer>> adj) {
+        
+        // Step 1: Store vertices in a stack according to their finish times
+        boolean[] visited = new boolean[V];
+        Stack<Integer> stack = new Stack<>();
+        
+        for (int i = 0; i < V; i++) {
+            if (!visited[i]) {
+                dfsFillStack(i, adj, visited, stack);
+            }
+        }
+        
+        // Step 2: Create a reversed graph
+        ArrayList<ArrayList<Integer>> adjRev = new ArrayList<>();
+        for (int i = 0; i < V; i++) {
+            adjRev.add(new ArrayList<>());
+        }
+        
+        for (int u = 0; u < V; u++) {
+            for (int v : adj.get(u)) {
+                // Reverse the edge: u -> v becomes v -> u
+                adjRev.get(v).add(u);
+            }
+        }
+        
+        // Step 3: Process nodes according to the stack and count SCCs
+        // Reset visited array for the second DFS pass
+        Arrays.fill(visited, false);
+        int sccCount = 0;
+        
+        while (!stack.isEmpty()) {
+            int node = stack.pop();
+            
+            if (!visited[node]) {
+                // Each unvisited node popped from the stack is the start of a new SCC
+                dfsTraversal(node, adjRev, visited);
+                sccCount++;
+            }
+        }
+        
+        return sccCount;
+    }
+}
+```
+# Graph Concepts & Qns - 39: Disjoint Set Union By SIZE and Path Compression
+
+**Video Link:** [Disjoint Set Union By SIZE and Path Compression | DSU | Graph Concepts & Qns -39 | Explanation+Code](https://youtu.be/kGv33AiGhdc)  
+**Channel:** codestorywithMIK  
+
+## Overview
+This video is a continuation of the Disjoint Set Union (DSU) topic covered in Videos #18 and #19. Previously, we learned how to optimize DSU using **Path Compression** and **Union by Rank**. In this video, we explore an alternative, equally optimal approach: **Union by Size**. 
+
+Instead of tracking the "rank" (approximate depth) of each component tree, we track the exact "size" (number of nodes) in each component. 
+
+## Core Logic & Intuition (Union by Size)
+The goal of both "Union by Rank" and "Union by Size" is the same: to keep the component trees as flat/shallow as possible so that the `find` operation runs in near-constant time.
+
+**The Strategy:**
+1.  **Initialization:** Instead of a `rank` array, we maintain a `size` array. Initially, every node is in its own separate component, meaning the `size` of every component is exactly `1`. Also, every node is its own `parent`.
+2.  **The `find` Operation:** This remains exactly the same. We use Path Compression to point every node along the search path directly to the ultimate root leader.
+3.  **The `union` Operation:**
+    *   Find the ultimate parents of the two nodes: `rootX = find(x)` and `rootY = find(y)`.
+    *   If they share the same root, they are already connected. Do nothing.
+    *   If they have different roots, we compare the sizes of their components: `size[rootX]` vs. `size[rootY]`.
+    *   **The Greedy Choice:** Always attach the *smaller* component under the root of the *larger* component. This minimizes the increase in tree height.
+    *   **Size Update:** If we attach the component of `rootY` under `rootX`, the new size of the merged component is the sum of both: `size[rootX] += size[rootY]`.
+    *   If sizes are equal, you can arbitrarily choose one to be the parent and update its size identically.
+
+## Java Implementation
+
+```java
+class DisjointSetBySize {
+    int[] parent;
+    int[] size;
+
+    // Constructor to initialize the DSU
+    public DisjointSetBySize(int n) {
+        parent = new int[n];
+        size = new int[n];
+        
+        for (int i = 0; i < n; i++) {
+            parent[i] = i;  // Every node is its own parent initially
+            size[i] = 1;    // The size of every component is initially 1
+        }
+    }
+
+    // Find with Path Compression
+    public int find(int i) {
+        if (parent[i] == i) {
+            return i;
+        }
+        // Path Compression: directly link node to the ultimate root
+        return parent[i] = find(parent[i]); 
+    }
+
+    // Union by Size
+    public void unionBySize(int i, int j) {
+        int rootI = find(i);
+        int rootJ = find(j);
+        
+        // If they already belong to the same component, no union is needed
+        if (rootI == rootJ) {
+            return;
+        }
+        
+        // Attach the smaller component under the larger component
+        if (size[rootI] > size[rootJ]) {
+            parent[rootJ] = rootI;            // rootI becomes the parent
+            size[rootI] += size[rootJ];       // Increase size of rootI's component
+        } else if (size[rootI] < size[rootJ]) {
+            parent[rootI] = rootJ;            // rootJ becomes the parent
+            size[rootJ] += size[rootI];       // Increase size of rootJ's component
+        } else {
+            // If sizes are equal, arbitrarily attach one to the other
+            parent[rootJ] = rootI;
+            size[rootI] += size[rootJ];
+        }
+    }
+}
+```
+# Graph Concepts & Qns - 40: Euler Path | Euler Circuit | PART-1
+
+**Video Link:** [Euler Path | Euler Circuit | PART-1 | Graph Concepts & Qns - 40 | Explanation+Code](https://youtu.be/CeO0JEX4QAc)  
+**Channel:** codestorywithMIK  
+
+## Overview
+This video introduces the foundational graph theory concepts of **Eulerian Paths** and **Eulerian Circuits** (also known as Eulerian Cycles). It focuses purely on the theoretical definitions, conditions for existence, and distinguishing properties of these structures. *Note: Algorithmic implementations are reserved for Part 2.*
+
+## 1. Eulerian Path
+An **Eulerian Path** (or Euler Path) is a path in a graph that visits every edge exactly once.
+
+### Key Properties & Conditions:
+*   **Edge constraint:** Every edge must be visited exactly once.
+*   **Vertex constraint:** Vertices *can* be visited multiple times.
+*   **Start/End constraint:** The starting vertex and ending vertex are **different**.
+*   **Degree constraint:** For an Eulerian Path to exist in a connected, undirected graph, there must be **exactly two vertices with an odd degree**. All other vertices must have an even degree.
+    *   *Why?* The start and end vertices act as sources and sinks. Every other intermediate node must have a way in and a way out, thus requiring edges in pairs (even degree).
+*   **Choice of Start Node:** You *cannot* arbitrarily pick any node to start an Eulerian Path. You **must** start at one of the two vertices that have an odd degree (and you will inevitably end at the other odd-degree vertex).
+
+## 2. Eulerian Circuit (Eulerian Cycle)
+An **Eulerian Circuit** is a special type of Eulerian Path that starts and ends on the exact same vertex.
+
+### Key Properties & Conditions:
+*   **Edge constraint:** Every edge must be visited exactly once.
+*   **Vertex constraint:** Vertices can be visited multiple times.
+*   **Start/End constraint:** The starting vertex and ending vertex are **the same** (`start == end`).
+*   **Degree constraint:** For an Eulerian Circuit to exist in a connected, undirected graph, **every single vertex must have an even degree**. 
+    *   *Why?* Because you start and finish at the same node, every node (including the start node) must be entered and exited. Therefore, edges attached to any vertex must exist in pairs.
+*   **Choice of Start Node:** If a graph contains an Eulerian Circuit, you can start the traversal from **any** arbitrary node and you will be guaranteed to traverse all edges exactly once and return to that starting node.
+
+## 3. Graph Classifications based on Euler Properties
+1.  **Eulerian Graph:** A graph is Eulerian if it contains an Eulerian Circuit. (All vertices have an even degree).
+2.  **Semi-Eulerian Graph:** A graph is Semi-Eulerian if it contains an Eulerian Path but *not* an Eulerian Circuit. (Exactly two vertices have an odd degree, and the rest are even).
+3.  **Non-Eulerian Graph:** A graph is Non-Eulerian if it contains neither an Eulerian Path nor an Eulerian Circuit. (More than two vertices have an odd degree).
+
+## 4. Fundamental Pre-condition: Connectivity
+For a graph to possess either an Eulerian Path or an Eulerian Circuit, a fundamental connectivity rule applies:
+*   **Connectivity Rule:** All vertices that have a **non-zero degree** must belong to a single connected component.
+*   If a graph consists of multiple disconnected components, but only *one* component has edges (the other components are just isolated, 0-degree vertices), the graph can still be Eulerian. 
+*   If a graph has *two or more* disconnected components that contain edges, an Eulerian Path/Circuit is impossible, as you cannot traverse from the edges of one component to the edges of another.
